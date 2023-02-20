@@ -8,8 +8,10 @@ import FormInput from "./form-input";
 import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import { ColorProps } from "@/types/css-props";
-import useMultipleInputs from "@/hooks/useMultipleInputs";
+import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import customLocalStorage from "@/utils/localStorage";
+import toast, { Toaster } from "react-hot-toast";
+// import axios from "axios";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 const USER_ADDRESS = "user-address";
@@ -34,12 +36,24 @@ const AddressForm = () => {
     if (addressList.length < 2) {
       //TODO
       // - TOAST 경고창
+      toast.error("주소를 2개 이상 입력해주세요.");
     }
 
     //TODO
     // - 백엔드 api 보내기
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
+
+    // const test = async () => {
+    //   const { data } = await axios({
+    //     method: "get",
+    //     url: "http://52.78.224.123:8080/api/hello/simple",
+    //   });
+
+    //   console.log(data);
+    // };
+
+    // test();
   };
 
   return (
@@ -75,6 +89,7 @@ const AddressForm = () => {
         onClick={handleButtonClickSubmit}>
         {BUTTON_SUBMIT_TEXT}
       </SubmitButton>
+      <Toaster />
     </Form>
   );
 };
