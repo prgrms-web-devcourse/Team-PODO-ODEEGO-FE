@@ -1,9 +1,10 @@
 import Head from "next/head";
 import styled, { createGlobalStyle } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
-import { testState } from "@/recoil/testState";
+import { testState } from "@/src/recoil/testState";
 import { useRecoilState } from "recoil";
 import { useEffect } from "react";
+
 const GlobalStyle = createGlobalStyle`
  h1 {
    font-size: 4rem;
