@@ -18,15 +18,17 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint", "prettier"],
+  "plugins": ["@typescript-eslint", "prettier", "filenames", "folders"],
   "rules": {
-    "no-unused-vars": "error", // 사용하지않는 변수 error처리 하겠다.
+    "@typescript-eslint/no-unused-vars": "error", // 사용하지않는 변수 error처리 하겠다.
     "no-else-return": ["error", { "allowElseIf": false }], // if문에 else 문을 사용하지 규칙을 정의한다.
     "semi": "error",
     "prettier/prettier": [
       "error",
       { "endOfLine": "auto", "jsxSingleQuote": true, "singleQuote": false }
-    ]
+    ],
+    "filenames/match-regex": [2, "^(_)?[a-z-]+$"], // kebab-case with optional _ prefix for next.js main files like _app.js
+    "folders/match-regex": [2, "^(\\u005B)?[a-z-]+(\\u005D)?$", "/front_end/"] // kebab-case with optional [ ] brackets
   },
   "ignorePatterns": ["!.*", "dist", "node_modules"]
 }
