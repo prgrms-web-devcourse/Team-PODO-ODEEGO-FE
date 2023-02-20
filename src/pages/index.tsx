@@ -1,5 +1,5 @@
-import Header from "../components/home-address/header";
-import Main from "../components/home-address/main";
+import Header from "@/components/home-address/Header";
+import Main from "@/components/home-address/Main";
 
 export default function Home() {
   return (
