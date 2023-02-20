@@ -1,14 +1,14 @@
 "use client";
 
-import { colors } from "@/src/constants/css";
-import { ColorProps } from "@/src/types/css-props";
 import styled from "@emotion/styled";
 import { Box, IconButton } from "@mui/material";
 import { MouseEvent } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import FormInput from "./form-input";
 import { useRouter } from "next/navigation";
-import useMultipleInputs from "@/src/hooks/useMultipleInputs";
+import { COLORS } from "@/constants/css";
+import { ColorProps } from "@/types/css-props";
+import useMultipleInputs from "@/hooks/useMultipleInputs";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
@@ -53,7 +53,7 @@ const AddressForm = () => {
       </Box>
       <SubmitButton
         type='submit'
-        colors={colors}
+        colors={COLORS}
         onClick={handleButtonClickSubmit}>
         {BUTTON_SUBMIT_TEXT}
       </SubmitButton>
@@ -75,7 +75,7 @@ const Form = styled.form`
 const SubmitButton = styled.button<{ colors: ColorProps }>`
   width: 80%;
   height: 3rem;
-  background-color: ${({ colors }) => colors.orangePrimary};
+  background-color: ${({ colors }) => colors.mainOrange};
   color: white;
   text-align: center;
   border-radius: 8px;

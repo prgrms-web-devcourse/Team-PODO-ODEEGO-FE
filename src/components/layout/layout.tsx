@@ -1,23 +1,13 @@
 "use client";
 
-import { colors, size } from "../../constants/css";
+import { SIZE } from "../../constants/css";
 import styled from "@emotion/styled";
 import Nav from "./nav";
-import { ColorProps, SizeProps } from "@/src/types/css-props";
-
-export interface cssProps {
-  size: SizeProps;
-  colors: ColorProps;
-}
-
-const cssProps = {
-  size: size,
-  colors: colors,
-};
+import { SizeProps } from "@/types/css-props";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Container cssProps={cssProps}>
+    <Container SIZE={SIZE}>
       <Nav />
       {children}
     </Container>
@@ -26,10 +16,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 export default Layout;
 
-const Container = styled.div<{ cssProps: cssProps }>`
-  max-height: ${({ cssProps }) => cssProps.size.height};
+const Container = styled.div<{ SIZE: SizeProps }>`
+  max-height: ${({ SIZE }) => SIZE.height};
   min-width: 320px;
-  max-width: ${({ cssProps }) => cssProps.size.width};
+  max-width: ${({ SIZE }) => SIZE.width};
   margin: auto;
   box-sizing: border-box;
 `;

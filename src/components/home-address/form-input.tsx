@@ -1,9 +1,9 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, TextField } from "@mui/material";
-import { ColorProps } from "@/src/types/css-props";
-import { colors } from "@/src/constants/css";
 import styled from "@emotion/styled";
 import { MouseEvent } from "react";
+import { COLORS } from "@/constants/css";
+import { ColorProps } from "@/types/css-props";
 
 interface AddressFormInputProps {
   index: number;
@@ -24,7 +24,7 @@ const FormInput = ({
       sx={{ width: "80%", position: "relative", marginBottom: "1.5rem" }}
       onClick={onClick}>
       <CustomTextField
-        colors={colors}
+        colors={COLORS}
         id='index'
         label={`Address ${index + 1}`}
         sx={{
@@ -55,24 +55,24 @@ export default FormInput;
 
 const CustomTextField = styled(TextField)<{ colors: ColorProps }>`
   & label {
-    color: ${({ colors }) => colors.greenFocus};
+    color: ${({ colors }) => colors.borderSecondary};
   }
 
   & label.Mui-focused {
-    color: ${({ colors }) => colors.greenFocus};
+    color: ${({ colors }) => colors.borderSecondary};
   }
 
   & .MuiOutlinedInput-root {
     fieldset {
-      border-color: ${({ colors }) => colors.greenLight};
+      border-color: ${({ colors }) => colors.borderPrimary};
     }
 
     &.Mui-focused fieldset {
-      border-color: ${({ colors }) => colors.greenFocus};
+      border-color: ${({ colors }) => colors.borderSecondary};
     }
 
     &:hover fieldset {
-      border-color: ${({ colors }) => colors.greenFocus};
+      border-color: ${({ colors }) => colors.borderSecondary};
     }
 
     &.Mui-disabled input {
@@ -81,7 +81,7 @@ const CustomTextField = styled(TextField)<{ colors: ColorProps }>`
     }
 
     &.Mui-disabled fieldset {
-      border-color: ${({ colors }) => colors.greenFocus};
+      border-color: ${({ colors }) => colors.borderSecondary};
     }
   }
 `;
