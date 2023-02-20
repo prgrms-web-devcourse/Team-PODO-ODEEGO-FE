@@ -1,13 +1,14 @@
 import { colors } from "@/src/constants/css";
 import { ColorProps } from "@/src/types/css-props";
 import styled from "@emotion/styled";
-import AddressForm from "./AddressForm";
+import AddressForm from "./address-form";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 
 const Main = () => {
   return (
     <MainContainer colors={colors}>
+      <BorderContainer colors={colors} />
       <TextP colors={colors}>{MAIN_TEXT}</TextP>
       <AddressForm />
     </MainContainer>
@@ -34,4 +35,12 @@ const TextP = styled.p<{ colors: ColorProps }>`
   margin: 2.5rem 0 2rem 0;
   opacity: 0.7;
   color: ${({ colors }) => colors.semiBlack};
+`;
+
+const BorderContainer = styled.div<{ colors: ColorProps }>`
+  height: 20px;
+  width: 100%;
+  background-color: ${({ colors }) => colors.greenSecondary};
+  margin-top: -15px;
+  border-radius: 20px 20px 0 0;
 `;

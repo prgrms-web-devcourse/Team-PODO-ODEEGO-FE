@@ -31,6 +31,5 @@ const Container = styled.div<{ cssProps: cssProps }>`
   min-width: 320px;
   max-width: ${({ cssProps }) => cssProps.size.width};
   margin: auto;
-  background-color: ${({ cssProps }) => cssProps.colors.greenPrimary};
   box-sizing: border-box;
 `;
