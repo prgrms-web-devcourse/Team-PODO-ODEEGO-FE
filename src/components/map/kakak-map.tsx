@@ -14,8 +14,7 @@ export default function KakaoMap({ markerPositions, size }: props) {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src =
-      "https://dapi.kakao.com/v2/maps/sdk.js?appkey=d2d0a3e9baf7a60988132bbff011ca9e&autoload=false";
+    script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_API_KEY}&autoload=false`;
     document.head.appendChild(script);
 
     script.onload = () => {
