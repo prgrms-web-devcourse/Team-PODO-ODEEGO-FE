@@ -9,19 +9,37 @@ import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import { ColorProps } from "@/types/css-props";
 import useMultipleInputs from "@/hooks/useMultipleInputs";
+import customLocalStorage from "@/utils/localStorage";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
+const USER_ADDRESS = "user-address";
 
 const AddressForm = () => {
   const router = useRouter();
   const { inputs, addInput, removeInput } = useMultipleInputs();
 
   const handleInputClickRoute = (index: number) => {
+    //TODO
+    // - 지우기
+    const count = customLocalStorage.get("count", 0);
+
     //해당 주소폼이 수정되도록 id를 쿼리로 넘겨줌
-    router.push(`/search?index=${index}`);
+    router.push(`/search?index=${index}&count=${count}`);
   };
   const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    const addressList = customLocalStorage.get(USER_ADDRESS, []);
+
+    if (addressList.length < 2) {
+      //TODO
+      // - TOAST 경고창
+    }
+
+    //TODO
+    // - 백엔드 api 보내기
+    // - recoil에 저장하기
+    // - 지도 페이지로 넘어가기
   };
 
   return (

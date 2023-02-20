@@ -1,31 +1,28 @@
 "use client";
 
-import { addressState } from "@/src/recoil/addressState";
+import customLocalStorage from "@/utils/localStorage";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRecoilState } from "recoil";
 
 const Search = () => {
-  const [addressList, setAddressList] = useRecoilState(addressState);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const index = parseInt(
-    searchParams.get("index") || addressList.length + "",
-    10
-  );
+  const index = parseInt(searchParams.get("index") || "0", 10);
 
   const handleClick = () => {
     if (index !== undefined || index !== null) {
-      const addressListCopy = JSON.parse(JSON.stringify(addressList));
+      const addressList = customLocalStorage.get("user-address", []);
+      const count = customLocalStorage.get("count", 0);
 
       const newAddressList = [
-        ...addressListCopy.slice(0, index),
+        ...addressList.slice(0, index),
         {
           name: "new 주소",
-          roadAddress: `new 강남대로 무슨로 무슨길 71${index}`,
+          roadAddress: `new 강남대로 무슨로 무슨길-${count} 71${index}`,
         },
-        ...addressListCopy.slice(index + 1),
+        ...addressList.slice(index + 1),
       ];
-      setAddressList(newAddressList);
+      customLocalStorage.set("user-address", newAddressList);
+      customLocalStorage.set("count", customLocalStorage.get("count", 0) + 1);
     }
 
     router.push("/");

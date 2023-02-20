@@ -1,23 +1,19 @@
-import { MouseEvent, useState } from "react";
-import { useRecoilState } from "recoil";
-import { addressState } from "../recoil/addressState";
+import customLocalStorage from "@/utils/localStorage";
+import { MouseEvent, useEffect, useState } from "react";
 
 interface InputItem {
   roadAddress: string;
 }
 
+//TODO
+// - 전역 상수로 빼기
+const USER_ADDRESS = "user-address";
+
 const useMultipleInputs = () => {
-  const [addressList, setAddressList] = useRecoilState(addressState);
-  const [inputs, setInputs] = useState<InputItem[]>(() => {
-    if (addressList.length === 0)
-      return [
-        {
-          roadAddress: "",
-        },
-        {
-          roadAddress: "",
-        },
-      ];
+  const [inputs, setInputs] = useState<InputItem[]>([]);
+
+  useEffect(() => {
+    const addressList = customLocalStorage.get(USER_ADDRESS, []);
 
     const inputList = [];
 
@@ -29,14 +25,15 @@ const useMultipleInputs = () => {
       inputList.push(newAddress);
     }
 
-    if (inputList.length < 2) {
+    for (let i = inputList.length; i < 2; i++) {
       inputList.push({
         roadAddress: "",
       });
     }
 
-    return inputList;
-  });
+    setInputs(inputList);
+  }, []);
+
   const addInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -45,7 +42,10 @@ const useMultipleInputs = () => {
     };
 
     setInputs((prev) => [...prev, newInput]);
-    setAddressList([...addressList, { name: "", roadAddress: "" }]);
+    // customLocalStorage.set(USER_ADDRESS, [
+    //   ...customLocalStorage.get(USER_ADDRESS),
+    //   newInput,
+    // ]);
   };
 
   const removeInput = (e: MouseEvent<HTMLButtonElement>, index: number) => {
@@ -56,11 +56,10 @@ const useMultipleInputs = () => {
     inputsCopy.splice(index, 1);
     setInputs(inputsCopy);
 
-    // recoil 해당되는 id의 주소값 같이 제거
-    const addressListCopy = JSON.parse(JSON.stringify(addressList));
+    const addressList = customLocalStorage.get(USER_ADDRESS, []);
 
-    addressListCopy.splice(index, 1);
-    setAddressList(addressListCopy);
+    addressList.splice(index, 1);
+    customLocalStorage.set(USER_ADDRESS, addressList);
   };
 
   return { inputs, addInput, removeInput };
