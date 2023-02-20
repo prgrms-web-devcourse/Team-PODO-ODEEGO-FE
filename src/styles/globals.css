@@ -22,6 +22,14 @@ html {
 
 body {
   margin: 0;
+  background-color: #dbe4d7;
+}
+
+@media all and (min-width: 768px) {
+  body {
+    width: 390px;
+    margin: 0 auto;
+  }
 }
 
 /**
