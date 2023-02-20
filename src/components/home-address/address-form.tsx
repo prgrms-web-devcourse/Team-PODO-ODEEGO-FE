@@ -7,25 +7,19 @@ import { Box, IconButton } from "@mui/material";
 import { MouseEvent } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import FormInput from "./form-input";
+import { useRouter } from "next/navigation";
+import useMultipleInputs from "@/src/hooks/useMultipleInputs";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 const AddressForm = () => {
-  const inputs = [
-    {
-      roadAddress: "",
-    },
-    {
-      roadAddress: "",
-    },
-    {
-      roadAddress: "",
-    },
-    {
-      roadAddress: "",
-    },
-  ];
+  const router = useRouter();
+  const { inputs, addInput, removeInput } = useMultipleInputs();
 
+  const handleInputClickRoute = (index: number) => {
+    //해당 주소폼이 수정되도록 id를 쿼리로 넘겨줌
+    router.push(`/search?index=${index}`);
+  };
   const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   };
@@ -44,10 +38,15 @@ const AddressForm = () => {
             key={index}
             index={index}
             roadAddress={input.roadAddress}
+            onClick={() => handleInputClickRoute(index)}
+            onRemove={removeInput}
           />
         ))}
         {inputs.length < 4 && (
-          <IconButton aria-label='add' sx={{ color: "#b4c9bc" }}>
+          <IconButton
+            aria-label='add'
+            sx={{ color: "#b4c9bc" }}
+            onClick={(e) => addInput(e)}>
             <AddIcon />
           </IconButton>
         )}

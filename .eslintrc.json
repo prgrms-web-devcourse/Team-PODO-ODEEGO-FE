@@ -20,7 +20,8 @@
   },
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
-    "no-unused-vars": "error", // 사용하지않는 변수 error처리 하겠다.
+    "no-unused-vars": "off", // 사용하지않는 변수 error처리 하겠다.
+    "@typescript-eslint/no-unused-vars": "error",
     "no-else-return": ["error", { "allowElseIf": false }], // if문에 else 문을 사용하지 규칙을 정의한다.
     "semi": "error",
     "prettier/prettier": [
