@@ -25,13 +25,6 @@ body {
   background-color: #fafcf8;
 }
 
-@media all and (min-width: 768px) {
-  body {
-    width: 390px;
-    margin: 0 auto;
-  }
-}
-
 /**
  * Render the `main` element consistently in IE.
  */

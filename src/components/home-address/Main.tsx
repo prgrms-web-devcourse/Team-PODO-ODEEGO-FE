@@ -22,11 +22,10 @@ const MainContainer = styled.main<{ colors: ColorProps }>`
   max-height: 625px;
   height: 76vh;
   background-color: ${({ colors }) => colors.greenSecondary};
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
 `;
 
 const TextP = styled.p<{ colors: ColorProps }>`
