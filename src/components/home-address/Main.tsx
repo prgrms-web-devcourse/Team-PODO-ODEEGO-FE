@@ -1,5 +1,5 @@
-import { colors } from "@/src/constants/css";
-import { ColorProps } from "@/src/types/css-props";
+import { COLORS } from "@/constants/css";
+import { ColorProps } from "@/types/css-props";
 import styled from "@emotion/styled";
 import AddressForm from "./address-form";
 
@@ -7,9 +7,9 @@ const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 
 const Main = () => {
   return (
-    <MainContainer colors={colors}>
-      <BorderContainer colors={colors} />
-      <TextP colors={colors}>{MAIN_TEXT}</TextP>
+    <MainContainer colors={COLORS}>
+      <BorderContainer colors={COLORS} />
+      <TextP colors={COLORS}>{MAIN_TEXT}</TextP>
       <AddressForm />
     </MainContainer>
   );
@@ -21,7 +21,7 @@ const MainContainer = styled.main<{ colors: ColorProps }>`
   width: 100%;
   max-height: 625px;
   height: 76vh;
-  background-color: ${({ colors }) => colors.greenSecondary};
+  background-color: ${({ colors }) => colors.backgroundPrimary};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,7 +39,7 @@ const TextP = styled.p<{ colors: ColorProps }>`
 const BorderContainer = styled.div<{ colors: ColorProps }>`
   height: 20px;
   width: 100%;
-  background-color: ${({ colors }) => colors.greenSecondary};
+  background-color: ${({ colors }) => colors.backgroundPrimary};
   margin-top: -15px;
   border-radius: 20px 20px 0 0;
 `;

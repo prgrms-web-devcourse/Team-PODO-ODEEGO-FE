@@ -1,4 +1,4 @@
-export const size = {
+export const SIZE = {
   height: "915px",
   width: "414px",
 };

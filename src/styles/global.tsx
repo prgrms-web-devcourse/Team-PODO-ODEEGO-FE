@@ -9,7 +9,6 @@ export const globalStyles = (
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
       html {
-        font-size: 62.5%;
         line-height: 1.15; /* 1 */
         -webkit-text-size-adjust: 100%; /* 2 */
       }
@@ -18,7 +17,6 @@ export const globalStyles = (
         color: ${COLORS.textPrimary};
         background: ${COLORS.backgroundPrimary};
         font-family: "Inter", "Noto Sans KR", sans-serif;
-        font-size: 1.6rem;
         margin: 0;
       }
 
