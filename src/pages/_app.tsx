@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <Layout>
-          <Component {...pageProps} />;
+          <Component {...pageProps} />
         </Layout>
       </RecoilRoot>
     </QueryClientProvider>

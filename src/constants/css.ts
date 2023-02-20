@@ -1,6 +1,6 @@
 export const size = {
-  height: "844px",
-  width: "390px",
+  height: "915px",
+  width: "414px",
 };
 
 export const colors = {

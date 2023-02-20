@@ -5,7 +5,8 @@ const Nav = () => {
 };
 
 const NavContainer = styled.nav`
-  height: 28px;
+  height: 35px;
+  padding: 5px 10px;
   background-color: beige;
 `;
 
