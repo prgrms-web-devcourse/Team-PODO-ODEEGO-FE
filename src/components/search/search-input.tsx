@@ -35,8 +35,12 @@ const SearchInput = () => {
     }
   };
 
-  const { data } = useQuery(["search", value], () =>
-    SearchAPI.getSubway(value)
+  const { data } = useQuery(
+    ["search", value],
+    () => SearchAPI.getSubway(value),
+    {
+      enabled: value.length > 0 && value.includes("역"),
+    }
   );
 
   return (
