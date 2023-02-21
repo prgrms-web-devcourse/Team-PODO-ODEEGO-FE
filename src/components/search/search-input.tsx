@@ -1,6 +1,9 @@
 import { SearchAPI } from "@/pages/api/search";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useRecoilState } from "recoil";
+import { useState } from "react";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
