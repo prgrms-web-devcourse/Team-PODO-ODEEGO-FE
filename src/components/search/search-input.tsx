@@ -117,16 +117,6 @@ const SearchContainer = styled.div`
   border: 0;
 `;
 
-const Search = styled.input`
-  border: 0;
-  padding-left: 10px;
-  background-color: #eaeaea;
-  width: 100%;
-  height: 50px;
-
-  outline: none;
-`;
-
 const SearchToggleBox = styled.div`
   margin-top: 50px;
   height: 200px;
