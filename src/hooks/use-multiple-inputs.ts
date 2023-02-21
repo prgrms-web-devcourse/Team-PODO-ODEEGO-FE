@@ -1,19 +1,18 @@
-import customLocalStorage from "@/utils/local-storage";
+import { userAddressState } from "@/recoil/address-state";
+
 import { MouseEvent, useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
 
 interface InputItem {
   roadAddress: string;
 }
 
-//TODO
-// - 전역 상수로 빼기
-const USER_ADDRESS = "user-address";
-
 const useMultipleInputs = () => {
   const [inputs, setInputs] = useState<InputItem[]>([]);
+  const [addressList, setAddressList] = useRecoilState(userAddressState);
 
   useEffect(() => {
-    const addressList = customLocalStorage.get(USER_ADDRESS, []);
+    // const addressList = customLocalStorage.get(USER_ADDRESS, []);
 
     const inputList = [];
 
@@ -32,7 +31,7 @@ const useMultipleInputs = () => {
     }
 
     setInputs(inputList);
-  }, []);
+  }, [addressList]);
 
   const addInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -56,10 +55,12 @@ const useMultipleInputs = () => {
     inputsCopy.splice(index, 1);
     setInputs(inputsCopy);
 
-    const addressList = customLocalStorage.get(USER_ADDRESS, []);
+    // const addressList = customLocalStorage.get(USER_ADDRESS, []);
 
-    addressList.splice(index, 1);
-    customLocalStorage.set(USER_ADDRESS, addressList);
+    const addressListCopy = JSON.parse(JSON.stringify(addressList));
+    addressListCopy.splice(index, 1);
+    // customLocalStorage.set(USER_ADDRESS, addressList);
+    setAddressList(addressListCopy);
   };
 
   return { inputs, addInput, removeInput };

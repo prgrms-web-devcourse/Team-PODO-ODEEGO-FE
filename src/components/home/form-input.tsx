@@ -29,6 +29,7 @@ const FormInput = ({
           width: "100%",
           "& input": {
             height: "2.3rem",
+            fontSize: "1.5rem",
           },
         }}
         disabled
