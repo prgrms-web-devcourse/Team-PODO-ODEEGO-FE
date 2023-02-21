@@ -1,10 +1,35 @@
+import { SearchAPI } from "@/pages/api/search";
 import styled from "@emotion/styled";
+import { useQuery } from "@tanstack/react-query";
 
 const SearchInput = () => {
+  const [value, setValue] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [test, setTest] = useRecoilState(searchState);
+  const router = useRouter();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
+    if (!value.includes("역")) {
+      setErrorMessage("역만 입력해주세요");
+    } else {
+      setErrorMessage("");
+    }
+
+    setValue(value);
+  };
+
+  const { data } = useQuery(["search", value], () =>
+    SearchAPI.getSubway(value)
+  );
+
   return (
     <SearchContainer>
       <SearchInputWrapper>
-        <Search type='text' />
+        <Search type='text' onChange={handleChange} />
+        {errorMessage.length > 0 && value.length > 0 && "역만입력"}
       </SearchInputWrapper>
     </SearchContainer>
   );
