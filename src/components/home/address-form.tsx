@@ -7,7 +7,6 @@ import AddIcon from "@mui/icons-material/Add";
 import FormInput from "./form-input";
 import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
-import { ColorProps } from "@/types/css-props";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import customLocalStorage from "@/utils/local-storage";
 import toast, { Toaster } from "react-hot-toast";
@@ -83,10 +82,7 @@ const AddressForm = () => {
           </IconButton>
         )}
       </Box>
-      <SubmitButton
-        type='submit'
-        colors={COLORS}
-        onClick={handleButtonClickSubmit}>
+      <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
         {BUTTON_SUBMIT_TEXT}
       </SubmitButton>
       <Toaster />
@@ -105,15 +101,15 @@ const Form = styled.form`
   position: relative;
 `;
 
-const SubmitButton = styled.button<{ colors: ColorProps }>`
+const SubmitButton = styled.button`
   width: 80%;
-  height: 3rem;
-  background-color: ${({ colors }) => colors.mainOrange};
+  height: 4.8rem;
+  background-color: ${COLORS.mainOrange};
   color: white;
   text-align: center;
   border-radius: 8px;
   border: none;
   position: absolute;
-  bottom: 2.8rem;
+  bottom: 3.5rem;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
 `;

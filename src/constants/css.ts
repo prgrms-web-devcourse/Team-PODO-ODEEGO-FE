@@ -1,7 +1,7 @@
 export const SIZE = {
   height: "915px",
   width: "414px",
-};
+} as const;
 
 export const COLORS = {
   backgroundPrimary: "#FAFCF8",
