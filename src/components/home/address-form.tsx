@@ -6,7 +6,6 @@ import { MouseEvent } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import FormInput from "./form-input";
 import { COLORS } from "@/constants/css";
-import { ColorProps } from "@/types/css-props";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
@@ -52,10 +51,7 @@ const AddressForm = () => {
           </IconButton>
         )}
       </Box>
-      <SubmitButton
-        type='submit'
-        colors={COLORS}
-        onClick={handleButtonClickSubmit}>
+      <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
         {BUTTON_SUBMIT_TEXT}
       </SubmitButton>
     </Form>
@@ -73,10 +69,10 @@ const Form = styled.form`
   position: relative;
 `;
 
-const SubmitButton = styled.button<{ colors: ColorProps }>`
+const SubmitButton = styled.button`
   width: 80%;
   height: 4.8rem;
-  background-color: ${({ colors }) => colors.mainOrange};
+  background-color: ${COLORS.mainOrange};
   color: white;
   text-align: center;
   border-radius: 8px;

@@ -2,7 +2,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, TextField } from "@mui/material";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
-import { ColorProps } from "@/types/css-props";
 
 interface AddressFormInputProps {
   index: number;
@@ -15,7 +14,6 @@ const FormInput = ({ index, roadAddress }: AddressFormInputProps) => {
       key={index}
       sx={{ width: "80%", position: "relative", marginBottom: "1.8rem" }}>
       <CustomTextField
-        colors={COLORS}
         id='index'
         label={`Address ${index + 1}`}
         sx={{
@@ -45,36 +43,36 @@ const FormInput = ({ index, roadAddress }: AddressFormInputProps) => {
 
 export default FormInput;
 
-const CustomTextField = styled(TextField)<{ colors: ColorProps }>`
+const CustomTextField = styled(TextField)`
   & label {
-    color: ${({ colors }) => colors.borderSecondary};
+    color: ${COLORS.borderSecondary};
     font-size: 1.5rem;
   }
 
   & label.Mui-focused {
-    color: ${({ colors }) => colors.borderSecondary};
+    color: ${COLORS.borderSecondary};
   }
 
   & .MuiOutlinedInput-root {
     fieldset {
-      border-color: ${({ colors }) => colors.borderPrimary};
+      border-color: ${COLORS.borderPrimary};
     }
 
     &.Mui-focused fieldset {
-      border-color: ${({ colors }) => colors.borderSecondary};
+      border-color: ${COLORS.borderSecondary};
     }
 
     &:hover fieldset {
-      border-color: ${({ colors }) => colors.borderSecondary};
+      border-color: ${COLORS.borderSecondary};
     }
 
     &.Mui-disabled input {
-      color: ${({ colors }) => colors.semiBlack};
-      -webkit-text-fill-color: ${({ colors }) => colors.semiBlack};
+      color: ${COLORS.semiBlack};
+      -webkit-text-fill-color: ${COLORS.semiBlack};
     }
 
     &.Mui-disabled fieldset {
-      border-color: ${({ colors }) => colors.borderSecondary};
+      border-color: ${COLORS.borderSecondary};
     }
   }
 `;

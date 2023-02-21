@@ -1,5 +1,4 @@
 import { COLORS } from "@/constants/css";
-import { ColorProps } from "@/types/css-props";
 import styled from "@emotion/styled";
 import Image from "next/image";
 
@@ -7,7 +6,7 @@ const HEADER_TEXT = "어디서 만날까?";
 
 const Header = () => {
   return (
-    <HeaderContainer colors={COLORS}>
+    <HeaderContainer>
       <TextP>{HEADER_TEXT}</TextP>
       <Image
         src='/Logo.png'
@@ -22,7 +21,7 @@ const Header = () => {
 
 export default Header;
 
-const HeaderContainer = styled.header<{ colors: ColorProps }>`
+const HeaderContainer = styled.header`
   height: 17.4rem;
   max-height: 174px;
   display: flex;
@@ -30,7 +29,7 @@ const HeaderContainer = styled.header<{ colors: ColorProps }>`
   align-items: center;
   justify-content: center;
   color: white;
-  background-color: ${({ colors }) => colors.backgroundAccent};
+  background-color: ${COLORS.backgroundAccent};
 `;
 
 const TextP = styled.p`

@@ -2,18 +2,17 @@
 
 import { SIZE } from "../../constants/css";
 import styled from "@emotion/styled";
-import { SizeProps } from "@/types/css-props";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  return <Container SIZE={SIZE}>{children}</Container>;
+  return <Container>{children}</Container>;
 };
 
 export default Layout;
 
-const Container = styled.div<{ SIZE: SizeProps }>`
-  max-height: ${({ SIZE }) => SIZE.height};
+const Container = styled.div`
+  max-height: ${SIZE.height};
   min-width: 320px;
-  max-width: ${({ SIZE }) => SIZE.width};
+  max-width: ${SIZE.width};
   margin: auto;
   box-sizing: border-box;
 `;
