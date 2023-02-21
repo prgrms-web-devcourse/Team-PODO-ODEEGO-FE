@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { searchState } from "@/recoil/searchState";
+import { InputAdornment, TextField } from "@mui/material";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
@@ -54,7 +56,23 @@ const SearchInput = () => {
   return (
     <SearchContainer>
       <SearchInputWrapper>
-        <Search type='text' onChange={handleChange} />
+        <TextField
+          style={{
+            width: "400px",
+          }}
+          inputProps={{
+            style: { fontSize: 15 },
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <KeyboardBackspaceIcon />
+              </InputAdornment>
+            ),
+          }}
+          type='text'
+          onChange={handleChange}
+        />
         {errorMessage.length > 0 && value.length > 0 && (
           <NotFound
             title={"역만 입력해주세요"}
