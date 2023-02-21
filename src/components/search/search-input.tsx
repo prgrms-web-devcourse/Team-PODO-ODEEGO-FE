@@ -3,13 +3,16 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useRecoilState } from "recoil";
-import { useState } from "react";
+import React, { useState } from "react";
+import { searchState } from "@/recoil/atom";
+import { searchOriginProps, searchProps } from "@/types/search-props";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [recoilData, setRecoildData] =
+    useRecoilState<searchProps[]>(searchState);
 
-  const [test, setTest] = useRecoilState(searchState);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +27,14 @@ const SearchInput = () => {
     setValue(value);
   };
 
+  const handleLocationClick = (val: searchOriginProps) => {
+    setRecoildData((prev: searchProps[]) => [...prev, val]);
+
+    if (val) {
+      router.push("/");
+    }
+  };
+
   const { data } = useQuery(["search", value], () =>
     SearchAPI.getSubway(value)
   );
@@ -34,6 +45,22 @@ const SearchInput = () => {
         <Search type='text' onChange={handleChange} />
         {errorMessage.length > 0 && value.length > 0 && "역만입력"}
       </SearchInputWrapper>
+
+      {data?.documents?.length > 0 && (
+        <SearchToggleBox>
+          {data?.documents?.map((val: searchOriginProps, index: number) => {
+            return (
+              <SearchToggleWrapper key={index}>
+                <SearchToggleData
+                  onClick={() => handleLocationClick(val)}
+                  key={index}>
+                  {val.place_name}
+                </SearchToggleData>
+              </SearchToggleWrapper>
+            );
+          })}
+        </SearchToggleBox>
+      )}
     </SearchContainer>
   );
 };
