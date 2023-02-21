@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useRecoilState } from "recoil";
 import React, { useState } from "react";
-import { searchState } from "@/recoil/atom";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
+import { searchState } from "@/recoil/searchState";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
