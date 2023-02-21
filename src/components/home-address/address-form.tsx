@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import { ColorProps } from "@/types/css-props";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
-import customLocalStorage from "@/utils/localStorage";
+import customLocalStorage from "@/utils/local-storage";
 import toast, { Toaster } from "react-hot-toast";
 // import axios from "axios";
 

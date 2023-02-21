@@ -1,6 +1,6 @@
 "use client";
 
-import customLocalStorage from "@/utils/localStorage";
+import customLocalStorage from "@/utils/local-storage";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const Search = () => {

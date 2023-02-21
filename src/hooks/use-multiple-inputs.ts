@@ -1,4 +1,4 @@
-import customLocalStorage from "@/utils/localStorage";
+import customLocalStorage from "@/utils/local-storage";
 import { MouseEvent, useEffect, useState } from "react";
 
 interface InputItem {
