@@ -28,7 +28,13 @@ const SearchInput = () => {
   };
 
   const handleLocationClick = (val: searchOriginProps) => {
-    setRecoildData((prev: searchProps[]) => [...prev, val]);
+    const obj = {
+      name: val.place_name,
+      lat: val.y,
+      lng: val.x,
+      address: val.address_name,
+    };
+    setRecoildData((prev: searchProps[]) => [...prev, obj]);
 
     if (val) {
       router.push("/");
