@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import React, { useState } from "react";
 import { searchState } from "@/recoil/atom";
 import { searchOriginProps, searchProps } from "@/types/search-props";
+import NotFound from "@/components/search/not-found";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
@@ -13,6 +14,7 @@ const SearchInput = () => {
   const [recoilData, setRecoildData] =
     useRecoilState<searchProps[]>(searchState);
 
+  console.log(recoilData);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +55,13 @@ const SearchInput = () => {
     <SearchContainer>
       <SearchInputWrapper>
         <Search type='text' onChange={handleChange} />
-        {errorMessage.length > 0 && value.length > 0 && "역만입력"}
+        {errorMessage.length > 0 && value.length > 0 && (
+          <NotFound
+            title={"역만 입력해주세요"}
+            icon={"지하철역"}
+            sxNumber={50}
+          />
+        )}
       </SearchInputWrapper>
 
       {data?.documents?.length > 0 && (
