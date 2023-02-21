@@ -2,16 +2,10 @@
 
 import { SIZE } from "../../constants/css";
 import styled from "@emotion/styled";
-import Nav from "./nav";
 import { SizeProps } from "@/types/css-props";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Container SIZE={SIZE}>
-      <Nav />
-      {children}
-    </Container>
-  );
+  return <Container SIZE={SIZE}>{children}</Container>;
 };
 
 export default Layout;

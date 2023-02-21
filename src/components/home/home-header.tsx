@@ -23,7 +23,8 @@ const Header = () => {
 export default Header;
 
 const HeaderContainer = styled.header<{ colors: ColorProps }>`
-  min-height: 174px;
+  height: 17.4rem;
+  max-height: 174px;
   display: flex;
   flex-direction: column;
   align-items: center;

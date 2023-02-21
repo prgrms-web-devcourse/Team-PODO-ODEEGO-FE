@@ -13,14 +13,16 @@ const FormInput = ({ index, roadAddress }: AddressFormInputProps) => {
   return (
     <Box
       key={index}
-      sx={{ width: "80%", position: "relative", marginBottom: "1.5rem" }}>
+      sx={{ width: "80%", position: "relative", marginBottom: "1.8rem" }}>
       <CustomTextField
         colors={COLORS}
         id='index'
         label={`Address ${index + 1}`}
         sx={{
           width: "100%",
-          height: "3rem",
+          "& input": {
+            height: "2.3rem",
+          },
         }}
         disabled
         value={roadAddress}
@@ -30,8 +32,8 @@ const FormInput = ({ index, roadAddress }: AddressFormInputProps) => {
           aria-label='delete'
           sx={{
             position: "absolute",
-            right: 0,
-            top: 8,
+            right: "0.5rem",
+            top: "1.3rem",
             opacity: 0.3,
           }}>
           <ClearIcon />
@@ -46,6 +48,7 @@ export default FormInput;
 const CustomTextField = styled(TextField)<{ colors: ColorProps }>`
   & label {
     color: ${({ colors }) => colors.borderSecondary};
+    font-size: 1.5rem;
   }
 
   & label.Mui-focused {

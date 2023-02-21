@@ -30,14 +30,14 @@ const MainContainer = styled.main<{ colors: ColorProps }>`
 
 const TextP = styled.p<{ colors: ColorProps }>`
   text-align: center;
-  font-size: 12px;
-  margin: 2.5rem 0 2rem 0;
+  font-size: 1.2rem;
+  margin: 4rem 0 3.3rem 0;
   opacity: 0.7;
   color: ${({ colors }) => colors.semiBlack};
 `;
 
 const BorderContainer = styled.div<{ colors: ColorProps }>`
-  height: 20px;
+  height: 25px;
   width: 100%;
   background-color: ${({ colors }) => colors.backgroundPrimary};
   margin-top: -15px;
