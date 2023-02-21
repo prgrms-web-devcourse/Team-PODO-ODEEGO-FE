@@ -45,7 +45,7 @@ const SearchInput = () => {
     }
   };
 
-  const { data } = useQuery(
+  const { data: resultSubway } = useQuery(
     ["search", value],
     () => SearchAPI.getSubway(value),
     {
@@ -82,19 +82,21 @@ const SearchInput = () => {
         )}
       </SearchInputWrapper>
 
-      {data?.documents?.length > 0 && (
+      {resultSubway?.data?.documents?.length > 0 && (
         <SearchToggleBox>
-          {data?.documents?.map((val: searchOriginProps, index: number) => {
-            return (
-              <SearchToggleWrapper key={index}>
-                <SearchToggleData
-                  onClick={() => handleLocationClick(val)}
-                  key={index}>
-                  {val.place_name}
-                </SearchToggleData>
-              </SearchToggleWrapper>
-            );
-          })}
+          {resultSubway?.data?.documents?.map(
+            (val: searchOriginProps, index: number) => {
+              return (
+                <SearchToggleWrapper key={index}>
+                  <SearchToggleData
+                    onClick={() => handleLocationClick(val)}
+                    key={index}>
+                    {val.place_name}
+                  </SearchToggleData>
+                </SearchToggleWrapper>
+              );
+            }
+          )}
         </SearchToggleBox>
       )}
     </SearchContainer>

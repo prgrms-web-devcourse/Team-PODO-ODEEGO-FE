@@ -1,7 +1,9 @@
+import axios from "axios";
+
 export const SearchAPI = {
   getSubway: async (value: string) => {
     try {
-      const result = await fetch(
+      const result = await axios.get(
         `http://dapi.kakao.com/v2/local/search/keyword.json?query=${value}&category_group_code=SW8`,
         {
           headers: {
@@ -10,11 +12,9 @@ export const SearchAPI = {
         }
       );
 
-      return await result.json();
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        alert(e);
-      }
+      return result;
+    } catch (err) {
+      throw new Error((<Error>err).message);
     }
   },
 };
