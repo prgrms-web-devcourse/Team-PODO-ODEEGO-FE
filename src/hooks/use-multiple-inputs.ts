@@ -1,4 +1,5 @@
-import { userAddressState } from "@/recoil/address-state";
+import { searchState } from "@/recoil/search-state";
+import { searchProps } from "@/types/search-props";
 
 import { MouseEvent, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
@@ -9,14 +10,14 @@ interface InputItem {
 
 const useMultipleInputs = () => {
   const [inputs, setInputs] = useState<InputItem[]>([]);
-  const [addressList, setAddressList] = useRecoilState(userAddressState);
+  const [addressList, setAddressList] = useRecoilState(searchState);
 
   useEffect(() => {
     const inputList = [];
 
     for (const a of addressList) {
       const newAddress = {
-        roadAddress: a.roadAddress,
+        roadAddress: a.address,
       };
 
       inputList.push(newAddress);
@@ -41,30 +42,54 @@ const useMultipleInputs = () => {
     setInputs((prev) => [...prev, newInput]);
   };
 
+  const removeInputElement = (
+    inputList: InputItem[],
+    addressList: searchProps[],
+    index: number
+  ) => {
+    inputList.splice(index, 1);
+    setInputs(inputList);
+
+    addressList.splice(index, 1);
+    setAddressList(addressList);
+  };
+
+  const removeInputAndInsertElement = (
+    inputList: InputItem[],
+    addressList: searchProps[],
+    index: number
+  ) => {
+    const deletedInput = { roadAddress: "" };
+    const deletedAddress = { ...addressList[index], address: "" };
+
+    inputList.splice(index, 1, deletedInput);
+    setInputs(inputList);
+
+    addressList.splice(index, 1, deletedAddress);
+    setAddressList(addressList);
+  };
+
   const removeInput = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     e.stopPropagation();
 
     if (index === 0 || index === 1) {
       if (!inputs[index] || inputs[index].roadAddress === "") return;
-
-      const inputsCopy = JSON.parse(JSON.stringify(inputs));
-
-      inputsCopy.splice(index, 1, { roadAddress: "" });
-      setInputs(inputsCopy);
-
-      const addressListCopy = JSON.parse(JSON.stringify(addressList));
-      const address = addressListCopy[index];
-      addressListCopy.splice(index, 1, { ...address, roadAddress: "" });
-      setAddressList(addressListCopy);
-    } else {
-      const inputsCopy = JSON.parse(JSON.stringify(inputs));
-
-      inputsCopy.splice(index, 1);
-      setInputs(inputsCopy);
-      const addressListCopy = JSON.parse(JSON.stringify(addressList));
-      addressListCopy.splice(index, 1);
-      setAddressList(addressListCopy);
     }
+
+    const inputsCopy = JSON.parse(JSON.stringify(inputs));
+    const addressListCopy = JSON.parse(JSON.stringify(addressList));
+
+    if (index === 0 || index === 1) {
+      removeInputAndInsertElement(inputsCopy, addressListCopy, index);
+    } else {
+      removeInputElement(inputsCopy, addressListCopy, index);
+    }
+
+    // inputsCopy.splice(index, 1);
+    // setInputs(inputsCopy);
+
+    // addressListCopy.splice(index, 1);
+    // setAddressList(addressListCopy);
   };
 
   return { inputs, addInput, removeInput };

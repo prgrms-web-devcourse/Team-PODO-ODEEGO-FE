@@ -9,9 +9,9 @@ import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { countState } from "@/recoil/count-state";
-import { userAddressState } from "@/recoil/address-state";
+import { searchState } from "@/recoil/search-state";
 // import axios from "axios";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
@@ -20,7 +20,7 @@ const AddressForm = () => {
   const router = useRouter();
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const count = useRecoilValue(countState);
-  const addressList = useRecoilValue(userAddressState);
+  const [addressList, setAddressList] = useRecoilState(searchState);
 
   const handleInputClickRoute = (index: number) => {
     //해당 주소폼이 수정되도록 id를 쿼리로 넘겨줌
@@ -29,7 +29,18 @@ const AddressForm = () => {
   const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    console.log(addressList);
+    const filteredAddressList = addressList
+      .filter((a) => a.address !== "")
+      .map((a) => {
+        return {
+          name: a.name,
+          lat: "3.33333",
+          lng: "4.44444",
+          address: "mapping roadAddress",
+        };
+      });
+
+    setAddressList(filteredAddressList);
 
     if (addressList.length < 2) {
       //TODO
@@ -38,7 +49,7 @@ const AddressForm = () => {
     }
 
     //TODO
-    // - 백엔드 api 보내기
+    // - 백엔드 api 보내기 & 400에러 처리하기
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
 
