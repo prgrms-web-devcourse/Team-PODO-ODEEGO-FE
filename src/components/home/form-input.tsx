@@ -35,19 +35,17 @@ const FormInput = ({
         disabled
         value={roadAddress}
       />
-      {index > 1 && (
-        <IconButton
-          aria-label='delete'
-          sx={{
-            position: "absolute",
-            right: "0.5rem",
-            top: "1.3rem",
-            opacity: 0.3,
-          }}
-          onClick={(e) => onRemove(e, index)}>
-          <ClearIcon />
-        </IconButton>
-      )}
+      <IconButton
+        aria-label='delete'
+        sx={{
+          position: "absolute",
+          right: "0.5rem",
+          top: "1.3rem",
+          opacity: 0.3,
+        }}
+        onClick={(e) => onRemove(e, index)}>
+        <ClearIcon />
+      </IconButton>
     </Box>
   );
 };

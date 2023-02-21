@@ -12,8 +12,6 @@ const useMultipleInputs = () => {
   const [addressList, setAddressList] = useRecoilState(userAddressState);
 
   useEffect(() => {
-    // const addressList = customLocalStorage.get(USER_ADDRESS, []);
-
     const inputList = [];
 
     for (const a of addressList) {
@@ -41,26 +39,32 @@ const useMultipleInputs = () => {
     };
 
     setInputs((prev) => [...prev, newInput]);
-    // customLocalStorage.set(USER_ADDRESS, [
-    //   ...customLocalStorage.get(USER_ADDRESS),
-    //   newInput,
-    // ]);
   };
 
   const removeInput = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     e.stopPropagation();
 
-    const inputsCopy = JSON.parse(JSON.stringify(inputs));
+    if (index === 0 || index === 1) {
+      if (!inputs[index] || inputs[index].roadAddress === "") return;
 
-    inputsCopy.splice(index, 1);
-    setInputs(inputsCopy);
+      const inputsCopy = JSON.parse(JSON.stringify(inputs));
 
-    // const addressList = customLocalStorage.get(USER_ADDRESS, []);
+      inputsCopy.splice(index, 1, { roadAddress: "" });
+      setInputs(inputsCopy);
 
-    const addressListCopy = JSON.parse(JSON.stringify(addressList));
-    addressListCopy.splice(index, 1);
-    // customLocalStorage.set(USER_ADDRESS, addressList);
-    setAddressList(addressListCopy);
+      const addressListCopy = JSON.parse(JSON.stringify(addressList));
+      const address = addressListCopy[index];
+      addressListCopy.splice(index, 1, { ...address, roadAddress: "" });
+      setAddressList(addressListCopy);
+    } else {
+      const inputsCopy = JSON.parse(JSON.stringify(inputs));
+
+      inputsCopy.splice(index, 1);
+      setInputs(inputsCopy);
+      const addressListCopy = JSON.parse(JSON.stringify(addressList));
+      addressListCopy.splice(index, 1);
+      setAddressList(addressListCopy);
+    }
   };
 
   return { inputs, addInput, removeInput };

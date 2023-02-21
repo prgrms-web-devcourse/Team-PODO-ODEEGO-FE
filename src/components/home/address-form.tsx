@@ -23,17 +23,13 @@ const AddressForm = () => {
   const addressList = useRecoilValue(userAddressState);
 
   const handleInputClickRoute = (index: number) => {
-    //TODO
-    // - 지우기
-    // const count = customLocalStorage.get("count", 0);
-
     //해당 주소폼이 수정되도록 id를 쿼리로 넘겨줌
-    router.push(`/search?index=${index}&count=${count}`);
+    router.push(`/search?id=${index}&count=${count}`);
   };
   const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    // const addressList = customLocalStorage.get(USER_ADDRESS, []);
+    console.log(addressList);
 
     if (addressList.length < 2) {
       //TODO
