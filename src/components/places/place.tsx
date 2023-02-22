@@ -18,8 +18,8 @@ const Place = ({ businessName, address }: PlaceProps) => {
     <Container>
       <TitleIconContainer>
         <TitleContainer>
-          <strong>{businessName}</strong>
-          <span>{address}</span>
+          <h3>{businessName}</h3>
+          <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
           <div>
@@ -30,7 +30,7 @@ const Place = ({ businessName, address }: PlaceProps) => {
                 width: "2.1rem",
               }}
             />
-            <span>{SHARE_TEXT}</span>
+            <p>{SHARE_TEXT}</p>
           </div>
           <div>
             <BookmarkBorderIcon
@@ -40,7 +40,7 @@ const Place = ({ businessName, address }: PlaceProps) => {
                 width: "2.3rem",
               }}
             />
-            <span>{BOOKMARK_TEXT}</span>
+            <p>{BOOKMARK_TEXT}</p>
           </div>
         </IconsContainer>
       </TitleIconContainer>
@@ -69,9 +69,9 @@ const Container = styled.li`
   border-bottom: 1px solid rgba(90, 178, 125, 0.3);
 `;
 
-const TitleIconContainer = styled.div`
+const TitleIconContainer = styled.section`
   display: flex;
-  padding-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
   justify-content: space-between;
 `;
 
@@ -79,15 +79,16 @@ const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  & strong {
+  & h3 {
     font-size: 1.6rem;
     font-family: bold;
+    margin: 0;
   }
 
-  & span {
+  & p {
     font-size: 1.3rem;
     opacity: 0.7;
-    margin-top: 0.5rem;
+    margin: 0.6rem 0 0 0;
   }
 `;
 
@@ -106,16 +107,17 @@ const IconsContainer = styled.div`
     margin-right: 1.5rem;
   }
 
-  & span {
+  & p {
     display: inline-block;
     margin-top: 0.3rem;
     opacity: 0.7;
   }
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.section`
   width: 100%;
   display: flex;
+  padding-bottom: 0.5rem;
 
   overflow-x: auto;
   white-space: nowrap;
