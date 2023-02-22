@@ -5,10 +5,11 @@ interface props {
   size: number[];
 }
 
+// 넘어오는 markerPositions
 export default function KakaoMap({ markerPositions, size }: props) {
-  // const { markerPositions, size } = props;
   const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map>();
   const [, setMarkers] = useState<kakao.maps.Marker[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const container = useRef<HTMLDivElement>(null);
 
@@ -30,11 +31,12 @@ export default function KakaoMap({ markerPositions, size }: props) {
         //setMapCenter(center);
         setKakaoMap(map);
       });
+      setIsLoading(false);
     };
   }, [container]);
 
   useEffect(() => {
-    if (kakaoMap === null) {
+    if (kakaoMap === null || isLoading) {
       return;
     }
 
@@ -57,20 +59,14 @@ export default function KakaoMap({ markerPositions, size }: props) {
   }, [kakaoMap, size]);
 
   useEffect(() => {
-    if (kakaoMap === null) {
+    if (kakaoMap === undefined || isLoading) {
       return;
     }
 
     const positions = markerPositions.map((pos) => {
       const [latitude, longitude] = [pos[0], pos[1]];
-      // console.log(latitude, longitude);
       return new kakao.maps.LatLng(latitude, longitude);
     });
-
-    // const positions = markerPositions.map((pos) => {
-    //   console.log(...pos);
-    //   return new kakao.maps.LatLng(...pos);
-    // });
 
     setMarkers((markers) => {
       // clear prev markers
@@ -92,6 +88,18 @@ export default function KakaoMap({ markerPositions, size }: props) {
       if (kakaoMap === undefined) return;
       kakaoMap.setBounds(bounds);
     }
+
+    // 지도에 표시할 선을 생성합니다
+    const polyline = new kakao.maps.Polyline({
+      path: positions, // 선을 구성하는 좌표배열 입니다
+      strokeWeight: 5, // 선의 두께 입니다
+      strokeColor: "#FFAE00", // 선의 색깔입니다
+      strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+      strokeStyle: "solid", // 선의 스타일입니다
+    });
+
+    // 지도에 선을 표시합니다
+    polyline.setMap(kakaoMap);
   }, [kakaoMap, markerPositions]);
 
   return <div id='container' ref={container} />;
