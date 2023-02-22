@@ -58,6 +58,7 @@ const useMap = ({
         marker.setMap(map);
         bounds.extend(new kakao.maps.LatLng(lat, lng));
       });
+      // 중간지점 마커 추가
       bounds.extend(new kakao.maps.LatLng(midpoint.lat, midpoint.lng));
       setMarker(midpoint);
       map.setBounds(bounds);

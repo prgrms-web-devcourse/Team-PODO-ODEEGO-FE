@@ -1,17 +1,13 @@
 import MidpointButton from "@/components/map/midpoint-button";
 import { COLORS, SHADOWS } from "@/constants/css";
-import { midpointResultState } from "@/recoil/midpoint";
 import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
 import { useRef, useState } from "react";
-import { useRecoilValue } from "recoil";
 import { ArrowBack, Close } from "@mui/icons-material";
 import useMap from "@/hooks/use-map";
 import { dummyData } from "@/utils/dummy-data";
 
 const MapPage = () => {
-  const result = useRecoilValue(midpointResultState);
-  console.log(result);
   const [currentMidway, setCurrentMidway] = useState(0);
   const mapContainerRef = useRef(null);
   const { start, midpoints } = dummyData;
@@ -30,35 +26,45 @@ const MapPage = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <ArrowBack htmlColor={COLORS.altGreen} fontSize='inherit' />
-        <Close htmlColor={COLORS.altGreen} fontSize='inherit' />
-      </Header>
-      <Stack direction='row' spacing={4} justifyContent='center'>
-        {midpoints.map((data, index) => (
-          <MidpointButton
-            key={data.id}
-            id={data.id}
-            name={data.name}
-            isCurrent={currentMidway === index}
-            onClick={handleNavigate}
-          />
-        ))}
-      </Stack>
+    <Wrapper>
+      <Container>
+        <Header>
+          <ArrowBack htmlColor={COLORS.altGreen} fontSize='inherit' />
+          <Close htmlColor={COLORS.altGreen} fontSize='inherit' />
+        </Header>
+        <Stack direction='row' spacing={4} justifyContent='center'>
+          {midpoints.map((data, index) => (
+            <MidpointButton
+              key={data.id}
+              id={data.id}
+              name={data.name}
+              isCurrent={currentMidway === index}
+              onClick={handleNavigate}
+            />
+          ))}
+        </Stack>
+      </Container>
       <Map ref={mapContainerRef} id='mapContainerRef' />
-    </Container>
+    </Wrapper>
   );
 };
 
 export default MapPage;
 
-const Container = styled.div`
+const Wrapper = styled.div`
   display: block;
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
+`;
+
+const Container = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
 `;
 
 const Header = styled.div`
@@ -82,5 +88,4 @@ const Map = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
 `;
