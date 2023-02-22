@@ -1,3 +1,4 @@
+import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 
 const PlaceTabList = () => {
@@ -31,7 +32,6 @@ export default PlaceTabList;
 
 const SearchCategory = styled.div`
   display: flex;
-  width: 100%;
   justify-content: space-around;
   margin-top: 3rem;
   border-radius: 10px;
@@ -45,7 +45,7 @@ const TabItem = styled.div`
   cursor: pointer;
   &:hover {
     color: #fdfdfd;
-    background-color: #5ab27d;
+    background-color: ${COLORS.backgroundAccent};
     border-radius: 50px;
     padding: 0 1rem;
   }

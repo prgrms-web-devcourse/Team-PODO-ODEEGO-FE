@@ -2,6 +2,7 @@ import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import React from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { COLORS } from "@/constants/css";
 
 const PlaceInput = () => {
   return (
@@ -27,7 +28,7 @@ const PlaceInput = () => {
             <InputAdornment position='start'>
               <KeyboardBackspaceIcon
                 sx={{
-                  color: "#5AB27D",
+                  color: `${COLORS.mainGreen}`,
                   fontSize: "20px",
                 }}
               />
@@ -37,7 +38,7 @@ const PlaceInput = () => {
             <InputAdornment position='end'>
               <CloseIcon
                 sx={{
-                  color: "#5AB27D",
+                  color: `${COLORS.mainGreen}`,
                   fontSize: "20px",
                 }}
               />
