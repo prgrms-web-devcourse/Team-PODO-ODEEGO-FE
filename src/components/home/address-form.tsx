@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
 import axios from "axios";
 
@@ -16,7 +16,7 @@ const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 const AddressForm = () => {
   const router = useRouter();
-  const addressList = useRecoilValue(searchState);
+  const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +26,8 @@ const AddressForm = () => {
   const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    const filteredAddressList = addressList
+    const addressListCopy = addressList.filter((a) => a.address !== "");
+    const filteredAddressList = addressListCopy
       .filter((a) => a.address !== "")
       .map((a) => {
         return {
@@ -50,6 +51,8 @@ const AddressForm = () => {
     // - 백엔드 POST api 보내기 & 400에러 처리하기
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
+
+    setAddressList(addressListCopy);
 
     // const test = async () => {
     //   setIsLoading(true);
