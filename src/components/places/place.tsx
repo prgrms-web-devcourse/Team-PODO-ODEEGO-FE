@@ -46,14 +46,15 @@ const Place = ({ businessName, address }: PlaceProps) => {
       </TitleIconContainer>
       <ImageContainer>
         {tmpImageList.map((i, index) => (
-          <Image
-            key={index}
-            src={`/cafe${(i % 3) + 1}.png`}
-            alt='cafe image'
-            width={125}
-            height={125}
-            priority
-          />
+          <div key={index}>
+            <Image
+              src={`/cafe${(i % 3) + 1}.png`}
+              alt='cafe image'
+              width={125}
+              height={125}
+              priority
+            />
+          </div>
         ))}
       </ImageContainer>
     </Container>
@@ -133,5 +134,12 @@ const ImageContainer = styled.div`
 
   & img:not(:last-of-type) {
     margin-right: 0.6rem;
+  }
+
+  > div {
+    flex: 0 0 auto;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: 1rem;
   }
 `;
