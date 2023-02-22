@@ -1,14 +1,14 @@
-import { TextField, BaseTextFieldProps } from '@mui/material';
+import { TextField, BaseTextFieldProps } from "@mui/material";
 import {
   Control,
   FieldPath,
   FieldPathValue,
   FieldValues,
   useController,
-} from 'react-hook-form';
+} from "react-hook-form";
 
 interface FormInputProps<T extends FieldValues> {
-  type?: BaseTextFieldProps['type'];
+  type?: BaseTextFieldProps["type"];
   label: string;
   name: FieldPath<T>;
   control: Control<T>;
@@ -20,7 +20,7 @@ const FormInput = <T extends FieldValues>({
   name,
   defaultValue,
   label,
-  type = 'text',
+  type = "text",
 }: FormInputProps<T>) => {
   const {
     field: { value, onBlur, onChange, ref },
