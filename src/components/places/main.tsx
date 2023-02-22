@@ -22,7 +22,7 @@ const Main = () => {
     <MainContainer>
       <UnOrderedList>
         {(placeList || []).map((p: PlaceProps, i: number) => (
-          <Place key={i} businessName={p.businessName} />
+          <Place key={i} businessName={p.businessName} address={p.address} />
         ))}
       </UnOrderedList>
     </MainContainer>
@@ -40,10 +40,17 @@ const MainContainer = styled.main`
   flex-direction: column;
   align-items: center;
   box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
-  overflow: auto;
+  user-select: none;
 `;
 
 const UnOrderedList = styled.ul`
   padding: 0;
   width: 100%;
+
+  overflow: auto;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
