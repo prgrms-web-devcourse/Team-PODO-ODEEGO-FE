@@ -14,6 +14,10 @@ export default function Home() {
       <div>
         <Link href='/place'>place</Link>
       </div>
+
+      <div>
+        <Link href='/category'>blog</Link>
+      </div>
     </>
   );
 }
