@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import FormInput from '../components/form-input';
-import { Button } from '@mui/material';
-import Link from 'next/link';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import FormInput from "../components/form-input";
+import { Button } from "@mui/material";
+import Link from "next/link";
 
 const LoginSchema = yup.object().shape({
   email: yup.string().required().email(),
@@ -13,8 +13,8 @@ const LoginSchema = yup.object().shape({
     .string()
     .required()
     .min(8)
-    .matches(/[a-zA-Z]+/, 'Password must contain at least one letter')
-    .matches(/\d+/, 'Password must contain at least one number'),
+    .matches(/[a-zA-Z]+/, "Password must contain at least one letter")
+    .matches(/\d+/, "Password must contain at least one number"),
 });
 
 type LoginFormData = yup.InferType<typeof LoginSchema>;
@@ -26,10 +26,10 @@ interface LoginFormProps {
 const LoginForm = ({ onSuccess }: LoginFormProps) => {
   const { control, handleSubmit } = useForm<LoginFormData>({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
-    mode: 'onBlur',
+    mode: "onBlur",
     resolver: yupResolver(LoginSchema),
   });
 

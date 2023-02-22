@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import FormInput from '../components/form-input';
-import { Button } from '@mui/material';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import FormInput from "../components/form-input";
+import { Button } from "@mui/material";
 
 const SignupSchema = yup.object().shape({
   username: yup.string().required(),
@@ -13,12 +13,12 @@ const SignupSchema = yup.object().shape({
     .string()
     .required()
     .min(8)
-    .matches(/[a-zA-Z]+/, 'Password must contain at least one letter')
-    .matches(/\d+/, 'Password must contain at least one number'),
+    .matches(/[a-zA-Z]+/, "Password must contain at least one letter")
+    .matches(/\d+/, "Password must contain at least one number"),
   confirmPassword: yup
     .string()
     .required()
-    .oneOf([yup.ref('password')], 'Password must match'),
+    .oneOf([yup.ref("password")], "Password must match"),
 });
 
 type SignupFormData = yup.InferType<typeof SignupSchema>;
@@ -30,12 +30,12 @@ interface SignupFormProps {
 const SignupForm = ({ onSuccess }: SignupFormProps) => {
   const { control, handleSubmit } = useForm<SignupFormData>({
     defaultValues: {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
     },
-    mode: 'onBlur',
+    mode: "onBlur",
     resolver: yupResolver(SignupSchema),
   });
 
