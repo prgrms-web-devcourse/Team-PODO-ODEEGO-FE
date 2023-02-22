@@ -132,14 +132,11 @@ const ImageContainer = styled.div`
     border-radius: 1rem;
   }
 
-  & img:not(:last-of-type) {
-    margin-right: 0.6rem;
-  }
-
   > div {
     flex: 0 0 auto;
     aspect-ratio: 1/1;
     overflow: hidden;
     border-radius: 1rem;
+    margin-right: 0.6rem;
   }
 `;
