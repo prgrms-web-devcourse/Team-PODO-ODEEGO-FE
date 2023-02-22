@@ -69,7 +69,7 @@ const Container = styled.li`
   border-bottom: 1px solid rgba(90, 178, 125, 0.3);
 `;
 
-const TitleIconContainer = styled.section`
+const TitleIconContainer = styled.div`
   display: flex;
   padding-bottom: 0.5rem;
   justify-content: space-between;
@@ -114,7 +114,7 @@ const IconsContainer = styled.div`
   }
 `;
 
-const ImageContainer = styled.section`
+const ImageContainer = styled.div`
   width: 100%;
   display: flex;
   padding-bottom: 0.5rem;
