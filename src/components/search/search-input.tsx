@@ -1,22 +1,21 @@
 import { SearchAPI } from "@/pages/api/search";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useRecoilState } from "recoil";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useSetRecoilState } from "recoil";
 import React, { useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
-import { searchState } from "@/recoil/searchState";
 import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { searchState } from "@/recoil/search-state";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [recoilData, setRecoildData] =
-    useRecoilState<searchProps[]>(searchState);
+  const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
+  const id = parseInt(useSearchParams().get("id") || "0", 10);
 
-  console.log(recoilData);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,13 +31,19 @@ const SearchInput = () => {
   };
 
   const handleLocationClick = (val: searchOriginProps) => {
+    if (id === undefined || id === null) return;
+
     const obj = {
       name: val.place_name,
       lat: val.y,
       lng: val.x,
       address: val.address_name,
     };
-    setRecoildData((prev: searchProps[]) => [...prev, obj]);
+    setRecoilData((prev: searchProps[]) => [
+      ...prev.slice(0, id),
+      obj,
+      ...prev.slice(id + 1),
+    ]);
 
     if (val) {
       router.push("/");

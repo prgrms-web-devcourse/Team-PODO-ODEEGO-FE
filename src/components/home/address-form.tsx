@@ -1,16 +1,14 @@
-"use client";
-
 import styled from "@emotion/styled";
 import { Box, IconButton } from "@mui/material";
-import { MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
+import CircularProgress from "@mui/material/CircularProgress";
 import FormInput from "./form-input";
 import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilValue } from "recoil";
-import { countState } from "@/recoil/count-state";
 import { searchState } from "@/recoil/search-state";
 import axios from "axios";
 
@@ -18,15 +16,12 @@ const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 const AddressForm = () => {
   const router = useRouter();
-  const { inputs, addInput, removeInput } = useMultipleInputs();
-  //TODO
-  // - 지우기
-  const count = useRecoilValue(countState);
   const addressList = useRecoilValue(searchState);
+  const { inputs, addInput, removeInput } = useMultipleInputs();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputClickRoute = (index: number) => {
-    //해당 주소폼이 수정되도록 id를 쿼리로 넘겨줌
-    router.push(`/search?id=${index}&count=${count}`);
+    router.push(`/search?id=${index}`);
   };
   const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -36,20 +31,17 @@ const AddressForm = () => {
       .map((a) => {
         return {
           name: a.name,
-          lat: "3.33333",
-          lng: "4.44444",
+          lat: a.lat,
+          lng: a.lng,
         };
       });
 
     //TODO
     // - 지우기
-    // setAddressList(filteredAddressList);
     console.log("addressList: ", addressList);
     console.log("filteredAddressList: ", filteredAddressList);
 
     if (filteredAddressList.length < 2) {
-      //TODO
-      // - TOAST 경고창
       toast.error("주소를 2개 이상 입력해주세요.");
       return;
     }
@@ -59,20 +51,28 @@ const AddressForm = () => {
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
 
-    const test = async () => {
-      await axios({
-        method: "get",
-        url: "http://52.78.224.123:8080/api/hello/simple",
-      })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    };
+    // const test = async () => {
+    //   setIsLoading(true);
+    //   await axios({
+    //     method: "post",
+    //     url: "http://52.78.224.123:8080/api/v1/subway-stations/middle",
+    //     data: {
+    //       peopleCount: filteredAddressList.length,
+    //       stations: [...filteredAddressList],
+    //     },
+    //   })
+    //     .then((res) => {
+    //       console.log(res.data);
+    //     })
+    //     .catch((error) => {
+    //       console.error(error);
+    //       toast.error("수도권 내 역으로 검색해주세요");
+    //     });
 
-    test();
+    //   setIsLoading(false);
+    // };
+
+    // test();
   };
 
   return (
@@ -88,7 +88,7 @@ const AddressForm = () => {
           <FormInput
             key={index}
             index={index}
-            roadAddress={input.roadAddress}
+            address={input.address}
             onClick={() => handleInputClickRoute(index)}
             onRemove={removeInput}
           />
@@ -103,7 +103,16 @@ const AddressForm = () => {
         )}
       </Box>
       <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
-        {BUTTON_SUBMIT_TEXT}
+        {isLoading ? (
+          <CircularProgress
+            size='2rem'
+            sx={{
+              color: "white",
+            }}
+          />
+        ) : (
+          <span>{BUTTON_SUBMIT_TEXT}</span>
+        )}
       </SubmitButton>
       <Toaster />
     </Form>
