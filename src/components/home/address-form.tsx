@@ -9,18 +9,20 @@ import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { countState } from "@/recoil/count-state";
 import { searchState } from "@/recoil/search-state";
-// import axios from "axios";
+import axios from "axios";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 const AddressForm = () => {
   const router = useRouter();
   const { inputs, addInput, removeInput } = useMultipleInputs();
+  //TODO
+  // - 지우기
   const count = useRecoilValue(countState);
-  const [addressList, setAddressList] = useRecoilState(searchState);
+  const addressList = useRecoilValue(searchState);
 
   const handleInputClickRoute = (index: number) => {
     //해당 주소폼이 수정되도록 id를 쿼리로 넘겨줌
@@ -36,33 +38,41 @@ const AddressForm = () => {
           name: a.name,
           lat: "3.33333",
           lng: "4.44444",
-          address: "mapping roadAddress",
         };
       });
 
-    setAddressList(filteredAddressList);
+    //TODO
+    // - 지우기
+    // setAddressList(filteredAddressList);
+    console.log("addressList: ", addressList);
+    console.log("filteredAddressList: ", filteredAddressList);
 
-    if (addressList.length < 2) {
+    if (filteredAddressList.length < 2) {
       //TODO
       // - TOAST 경고창
       toast.error("주소를 2개 이상 입력해주세요.");
+      return;
     }
 
     //TODO
-    // - 백엔드 api 보내기 & 400에러 처리하기
+    // - 백엔드 POST api 보내기 & 400에러 처리하기
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
 
-    // const test = async () => {
-    //   const { data } = await axios({
-    //     method: "get",
-    //     url: "http://52.78.224.123:8080/api/hello/simple",
-    //   });
+    const test = async () => {
+      await axios({
+        method: "get",
+        url: "http://52.78.224.123:8080/api/hello/simple",
+      })
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    };
 
-    //   console.log(data);
-    // };
-
-    // test();
+    test();
   };
 
   return (

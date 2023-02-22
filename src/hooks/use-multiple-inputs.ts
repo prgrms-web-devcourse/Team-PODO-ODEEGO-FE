@@ -19,7 +19,9 @@ const useMultipleInputs = () => {
 
   useEffect(() => {
     const newInputs = addressList.map((a) => ({ roadAddress: a.address }));
-    const emptyInputs = new Array(2 - newInputs.length).fill({
+
+    const arrayLength = newInputs.length >= 2 ? 2 : newInputs.length;
+    const emptyInputs = new Array(2 - arrayLength).fill({
       roadAddress: "",
     });
 
