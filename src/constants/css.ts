@@ -17,3 +17,26 @@ export const SHADOWS = {
   backdropNeutral: "0px 0px 20px -1px rgba(28, 27, 30, 0.08)",
   backdropNeutralStrong: "0px 0px 4px -1px rgba(28, 27, 30, 0.2)",
 } as const;
+
+export const SUBWAY = {
+  1: "#0d3692",
+  2: "#33a23d",
+  3: "#fe5d10",
+  4: "#00a2d1",
+  5: "#8b50a4",
+  6: "#c55c1d",
+  7: "#54640d",
+  8: "#f14c82",
+  9: "#aa9872",
+  경의중앙: "#73c7a6",
+  분당: "#ff8c00",
+  신분당: "#c82127",
+  경춘: "#32c6a6",
+  경강: "#0054a6",
+  공항철도: "#3681b7",
+  인천1: "#8cadcb",
+  인천2: "#ed8000",
+  의정부경전철: "#fda600",
+  용인경전철: "#4ea346",
+  인천자기부상열차: "#ffcd12",
+} as const;
