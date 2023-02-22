@@ -1,3 +1,8 @@
+export const SIZE = {
+  height: "915px",
+  width: "414px",
+} as const;
+
 export const COLORS = {
   backgroundPrimary: "#FAFCF8",
   backgroundSecondary: "#FDFDFD",
@@ -5,9 +10,11 @@ export const COLORS = {
   textPrimary: "#464646",
   textSecondary: "#A7A7A7",
   borderPrimary: "#DBE4D7",
+  borderSecondary: "#B4C9BC",
   mainGreen: "#5AB27D",
   altGreen: "#A7CAB5",
   mainOrange: "#FF7754",
+  semiBlack: "#464646",
 } as const;
 
 export const SHADOWS = {

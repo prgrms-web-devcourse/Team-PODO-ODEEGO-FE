@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 export default function MockExample() {
   //client side에서 data mockAPI
   useEffect(() => {
     (async () => {
-      if (process.env.NODE_ENV === 'development') {
-        const { worker } = await import('../../src/mocks/browser');
+      if (process.env.NODE_ENV === "development") {
+        const { worker } = await import("../../src/mocks/browser");
         worker.start();
 
-        const res = await fetch('https://example.com/reviews');
+        const res = await fetch("https://example.com/reviews");
         const result = await res.json();
-        console.log('api result: ', result);
+        console.log("api result: ", result);
       }
     })();
   }, []);

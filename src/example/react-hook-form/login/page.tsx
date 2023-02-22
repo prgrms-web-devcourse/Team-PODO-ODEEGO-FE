@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import LoginForm from './login-form';
+import { useRouter } from "next/navigation";
+import LoginForm from "./login-form";
 
 const LoginPage = () => {
   const router = useRouter();
 
   const handleSuccess = () => {
-    router.push('/');
+    router.push("/");
   };
 
   return (
