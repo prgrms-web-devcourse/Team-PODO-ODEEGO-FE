@@ -52,30 +52,12 @@ const AddressForm = () => {
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
 
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
     setAddressList(addressListCopy);
-
-    // const test = async () => {
-    //   setIsLoading(true);
-    //   await axios({
-    //     method: "post",
-    //     url: "http://52.78.224.123:8080/api/v1/subway-stations/middle",
-    //     data: {
-    //       peopleCount: filteredAddressList.length,
-    //       stations: [...filteredAddressList],
-    //     },
-    //   })
-    //     .then((res) => {
-    //       console.log(res.data);
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //       toast.error("수도권 내 역으로 검색해주세요");
-    //     });
-
-    //   setIsLoading(false);
-    // };
-
-    // test();
   };
 
   return (
