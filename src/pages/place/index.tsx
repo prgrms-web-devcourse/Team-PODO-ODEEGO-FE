@@ -1,67 +1,35 @@
 import styled from "@emotion/styled";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PlaceInput from "@/components/place/place-input";
 import PlaceTabList from "@/components/place/place-tab-list";
-
-interface Props {
-  title: string;
-  businessName: string;
-  address: string;
-}
-
-interface Temp {
-  places: Array<Props>;
-}
-
-export const dummy: Temp[] = [
-  {
-    places: [
-      {
-        title: "restaurant",
-        businessName: "어글리스토브 신논현강남역점",
-        address: "서울특별시 강남구 강남대로98길 20",
-      },
-      {
-        title: "restaurant",
-        businessName: "트리오드",
-        address: "서울특별시 강남구 강남대로94길 28 유니언타운 L층",
-      },
-      {
-        title: "restaurant",
-        businessName: "헤이스테이",
-        address: "서울특별시 강남구 봉은사로6길 39 1층(역삼동)",
-      },
-      {
-        title: "cafe",
-        businessName: "썸띵어바웃커피",
-        address: "서울특별시 강남구 강남대로102길 30 1, 2, 3층",
-      },
-      {
-        title: "cafe",
-        businessName: "어퍼앤언더",
-        address: "서울특별시 강남구 강남대로102길 28 지하1층, 1층, 2층",
-      },
-      {
-        title: "cafe",
-        businessName: "알베르",
-        address: "서울특별시 강남구 강남대로102길 34",
-      },
-      {
-        title: "cafe",
-        businessName: "더달달",
-        address: "서울특별시 강남구 강남대로102길 38-6",
-      },
-      {
-        title: "cafe",
-        businessName: "노티드 강남 카카오",
-        address: "서울특별시 서초구 강남대로 429",
-      },
-    ],
-  },
-];
+import { useRecoilValue } from "recoil";
+import { tabState } from "@/recoil/search-state";
+import PlaceResturant from "@/components/place/place-resturant";
+import { useQuery } from "@tanstack/react-query";
+import { PlaceAPI } from "@/pages/api/place";
 
 const PlacePage = () => {
+  const getTabData = useRecoilValue(tabState);
+
+  // const [cafeData, setCafeData] = useState<Props[]>([]);
+
+  const [place, setPlace] = useState("강남역");
+  const [address, setAddress] = useState("강남구 강남대로 396");
+
+  const { data, isLoading } = useQuery(
+    ["place", getTabData],
+    () => PlaceAPI.getPlace(place, address, getTabData),
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  //임시 코드 -> 페이지 변경되면 로딩스피너 넣어야할듯
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <PlaceContainer>
       <PlaceBox>
@@ -69,6 +37,8 @@ const PlacePage = () => {
           <PlaceInput />
           <PlaceTabList />
         </TextContainer>
+
+        <PlaceResturant data={data} />
       </PlaceBox>
     </PlaceContainer>
   );

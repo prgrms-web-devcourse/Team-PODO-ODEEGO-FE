@@ -18,22 +18,23 @@ const PlaceTabList = () => {
     {
       id: 1,
       name: "전체",
-      category: "total",
+      category: "",
     },
     {
       id: 2,
       name: "카페",
-      category: "cafe",
+      category: "CAFE",
     },
     {
       id: 3,
       name: "레스토랑",
-      category: "restaurant",
+      category: "RESTAURANT",
     },
   ];
 
   const handleClick = (val: string, id: number) => {
     setTitle(val);
+
     setActiveId(id);
   };
 
@@ -72,3 +73,7 @@ const TabItem = styled.div`
     padding: 0.4rem 1rem;
   }
 `;
+
+const TabSpan=styled.span`
+
+`
