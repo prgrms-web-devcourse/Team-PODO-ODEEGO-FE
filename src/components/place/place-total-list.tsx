@@ -15,7 +15,7 @@ interface ArrayProps {
 const PlaceTotalList = ({ data }: ArrayProps) => {
   return (
     <>
-      {data?.map((item: any, index: number) => {
+      {data?.map((item: Props, index: number) => {
         return (
           <ul key={index}>
             <li>{item.businessName}</li>

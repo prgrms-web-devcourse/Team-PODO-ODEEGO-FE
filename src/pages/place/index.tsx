@@ -5,9 +5,10 @@ import PlaceInput from "@/components/place/place-input";
 import PlaceTabList from "@/components/place/place-tab-list";
 import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
-import PlaceResturant from "@/components/place/place-resturant";
+
 import { useQuery } from "@tanstack/react-query";
 import { PlaceAPI } from "@/pages/api/place";
+import PlaceTotalList from "@/components/place/place-total-list";
 
 const PlacePage = () => {
   const getTabData = useRecoilValue(tabState);
@@ -38,7 +39,7 @@ const PlacePage = () => {
           <PlaceTabList />
         </TextContainer>
 
-        <PlaceResturant data={data} />
+        <PlaceTotalList data={data} />
       </PlaceBox>
     </PlaceContainer>
   );
