@@ -9,3 +9,8 @@ export const searchState = atom<searchProps[]>({
   default: [],
   effects_UNSTABLE: [persistAtom],
 });
+
+export const tabState = atom({
+  key: "tab",
+  default: "",
+});
