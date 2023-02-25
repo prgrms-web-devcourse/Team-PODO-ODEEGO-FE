@@ -159,7 +159,10 @@ export const globalStyles = (
       [type="button"],
       [type="reset"],
       [type="submit"] {
-        -webkit-appearance: button;
+        border: none;
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
       }
       /**
  * Remove the inner border and padding in Firefox.
