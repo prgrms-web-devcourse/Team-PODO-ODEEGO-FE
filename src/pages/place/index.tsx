@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PlaceInput from "@/components/place/place-input";
 import PlaceTabList from "@/components/place/place-tab-list";
 import { useRecoilValue } from "recoil";
@@ -8,7 +8,7 @@ import { tabState } from "@/recoil/search-state";
 
 import { useQuery } from "@tanstack/react-query";
 import { PlaceAPI } from "@/pages/api/place";
-import PlaceTotalList from "@/components/place/place-total-list";
+import PlaceList from "@/components/place/place-list";
 
 const PlacePage = () => {
   const getTabData = useRecoilValue(tabState);
@@ -38,9 +38,9 @@ const PlacePage = () => {
           <PlaceInput />
           <PlaceTabList />
         </TextContainer>
-
-        <PlaceTotalList data={data} />
       </PlaceBox>
+
+      <PlaceList data={data} />
     </PlaceContainer>
   );
 };
