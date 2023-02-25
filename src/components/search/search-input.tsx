@@ -6,9 +6,9 @@ import { useRecoilState } from "recoil";
 import React, { useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
-import { searchState } from "@/recoil/search-state";
 import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { searchState } from "@/recoil/search-state";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
@@ -57,8 +57,8 @@ const SearchInput = () => {
     <SearchContainer>
       <SearchInputWrapper>
         <TextField
-          style={{
-            width: "400px",
+          sx={{
+            width: "100%",
           }}
           inputProps={{
             style: { fontSize: 15 },
@@ -112,8 +112,7 @@ const SearchInputWrapper = styled.div`
 `;
 
 const SearchContainer = styled.div`
-  width: 390px;
-  max-height: 884px;
+  width: 100%;
   position: relative;
   margin: auto;
   border: 0;
