@@ -4,6 +4,8 @@ import React from "react";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Layout from "../components/layout/layout";
+import { ThemeProvider } from "@emotion/react";
+import { theme } from "@/styles/theme";
 
 export default function App({ Component, pageProps }: AppProps) {
   // 서로 다른 사용자 요청 사이 데이터 공유 안되게
@@ -12,10 +14,12 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
-        {globalStyles}
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <ThemeProvider theme={theme}>
+          {globalStyles}
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ThemeProvider>
       </RecoilRoot>
     </QueryClientProvider>
   );
