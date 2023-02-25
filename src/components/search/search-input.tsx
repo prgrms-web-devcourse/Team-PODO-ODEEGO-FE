@@ -6,7 +6,7 @@ import { useRecoilState } from "recoil";
 import React, { useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
-import { searchState } from "@/recoil/searchState";
+import { searchState } from "@/recoil/search-state";
 import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
