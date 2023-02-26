@@ -7,7 +7,7 @@ export default function Home() {
     <>
       <Header />
       <Main />
-      <Link href='/room/1234'>Go to Room</Link>
+      <Link href='/group/3'>Go to Room</Link>
     </>
   );
 }
