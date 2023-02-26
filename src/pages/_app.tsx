@@ -10,13 +10,15 @@ export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = React.useState(() => new QueryClient());
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        {globalStyles}
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </RecoilRoot>
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          {globalStyles}
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </RecoilRoot>
+      </QueryClientProvider>
+    </>
   );
 }
