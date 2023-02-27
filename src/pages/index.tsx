@@ -1,7 +1,7 @@
 import Header from "@/components/home/home-header";
 import styled from "@emotion/styled";
 import { Box, CircularProgress, IconButton } from "@mui/material";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
@@ -11,6 +11,7 @@ import { searchState } from "@/recoil/search-state";
 import { MidPointApi } from "@/axios/mid-point";
 import { COLORS } from "@/constants/css";
 import FormInput from "@/components/home/form-input";
+import useTimeoutFn from "@/hooks/use-timeout-fn";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
@@ -24,9 +25,7 @@ export default function Home() {
   const handleInputClickRoute = (index: number) => {
     router.push(`/search?id=${index}`);
   };
-  const handleButtonClickSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  const handleButtonClickSubmit = async () => {
     const addressListCopy = addressList.filter((a) => a.address !== "");
     const filteredAddressList = addressListCopy
       .filter((a) => a.address !== "")
@@ -62,6 +61,13 @@ export default function Home() {
     setAddressList(addressListCopy);
   };
 
+  const [run] = useTimeoutFn({
+    fn: async () => {
+      handleButtonClickSubmit();
+    },
+    ms: 500,
+  });
+
   return (
     <>
       <Header />
@@ -94,7 +100,7 @@ export default function Home() {
               </IconButton>
             )}
           </Box>
-          <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
+          <SubmitButton type='button' onClick={run}>
             {isLoading ? (
               <CircularProgress
                 size='2rem'
