@@ -1,29 +1,16 @@
 import FormInput from "@/components/group/form-input";
+import { GroupDetailResponse } from "@/types/api/group";
 import styled from "@emotion/styled";
 import { Button, Container, Stack } from "@mui/material";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
-interface ParticipantResponse {
-  username: string;
-  start: {
-    stationName: string;
-    latitude: number;
-    longitude: number;
-  };
-}
-interface GroupPageProps {
-  capacity: number;
-  remainingTime: Date;
-  participants: ParticipantResponse[];
-}
-
 interface InputState {
   username: string;
   value: string;
-  latitude: number;
-  longitude: number;
+  lat: number;
+  lng: number;
 }
 
 const GroupPage = ({
@@ -31,15 +18,15 @@ const GroupPage = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const [inputs, setInputs] = useState<InputState[]>();
-  const { capacity, remainingTime, participants } = data;
-  console.log(capacity, remainingTime, participants);
+  const { capacity, remainingTime, participants, owner } = data;
+  console.log(capacity, remainingTime, participants, owner);
 
   const getInputsByParticipant = useCallback(() => {
     let inputsByParticipants: InputState[];
     if (participants && participants.length > 0) {
       inputsByParticipants = participants.map(({ username, start }) => {
-        const { stationName, latitude, longitude } = start;
-        return { username, value: stationName, latitude, longitude };
+        const { stationName, lat, lng } = start;
+        return { username, value: stationName, lat, lng };
       });
     } else {
       inputsByParticipants = Array.from(Array(capacity)).fill({
@@ -56,8 +43,14 @@ const GroupPage = ({
     setInputs(initialInputs);
   }, [getInputsByParticipant]);
 
-  const handleInputClick = (index: number) => {
-    router.push(`/search?id=${index}`);
+  const handleInputClick = (username: string) => {
+    router.push({
+      pathname: "/search",
+      query: {
+        id: router.query.groupId,
+        owner: username === owner,
+      },
+    });
   };
 
   return (
@@ -72,7 +65,7 @@ const GroupPage = ({
                   index={index}
                   address={value}
                   placeholder='주소가 아직 없어요...'
-                  onClick={() => handleInputClick(index)}
+                  onClick={() => handleInputClick(username)}
                 />
                 <InputLabel>
                   {value ? `${username}이 입력했습니다` : ""}
@@ -81,12 +74,12 @@ const GroupPage = ({
             ))}
         </Stack>
         <Stack spacing={1.5}>
-          <Button variant='contained' color='primary'>
+          <CustomButton variant='contained' color='primary' size='large'>
             모임 취소하기
-          </Button>
-          <Button variant='contained' color='secondary'>
+          </CustomButton>
+          <CustomButton variant='contained' color='secondary' size='large'>
             중간지점 찾기
-          </Button>
+          </CustomButton>
         </Stack>
       </form>
     </Container>
@@ -100,6 +93,10 @@ const InputLabel = styled.span`
   width: 100%;
   font-size: 1rem;
   text-align: right;
+`;
+
+const CustomButton = styled(Button)`
+  font-size: 1.3rem;
 `;
 
 export const getServerSideProps = async ({
@@ -117,7 +114,9 @@ export const getServerSideProps = async ({
   const res = await fetch(
     `https://63fb17c14e024687bf71cf31.mockapi.io/group/${groupId}`
   );
-  const data: GroupPageProps = await res.json();
+
+  const data: GroupDetailResponse = await res.json();
+  console.log(data);
 
   // Redirect home if no data
   if (!data) {
