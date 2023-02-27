@@ -27,7 +27,9 @@ const _Modal = ({
 
   const close = () => {
     setShow(false);
-    closeModal();
+    setTimeout(() => {
+      closeModal();
+    }, 500);
   };
 
   const onConfirm = async () => {
@@ -82,8 +84,7 @@ const FlexContainer = styled.div<{ direction?: "column" | "row" }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: ${({ direction }) =>
-    direction === "row" ? "row" : "column"};
+  flex-direction: ${({ direction }) => direction || "column"};
   gap: 1rem;
 `;
 
