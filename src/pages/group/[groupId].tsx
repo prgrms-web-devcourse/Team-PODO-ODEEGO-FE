@@ -94,7 +94,6 @@ const GroupPage = ({
               {inputs &&
                 inputs.map(({ username, stationName }, index) => (
                   <div key={index}>
-                    {/* TODO: 이슈 #20 머지되면 /components/home/form-input 교체 */}
                     <FormInput
                       index={index}
                       address={stationName}
