@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 const useModal = () => {
   const [modalProps, setModalProps] = useRecoilState(modalState);
 
-  const showModal = (modalProps: ModalProps) => {
+  const openModal = (modalProps: ModalProps) => {
     setModalProps(modalProps);
   };
 
@@ -12,7 +12,7 @@ const useModal = () => {
     setModalProps(null);
   };
 
-  return { modalProps, showModal, closeModal };
+  return { modalProps, openModal, closeModal };
 };
 
 export default useModal;
