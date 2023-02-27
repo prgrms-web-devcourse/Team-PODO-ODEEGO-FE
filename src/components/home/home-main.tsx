@@ -25,6 +25,7 @@ const MainContainer = styled.main`
   flex-direction: column;
   align-items: center;
   box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
+  user-select: none;
 `;
 
 const TextP = styled.p`
