@@ -1,14 +1,17 @@
-import FormInput from "@/components/group/form-input";
+import FormInput from "@/components/common/form-input";
+import Header from "@/components/layout/header";
+import Main from "@/components/layout/main";
 import { GroupDetailResponse } from "@/types/api/group";
 import styled from "@emotion/styled";
-import { Button, Container, Stack } from "@mui/material";
+import { Button, CircularProgress, Container, Stack } from "@mui/material";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 
 interface InputState {
   username: string;
-  value: string;
+  stationName: string;
   lat: number;
   lng: number;
 }
@@ -17,16 +20,18 @@ const GroupPage = ({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState<InputState[]>();
   const { capacity, remainingTime, participants, owner } = data;
   console.log(capacity, remainingTime, participants, owner);
 
   const getInputsByParticipant = useCallback(() => {
     let inputsByParticipants: InputState[];
+
     if (participants && participants.length > 0) {
       inputsByParticipants = participants.map(({ username, start }) => {
         const { stationName, lat, lng } = start;
-        return { username, value: stationName, lat, lng };
+        return { username, stationName, lat, lng };
       });
     } else {
       inputsByParticipants = Array.from(Array(capacity)).fill({
@@ -53,36 +58,77 @@ const GroupPage = ({
     });
   };
 
+  const handleCancel = () => {
+    // **TODO: 모임 삭제 api 호출
+    router.push("/");
+  };
+
+  const handleSearch = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (participants.length !== capacity) {
+      toast.error("아직 주소를 다 못 받았어요..");
+      return;
+    }
+
+    setIsLoading(true);
+    // **TODO: 중간지점 찾기 api 호출
+    // **TODO: 모임 삭제 api 호출
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    await sleep(1000);
+    setIsLoading(false);
+  };
+
   return (
-    <Container>
-      <form>
-        <Stack spacing={1.5}>
-          {inputs &&
-            inputs.map(({ username, value }, index) => (
-              <div key={index}>
-                {/* TODO: 이슈 #20 머지되면 /components/home/form-input 교체 */}
-                <FormInput
-                  index={index}
-                  address={value}
-                  placeholder='주소가 아직 없어요...'
-                  onClick={() => handleInputClick(username)}
-                />
-                <InputLabel>
-                  {value ? `${username}이 입력했습니다` : ""}
-                </InputLabel>
-              </div>
-            ))}
-        </Stack>
-        <Stack spacing={1.5}>
-          <CustomButton variant='contained' color='primary' size='large'>
-            모임 취소하기
-          </CustomButton>
-          <CustomButton variant='contained' color='secondary' size='large'>
-            중간지점 찾기
-          </CustomButton>
-        </Stack>
-      </form>
-    </Container>
+    <>
+      <Header />
+      <Main text='내 모임의 주소 제출 현황'>
+        <Container
+          sx={{
+            maxHeight: "915px",
+            overflow: "auto",
+            paddingBottom: "2rem",
+          }}>
+          <form>
+            <Stack spacing={1.5}>
+              {inputs &&
+                inputs.map(({ username, stationName }, index) => (
+                  <div key={index}>
+                    {/* TODO: 이슈 #20 머지되면 /components/home/form-input 교체 */}
+                    <FormInput
+                      index={index}
+                      address={stationName}
+                      placeholder='주소가 아직 없어요...'
+                      onClick={() => handleInputClick(username)}
+                    />
+                    <InputLabel>
+                      {stationName ? `${username}이 입력했습니다` : ""}
+                    </InputLabel>
+                  </div>
+                ))}
+            </Stack>
+            <Stack spacing={1.5} sx={{ marginTop: "2rem" }}>
+              <CustomButton
+                variant='contained'
+                color='primary'
+                size='large'
+                onClick={handleCancel}>
+                모임 취소하기
+              </CustomButton>
+              <CustomButton
+                variant='contained'
+                color='secondary'
+                size='large'
+                type='submit'
+                onClick={handleSearch}>
+                {isLoading ? <CircularProgress size='2rem' /> : "중간지점 찾기"}
+              </CustomButton>
+            </Stack>
+          </form>
+        </Container>
+        <Toaster />
+      </Main>
+    </>
   );
 };
 
