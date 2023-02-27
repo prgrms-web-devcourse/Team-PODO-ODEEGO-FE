@@ -62,8 +62,8 @@ const SearchInput = () => {
     <SearchContainer>
       <SearchInputWrapper>
         <TextField
-          style={{
-            width: "400px",
+          sx={{
+            width: "100%",
           }}
           inputProps={{
             style: { fontSize: 15 },
@@ -117,8 +117,7 @@ const SearchInputWrapper = styled.div`
 `;
 
 const SearchContainer = styled.div`
-  width: 390px;
-  max-height: 884px;
+  width: 100%;
   position: relative;
   margin: auto;
   border: 0;
