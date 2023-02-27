@@ -26,6 +26,8 @@ export default function Home() {
     router.push(`/search?id=${index}`);
   };
   const handleButtonClickSubmit = async () => {
+    setIsLoading(true);
+
     const addressListCopy = addressList.filter((a) => a.address !== "");
     const filteredAddressList = addressListCopy
       .filter((a) => a.address !== "")
@@ -52,13 +54,12 @@ export default function Home() {
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
 
-    setIsLoading(true);
     const data = await MidPointApi.postMidPoint();
-    setIsLoading(false);
 
     console.log(data);
 
     setAddressList(addressListCopy);
+    setIsLoading(false);
   };
 
   const [run] = useTimeoutFn({
