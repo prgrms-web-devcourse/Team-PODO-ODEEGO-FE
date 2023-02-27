@@ -7,24 +7,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  //TODO
-  // - mid-point api로 바꿀 것
-  const requestUrl = `${API_END_POINT}/api/hello/body`;
-  console.log(`API routes(/api/hello body): ${requestUrl}`);
-  console.log(req.body);
+  const requestUrl = `${API_END_POINT}/api/v1/mid-points/search`;
+  const addressList = req.body;
+  console.log(`API routes(/api/v1/mid-points/search): ${requestUrl}`);
+  console.log(addressList);
 
   try {
     const { data } = await axios({
       url: requestUrl,
       method: "post",
       data: {
-        message: "kal",
+        stations: [...addressList.stations],
       },
     });
 
     res.status(200).json(data);
   } catch (e) {
-    console.error(e);
-    res.status(400).json("ERROR");
+    res.status(400).send({ error: "Error: Out of bound", status: 400 });
   }
 }

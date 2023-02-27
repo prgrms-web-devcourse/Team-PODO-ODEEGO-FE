@@ -1,20 +1,27 @@
+import axios from "axios";
 import HTTP from "./config/axios-instance";
 
+interface Address {
+  name: string;
+  lat: number;
+  lng: number;
+}
+
 export const MidPointApi = {
-  postMidPoint: async () => {
+  postMidPoint: async (addressList: Address[]) => {
     try {
       const { data } = await HTTP.post({
-        //TODO
-        // - mid-point api로 바꿀 것
         url: "/v1/mid-point/search",
         data: {
-          message: "kal",
+          stations: addressList,
         },
       });
 
       return data;
     } catch (e) {
-      console.error(e);
+      if (axios.isAxiosError(e) && e.response?.status === 400) {
+        return { error: "Error: Out of Bound", status: 400 };
+      }
     }
   },
 };

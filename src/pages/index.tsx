@@ -15,7 +15,6 @@ import useTimeoutFn from "@/hooks/use-timeout-fn";
 import { accessTokenState } from "@/recoil/acess-token-state";
 import { GroupsApi } from "@/axios/groups";
 import HomeButton from "@/components/home/home-button";
-import axios from "axios";
 import useModal from "@/hooks/use-modal";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
@@ -52,8 +51,7 @@ export default function Home() {
       if (!hasAccessToken) return "";
 
       const data = await GroupsApi.getAll();
-      const groupId =
-        data && data.groups.length > 0 ? data.groups[0].groupId : "";
+      const groupId = data?.groups?.[0]?.groupId || "";
 
       setGroupId(groupId);
     };
@@ -75,8 +73,6 @@ export default function Home() {
 
     setIsGroupsApiLoading(true);
     if (!groupId) {
-      //TODO
-      // - modal 사용하기
       openModal({
         children: modalContent(),
         btnText: {
@@ -102,16 +98,11 @@ export default function Home() {
       .filter((a) => a.address !== "")
       .map((a) => {
         return {
-          name: a.name,
-          lat: a.lat,
-          lng: a.lng,
+          name: a.name.split(" ")[0],
+          lat: parseFloat(a.lat),
+          lng: parseFloat(a.lng),
         };
       });
-
-    //TODO
-    // - 지우기
-    console.log("addressList: ", addressList);
-    console.log("filteredAddressList: ", filteredAddressList);
 
     if (filteredAddressList.length < 2) {
       toast.error("주소를 2개 이상 입력해주세요.");
@@ -119,31 +110,20 @@ export default function Home() {
       return;
     }
 
-    //TODO
-    // - 백엔드 POST api 보내기
-    //    - validation 1) 빈 리스트: 출발지 중복, 2) 400에러 : 수도권 이외의 지역
-    // - recoil에 저장하기
-    // - 지도 페이지로 넘어가기
+    const data = await MidPointApi.postMidPoint(filteredAddressList);
 
-    try {
-      const data = await MidPointApi.postMidPoint();
+    setAddressList(addressListCopy);
+    setIsMidPointApiLoading(false);
+
+    if (data.status === 400) {
+      toast.error("수도권 내의 범위로 출발지를 입력해주세요.");
+    } else if (data.start.length < 2) {
+      toast.error("중복 출발지입니다.");
+    } else {
+      //TODO
+      // - recoil에 저장
+      // - map page로 이동
       console.log(data);
-
-      const test = await axios.post(
-        "http://52.78.224.123:8080/api/v1/mid-points/search",
-        {
-          stations: [...filteredAddressList],
-        }
-      );
-      console.log(test);
-
-      await (() => new Promise((r) => setTimeout(r, 1000)))();
-
-      setAddressList(addressListCopy);
-      setIsMidPointApiLoading(false);
-    } catch (e) {
-      console.error(e);
-      setIsMidPointApiLoading(false);
     }
   };
 
@@ -181,7 +161,7 @@ export default function Home() {
               <FormInput
                 key={index}
                 index={index}
-                address={input.address}
+                name={input.name}
                 onClick={() => handleInputClickRoute(index)}
                 onRemove={removeInput}
               />
@@ -226,6 +206,7 @@ export default function Home() {
     </>
   );
 }
+
 const MainContainer = styled.main`
   width: 100%;
   max-height: 625px;
