@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { Box, IconButton } from "@mui/material";
+import { Box, CircularProgress, IconButton } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import FormInput from "./form-input";
@@ -8,8 +8,10 @@ import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
-import HomeButton from "./home-button";
 import { MidPointApi } from "@/axios/mid-point";
+import { COLORS } from "@/constants/css";
+
+const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 const AddressForm = () => {
   const router = useRouter();
@@ -88,7 +90,18 @@ const AddressForm = () => {
           </IconButton>
         )}
       </Box>
-      <HomeButton onClick={handleButtonClickSubmit} isLoading={isLoading} />
+      <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
+        {isLoading ? (
+          <CircularProgress
+            size='2rem'
+            sx={{
+              color: "white",
+            }}
+          />
+        ) : (
+          <span>{BUTTON_SUBMIT_TEXT}</span>
+        )}
+      </SubmitButton>
       <Toaster />
     </Form>
   );
@@ -103,4 +116,17 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
   position: relative;
+`;
+
+const SubmitButton = styled.button`
+  width: 80%;
+  height: 4.8rem;
+  background-color: ${COLORS.mainOrange};
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  border: none;
+  position: absolute;
+  bottom: 3.5rem;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
 `;
