@@ -3,10 +3,12 @@ import Main from "@/components/home/home-main";
 import useModal from "@/hooks/use-modal";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Home() {
-  // useModal 훅 사용 예시입니다. 작업할땐 삭제해주세요. (line 9 - line 43)
-  const { showModal } = useModal();
+  // useModal 훅 사용 예시입니다. 작업할땐 삭제해주세요. (line 9 - line 39)
+  const { openModal } = useModal();
+  const router = useRouter();
 
   const modalContent = () => {
     return (
@@ -20,23 +22,18 @@ export default function Home() {
     );
   };
 
-  const sleep = (func: () => void, timer: number) => {
-    return new Promise(() => {
-      setTimeout(() => {
-        func();
-      }, timer);
-    });
-  };
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   const handleOpenModal = () => {
-    showModal({
+    openModal({
       children: modalContent(),
       btnText: {
         confirm: "로그인하기",
         close: "취소",
       },
       handleConfirm: async () => {
-        await sleep(() => console.log("I want to confirm"), 1000);
+        await sleep(1000);
+        router.push("/search");
       },
     });
   };
