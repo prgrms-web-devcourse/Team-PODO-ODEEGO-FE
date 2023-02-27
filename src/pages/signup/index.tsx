@@ -10,6 +10,7 @@ const Index = () => {
   const router = useRouter();
 
   console.log(router);
+
   // 임시 로그인 토큰
   const token = "";
   return (
