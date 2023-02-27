@@ -4,6 +4,9 @@ import NotFound from "@/components/search/not-found";
 
 import useSignupSearch from "@/hooks/use-signup-search";
 import SignupInput from "@/components/signup/signup-input";
+import { useQuery } from "@tanstack/react-query";
+import { SearchAPI } from "@/pages/api/search";
+import { useRouter } from "next/navigation";
 
 const SignUpSearchInput = () => {
   const router = useRouter();
