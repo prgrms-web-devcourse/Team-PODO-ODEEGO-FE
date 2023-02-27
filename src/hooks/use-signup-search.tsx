@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import { useRecoilState } from "recoil";
-import { searchOriginProps, searchProps } from "@/types/search-props";
-import { searchState } from "@/recoil/search-state";
+import { searchOriginProps } from "@/types/search-props";
 import checkSignup from "@/utils/check-signup";
 import { errorType, valueType } from "@/types/register-props";
 
 const useSignupSearch = () => {
   const [values, setValue] = useState<Partial<valueType>>({});
   const [errorMessage, setErrorMessage] = useState<Partial<errorType>>({});
-  const [recoilData, setRecoildData] =
-    useRecoilState<searchProps[]>(searchState);
 
   const [isToggleBoxLoading, setToggleBoxIsLoading] = useState(true);
 
-  const handleValue = (e: any) => {
+  const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     checkSignup.StationAndNickName(name, value, errorMessage, setErrorMessage);
@@ -47,7 +43,6 @@ const useSignupSearch = () => {
 
   return {
     errorMessage,
-    recoilData,
     isToggleBoxLoading,
     values,
     handleSignUpSubmit,

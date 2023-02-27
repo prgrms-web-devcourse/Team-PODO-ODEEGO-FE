@@ -1,12 +1,12 @@
 import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import React from "react";
-import { errorType } from "@/types/register-props";
+import { errorType, valueType } from "@/types/register-props";
 
-interface SignupInputProps<T extends object> {
+interface SignupInputProps<T, U> {
   values: T;
   handleValue: (arg: React.ChangeEvent<HTMLInputElement>) => void;
-  errorMessage: T;
+  errorMessage: U;
   handleStationKeyDown: (arg: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
@@ -15,7 +15,7 @@ const SignupInput = ({
   handleValue,
   errorMessage,
   handleStationKeyDown,
-}: SignupInputProps<errorType>) => {
+}: SignupInputProps<Partial<valueType>, Partial<errorType>>) => {
   return (
     <>
       <TextField
@@ -40,14 +40,14 @@ const SignupInput = ({
           style={{
             marginBottom: "20px",
           }}>
-          {errorMessage.nickname}
+          {errorMessage.nickname || ""}
         </p>
       ) : (
         <p
           style={{
             marginBottom: "20px",
           }}>
-          {errorMessage.nickname_len}
+          {errorMessage.nickname_len || ""}
         </p>
       )}
 
