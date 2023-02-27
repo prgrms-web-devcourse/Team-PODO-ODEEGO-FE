@@ -27,7 +27,7 @@
       "error",
       { "endOfLine": "auto", "jsxSingleQuote": true, "singleQuote": false }
     ],
-    "filenames/match-regex": [2, "^(_)?[a-z-]+$"], // kebab-case with optional _ prefix for next.js main files like _app.js
+    "filenames/match-regex": [2, "^(\\u005B)?(_)?[a-z-]+(\\u005D)?$"], // kebab-case with optional _ prefix for next.js main files like _app.js
     "folders/match-regex": [2, "^(\\u005B)?[a-z-]+(\\u005D)?$", "/front_end/"] // kebab-case with optional [ ] brackets
   },
   "ignorePatterns": ["!.*", "dist", "node_modules", "*.js"]

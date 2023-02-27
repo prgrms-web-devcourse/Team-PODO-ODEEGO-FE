@@ -1,10 +1,14 @@
-"use client";
-
 import { SIZE } from "../../constants/css";
 import styled from "@emotion/styled";
+import GlobalModal from "@/components/common/global-modal";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  return <Container>{children}</Container>;
+  return (
+    <Container>
+      <GlobalModal />
+      {children}
+    </Container>
+  );
 };
 
 export default Layout;
