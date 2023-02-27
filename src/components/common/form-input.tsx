@@ -26,7 +26,6 @@ const FormInput = ({
       onClick={onClick}>
       <CustomTextField
         id='index'
-        // label={`Address ${index + 1}`}
         placeholder={placeholder}
         sx={{
           width: "100%",
@@ -38,17 +37,19 @@ const FormInput = ({
         disabled
         value={address}
       />
-      <IconButton
-        aria-label='delete'
-        sx={{
-          position: "absolute",
-          right: "0.5rem",
-          top: "1.3rem",
-          opacity: 0.3,
-        }}
-        onClick={(e) => onRemove && onRemove(e, index)}>
-        <ClearIcon />
-      </IconButton>
+      {onRemove && (
+        <IconButton
+          aria-label='delete'
+          sx={{
+            position: "absolute",
+            right: "0.5rem",
+            top: "1.3rem",
+            opacity: 0.3,
+          }}
+          onClick={(e) => onRemove && onRemove(e, index)}>
+          <ClearIcon />
+        </IconButton>
+      )}
     </Box>
   );
 };
@@ -56,6 +57,8 @@ const FormInput = ({
 export default FormInput;
 
 const CustomTextField = styled(TextField)`
+  background-color: ${COLORS.backgroundSecondary};
+
   & label {
     color: ${COLORS.borderSecondary};
     font-size: 1.5rem;

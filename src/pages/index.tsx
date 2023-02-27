@@ -1,5 +1,6 @@
-import Header from "@/components/home/home-header";
-import Main from "@/components/home/home-main";
+import AddressForm from "@/components/home/address-form";
+import Header from "@/components/layout/header";
+import Main from "@/components/layout/main";
 import useModal from "@/hooks/use-modal";
 import { Button } from "@mui/material";
 import Link from "next/link";
@@ -38,10 +39,14 @@ export default function Home() {
     });
   };
 
+  const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
+
   return (
     <>
       <Header />
-      <Main />
+      <Main text={MAIN_TEXT}>
+        <AddressForm />
+      </Main>
       <Link href='/group/3'>Go to Room</Link>
       <Button onClick={handleOpenModal}>Open Modal</Button>
       <div>
