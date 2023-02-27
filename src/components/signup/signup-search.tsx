@@ -28,7 +28,7 @@ const SignUpSearchInput = () => {
     ["search", values.station],
     () => SearchAPI.getSubway(values.station),
     {
-      enabled: values.station!.length > 0 && values.station?.includes("역"),
+      enabled: values.station?.includes("역") && values.station.length > 0,
     }
   );
 
@@ -43,7 +43,7 @@ const SignUpSearchInput = () => {
             handleStationKeyDown={handleStationKeyDown}
           />
 
-          {errorMessage.station!.length > 0 && values.station!.length > 0 && (
+          {errorMessage?.station?.length > 0 && values?.station?.length > 0 && (
             <NotFound
               title={"역만 입력해주세요"}
               icon={"지하철역"}
