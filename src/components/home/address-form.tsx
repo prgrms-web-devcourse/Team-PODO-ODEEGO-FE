@@ -2,28 +2,28 @@ import styled from "@emotion/styled";
 import { Box, IconButton } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import CircularProgress from "@mui/material/CircularProgress";
 import FormInput from "./form-input";
 import { useRouter } from "next/navigation";
-import { COLORS } from "@/constants/css";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
-import axios from "axios";
-
-const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
+import HomeButton from "./home-button";
+import { MidPointApi } from "@/axios/mid-point";
 
 const AddressForm = () => {
   const router = useRouter();
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
+
+  //TODO
+  // - react query로 바꾸면서 삭제 예정
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputClickRoute = (index: number) => {
     router.push(`/search?id=${index}`);
   };
-  const handleButtonClickSubmit = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleButtonClickSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     const addressListCopy = addressList.filter((a) => a.address !== "");
@@ -53,9 +53,10 @@ const AddressForm = () => {
     // - 지도 페이지로 넘어가기
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const data = await MidPointApi.postMidPoint();
+    setIsLoading(false);
+
+    console.log(data);
 
     setAddressList(addressListCopy);
   };
@@ -87,18 +88,7 @@ const AddressForm = () => {
           </IconButton>
         )}
       </Box>
-      <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
-        {isLoading ? (
-          <CircularProgress
-            size='2rem'
-            sx={{
-              color: "white",
-            }}
-          />
-        ) : (
-          <span>{BUTTON_SUBMIT_TEXT}</span>
-        )}
-      </SubmitButton>
+      <HomeButton onClick={handleButtonClickSubmit} isLoading={isLoading} />
       <Toaster />
     </Form>
   );
@@ -113,17 +103,4 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
   position: relative;
-`;
-
-const SubmitButton = styled.button`
-  width: 80%;
-  height: 4.8rem;
-  background-color: ${COLORS.mainOrange};
-  color: white;
-  text-align: center;
-  border-radius: 8px;
-  border: none;
-  position: absolute;
-  bottom: 3.5rem;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
 `;

@@ -1,7 +1,7 @@
 import axios, { Method } from "axios";
 
 // const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
-const API_END_POINT = "https://jsonplaceholder.typicode.com";
+const API_END_POINT = "/api";
 
 const METHOD: Record<string, Method> = {
   GET: "get",
