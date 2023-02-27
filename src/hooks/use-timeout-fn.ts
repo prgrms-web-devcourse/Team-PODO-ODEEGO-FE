@@ -26,7 +26,7 @@ const useTimeoutFn = ({ fn, ms }: Props) => {
 
   useEffect(() => clear, [clear]);
 
-  return [run, clear];
+  return { run, clear };
 };
 
 export default useTimeoutFn;

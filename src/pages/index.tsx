@@ -7,7 +7,7 @@ import {
   IconButton,
   Stack,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
@@ -19,22 +19,58 @@ import { COLORS } from "@/constants/css";
 import FormInput from "@/components/home/form-input";
 import useTimeoutFn from "@/hooks/use-timeout-fn";
 import { accessTokenState } from "@/recoil/acess-token-state";
+import { GroupsApi } from "@/axios/groups";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 export default function Home() {
   const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
+  const [token, setToken] = useRecoilState(accessTokenState);
+  const [groupId, setGroupId] = useState("");
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isMidPointApiLoading, setIsMidPointApiLoading] = useState(false);
+  const [isGroupsApiLoading, setIsGroupsApiLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const initGroupId = async () => {
+      if (!hasAccessToken) return "";
+
+      const data = await GroupsApi.getAll();
+      const groupId = data && data.rooms.length > 0 ? data.rooms[0].roomId : "";
+
+      setGroupId(groupId);
+    };
+
+    initGroupId();
+  }, [hasAccessToken]);
 
   const handleInputClickRoute = (index: number) => {
     router.push(`/search?id=${index}`);
   };
-  const handleButtonClickSubmit = async () => {
-    setIsLoading(true);
+
+  const handleButtonClickGroups = async () => {
+    if (isMidPointApiLoading) return;
+    if (!hasAccessToken) router.push("/login");
+    console.log(token, hasAccessToken);
+
+    setIsGroupsApiLoading(true);
+    if (!groupId) {
+      //TODO
+      // - modal 사용하기
+      console.log("call making group api ");
+    }
+
+    // router.push(`/groups/${groupId}`);
+    await (() => new Promise((r) => setTimeout(r, 1000)))();
+    setIsGroupsApiLoading(false);
+  };
+
+  const handleButtonClickMiddlePointSubmit = async () => {
+    if (isGroupsApiLoading) return;
+    setIsMidPointApiLoading(true);
 
     const addressListCopy = addressList.filter((a) => a.address !== "");
     const filteredAddressList = addressListCopy
@@ -54,6 +90,7 @@ export default function Home() {
 
     if (filteredAddressList.length < 2) {
       toast.error("주소를 2개 이상 입력해주세요.");
+      setIsMidPointApiLoading(false);
       return;
     }
 
@@ -66,21 +103,30 @@ export default function Home() {
 
     console.log(data);
 
+    await (() => new Promise((r) => setTimeout(r, 1000)))();
+
     setAddressList(addressListCopy);
-    setIsLoading(false);
+    setIsMidPointApiLoading(false);
   };
 
-  const [run] = useTimeoutFn({
+  const { run } = useTimeoutFn({
     fn: async () => {
-      handleButtonClickSubmit();
+      handleButtonClickMiddlePointSubmit();
+    },
+    ms: 500,
+  });
 
-      if (!hasAccessToken) router.push("/login");
+  const { run: groupfoo } = useTimeoutFn({
+    fn: async () => {
+      handleButtonClickGroups();
     },
     ms: 500,
   });
 
   return (
     <>
+      <Button onClick={() => setToken("hello")}>Set Token</Button>
+      <Button onClick={() => setGroupId("hello")}>Set GroupID</Button>
       <Header />
       <MainContainer>
         <BorderContainer />
@@ -127,12 +173,11 @@ export default function Home() {
               variant='contained'
               color='secondary'
               sx={{
-                fontSize: "1.5rem",
                 height: "4.5rem",
                 borderRadius: "8px",
                 textAlign: "center",
               }}>
-              {isLoading ? (
+              {isMidPointApiLoading ? (
                 <CircularProgress
                   size='2rem'
                   sx={{
@@ -146,16 +191,15 @@ export default function Home() {
             <span>OR</span>
             <Button
               type='button'
-              onClick={run}
+              onClick={groupfoo}
               variant='contained'
               color='primary'
               sx={{
-                fontSize: "1.5rem",
                 height: "4.5rem",
                 borderRadius: "8px",
                 textAlign: "center",
               }}>
-              {isLoading ? (
+              {isGroupsApiLoading ? (
                 <CircularProgress
                   size='2rem'
                   sx={{
@@ -163,7 +207,7 @@ export default function Home() {
                   }}
                 />
               ) : (
-                <span>{BUTTON_SUBMIT_TEXT}</span>
+                <span>{groupId ? "모임 보러가기" : "링크로 주소 받기"}</span>
               )}
             </Button>
           </Stack>
