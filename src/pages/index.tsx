@@ -1,12 +1,6 @@
 import Header from "@/components/home/home-header";
 import styled from "@emotion/styled";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  Stack,
-} from "@mui/material";
+import { Box, Button, IconButton, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
@@ -20,9 +14,12 @@ import FormInput from "@/components/home/form-input";
 import useTimeoutFn from "@/hooks/use-timeout-fn";
 import { accessTokenState } from "@/recoil/acess-token-state";
 import { GroupsApi } from "@/axios/groups";
+import HomeButton from "@/components/home/home-button";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
-const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
+const BUTTON_MID_POINT_TEXT = "중간지점 찾기";
+const BUTTON_GROUPS_DEFAULT_TEXT = "링크로 주소 받기";
+const BUTTON_GROUPS_ALT_TEXT = "모임 보러가기";
 
 export default function Home() {
   const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
@@ -109,14 +106,14 @@ export default function Home() {
     setIsMidPointApiLoading(false);
   };
 
-  const { run } = useTimeoutFn({
+  const { run: debounceMidPoint } = useTimeoutFn({
     fn: async () => {
       handleButtonClickMiddlePointSubmit();
     },
     ms: 500,
   });
 
-  const { run: groupfoo } = useTimeoutFn({
+  const { run: debounceGroup } = useTimeoutFn({
     fn: async () => {
       handleButtonClickGroups();
     },
@@ -167,49 +164,20 @@ export default function Home() {
                 fontSize: "1.5rem",
               },
             }}>
-            <Button
-              type='button'
-              onClick={run}
-              variant='contained'
+            <HomeButton
+              onClick={debounceMidPoint}
+              isLoading={isMidPointApiLoading}
+              defaultText={BUTTON_MID_POINT_TEXT}
               color='secondary'
-              sx={{
-                height: "4.5rem",
-                borderRadius: "8px",
-                textAlign: "center",
-              }}>
-              {isMidPointApiLoading ? (
-                <CircularProgress
-                  size='2rem'
-                  sx={{
-                    color: "white",
-                  }}
-                />
-              ) : (
-                <span>{BUTTON_SUBMIT_TEXT}</span>
-              )}
-            </Button>
+            />
             <span>OR</span>
-            <Button
-              type='button'
-              onClick={groupfoo}
-              variant='contained'
-              color='primary'
-              sx={{
-                height: "4.5rem",
-                borderRadius: "8px",
-                textAlign: "center",
-              }}>
-              {isGroupsApiLoading ? (
-                <CircularProgress
-                  size='2rem'
-                  sx={{
-                    color: "white",
-                  }}
-                />
-              ) : (
-                <span>{groupId ? "모임 보러가기" : "링크로 주소 받기"}</span>
-              )}
-            </Button>
+            <HomeButton
+              onClick={debounceGroup}
+              isLoading={isGroupsApiLoading}
+              hasCondition={!!groupId}
+              defaultText={BUTTON_GROUPS_DEFAULT_TEXT}
+              altText={BUTTON_GROUPS_ALT_TEXT}
+            />
           </Stack>
           <Toaster />
         </Form>

@@ -1,38 +1,58 @@
-import { COLORS } from "@/constants/css";
-import styled from "@emotion/styled";
-import { CircularProgress } from "@mui/material";
-import { useState } from "react";
+import { Button, CircularProgress } from "@mui/material";
 
-const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
+interface HomeButtonProps {
+  onClick: () => void;
+  isLoading: boolean;
+  hasCondition?: boolean;
+  defaultText: string;
+  altText?: string;
+  color?:
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning"
+    | "neutral"
+    | undefined;
+}
 
-const HomeButton = ({ onClick, isLoading }) => {
+const HomeButton = ({
+  color,
+  onClick,
+  isLoading,
+  hasCondition,
+  defaultText,
+  altText,
+}: HomeButtonProps) => {
   return (
-    <SubmitButton type='submit' onClick={onClick}>
-      {isLoading ? (
-        <CircularProgress
-          size='2rem'
-          sx={{
-            color: "white",
-          }}
-        />
-      ) : (
-        <span>{BUTTON_SUBMIT_TEXT}</span>
-      )}
-    </SubmitButton>
+    <>
+      <Button
+        type='button'
+        variant='contained'
+        color={color ? color : "primary"}
+        onClick={onClick}
+        sx={{
+          height: "4.5rem",
+          borderRadius: "8px",
+          textAlign: "center",
+        }}>
+        {isLoading ? (
+          <CircularProgress
+            size='2rem'
+            sx={{
+              color: "white",
+            }}
+          />
+        ) : hasCondition ? (
+          <span>{altText}</span>
+        ) : (
+          <span>{defaultText}</span>
+        )}
+      </Button>
+    </>
   );
 };
 
 export default HomeButton;
-
-const SubmitButton = styled.button`
-  width: 80%;
-  height: 4.8rem;
-  background-color: ${COLORS.mainOrange};
-  color: white;
-  text-align: center;
-  border-radius: 8px;
-  border: none;
-  position: absolute;
-  bottom: 3.5rem;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
-`;
