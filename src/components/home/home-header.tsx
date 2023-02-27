@@ -30,6 +30,7 @@ const HeaderContainer = styled.header`
   justify-content: center;
   color: white;
   background-color: ${COLORS.backgroundAccent};
+  user-select: none;
 `;
 
 const TextP = styled.p`
