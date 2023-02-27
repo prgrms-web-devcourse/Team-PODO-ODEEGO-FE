@@ -26,21 +26,21 @@ const GroupPage = ({
   console.log(capacity, remainingTime, participants, owner);
 
   const getInputsByParticipant = useCallback(() => {
-    let inputsByParticipants: InputState[];
-
     if (participants && participants.length > 0) {
-      inputsByParticipants = participants.map(({ username, start }) => {
+      const inputsByParticipants = participants.map(({ username, start }) => {
         const { stationName, lat, lng } = start;
         return { username, stationName, lat, lng };
       });
-    } else {
-      inputsByParticipants = Array.from(Array(capacity)).fill({
-        username: "",
-        value: "",
-      });
+      return Array.from(
+        { length: capacity },
+        (_, i) => inputsByParticipants[i] ?? { username: "", stationName: "" }
+      );
     }
 
-    return inputsByParticipants;
+    return Array.from(Array(capacity)).fill({
+      username: "",
+      stationName: "",
+    });
   }, [capacity, participants]);
 
   useEffect(() => {
