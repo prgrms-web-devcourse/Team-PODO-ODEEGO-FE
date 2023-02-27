@@ -1,18 +1,27 @@
 import ClearIcon from "@mui/icons-material/Clear";
 import { Box, IconButton, TextField } from "@mui/material";
 import styled from "@emotion/styled";
+import { MouseEvent } from "react";
 import { COLORS } from "@/constants/css";
 
 interface AddressFormInputProps {
   index: number;
-  roadAddress: string;
+  address: string;
+  onClick: () => void;
+  onRemove: (e: MouseEvent<HTMLButtonElement>, index: number) => void;
 }
 
-const FormInput = ({ index, roadAddress }: AddressFormInputProps) => {
+const FormInput = ({
+  index,
+  address,
+  onClick,
+  onRemove,
+}: AddressFormInputProps) => {
   return (
     <Box
       key={index}
-      sx={{ width: "80%", position: "relative", marginBottom: "1.8rem" }}>
+      sx={{ width: "80%", position: "relative", marginBottom: "1.8rem" }}
+      onClick={onClick}>
       <CustomTextField
         id='index'
         label={`Address ${index + 1}`}
@@ -20,23 +29,23 @@ const FormInput = ({ index, roadAddress }: AddressFormInputProps) => {
           width: "100%",
           "& input": {
             height: "2.3rem",
+            fontSize: "1.5rem",
           },
         }}
         disabled
-        value={roadAddress}
+        value={address}
       />
-      {index > 1 && (
-        <IconButton
-          aria-label='delete'
-          sx={{
-            position: "absolute",
-            right: "0.5rem",
-            top: "1.3rem",
-            opacity: 0.3,
-          }}>
-          <ClearIcon />
-        </IconButton>
-      )}
+      <IconButton
+        aria-label='delete'
+        sx={{
+          position: "absolute",
+          right: "0.5rem",
+          top: "1.3rem",
+          opacity: 0.3,
+        }}
+        onClick={(e) => onRemove(e, index)}>
+        <ClearIcon />
+      </IconButton>
     </Box>
   );
 };
