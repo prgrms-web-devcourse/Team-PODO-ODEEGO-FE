@@ -10,7 +10,7 @@ export const GroupsApi = {
         url: "/v1/groups",
       });
 
-      return { rooms: [{ roomId: data, capacity: 4 }] };
+      return { groups: [{ groupId: "", capacity: 4 }] };
     } catch (e) {
       console.error(e);
     }

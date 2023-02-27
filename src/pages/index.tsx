@@ -15,6 +15,8 @@ import useTimeoutFn from "@/hooks/use-timeout-fn";
 import { accessTokenState } from "@/recoil/acess-token-state";
 import { GroupsApi } from "@/axios/groups";
 import HomeButton from "@/components/home/home-button";
+import axios from "axios";
+import useModal from "@/hooks/use-modal";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 const BUTTON_MID_POINT_TEXT = "중간지점 찾기";
@@ -30,13 +32,28 @@ export default function Home() {
   const [isMidPointApiLoading, setIsMidPointApiLoading] = useState(false);
   const [isGroupsApiLoading, setIsGroupsApiLoading] = useState(false);
   const router = useRouter();
+  const { openModal } = useModal();
+
+  const modalContent = () => {
+    return (
+      <>
+        <p>몇 명이 모이나요?</p>
+        <select>
+          <option value='2'>2</option>
+          <option value='3'>3</option>
+          <option value='4'>4</option>
+        </select>
+      </>
+    );
+  };
 
   useEffect(() => {
     const initGroupId = async () => {
       if (!hasAccessToken) return "";
 
       const data = await GroupsApi.getAll();
-      const groupId = data && data.rooms.length > 0 ? data.rooms[0].roomId : "";
+      const groupId =
+        data && data.groups.length > 0 ? data.groups[0].groupId : "";
 
       setGroupId(groupId);
     };
@@ -50,18 +67,29 @@ export default function Home() {
 
   const handleButtonClickGroups = async () => {
     if (isMidPointApiLoading) return;
-    if (!hasAccessToken) router.push("/login");
+    if (!hasAccessToken) {
+      router.push("/login");
+      return;
+    }
     console.log(token, hasAccessToken);
 
     setIsGroupsApiLoading(true);
     if (!groupId) {
       //TODO
       // - modal 사용하기
-      console.log("call making group api ");
+      openModal({
+        children: modalContent(),
+        btnText: {
+          confirm: "모임 만들기",
+          close: "취소",
+        },
+        handleConfirm: async () => {
+          await (() => new Promise((r) => setTimeout(r, 1000)))();
+          console.log("call making group api ");
+          // router.push(`/groups/${groupId}`);
+        },
+      });
     }
-
-    // router.push(`/groups/${groupId}`);
-    await (() => new Promise((r) => setTimeout(r, 1000)))();
     setIsGroupsApiLoading(false);
   };
 
@@ -92,18 +120,31 @@ export default function Home() {
     }
 
     //TODO
-    // - 백엔드 POST api 보내기 & 400에러 처리하기
+    // - 백엔드 POST api 보내기
+    //    - validation 1) 빈 리스트: 출발지 중복, 2) 400에러 : 수도권 이외의 지역
     // - recoil에 저장하기
     // - 지도 페이지로 넘어가기
 
-    const data = await MidPointApi.postMidPoint();
+    try {
+      const data = await MidPointApi.postMidPoint();
+      console.log(data);
 
-    console.log(data);
+      const test = await axios.post(
+        "http://52.78.224.123:8080/api/v1/mid-points/search",
+        {
+          stations: [...filteredAddressList],
+        }
+      );
+      console.log(test);
 
-    await (() => new Promise((r) => setTimeout(r, 1000)))();
+      await (() => new Promise((r) => setTimeout(r, 1000)))();
 
-    setAddressList(addressListCopy);
-    setIsMidPointApiLoading(false);
+      setAddressList(addressListCopy);
+      setIsMidPointApiLoading(false);
+    } catch (e) {
+      console.error(e);
+      setIsMidPointApiLoading(false);
+    }
   };
 
   const { run: debounceMidPoint } = useTimeoutFn({

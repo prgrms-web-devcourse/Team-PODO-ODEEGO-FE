@@ -11,7 +11,6 @@ export default async function handler(
   // - groups api로 바꿀 것
   const requestUrl = `${API_END_POINT}/api/hello/simple`;
   console.log(`API routes(/api/hello simple): ${requestUrl}`);
-  console.log(req.body);
 
   try {
     const { data } = await axios({
