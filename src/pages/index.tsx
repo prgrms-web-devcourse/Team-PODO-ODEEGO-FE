@@ -1,26 +1,34 @@
 import Header from "@/components/home/home-header";
 import styled from "@emotion/styled";
-import { Box, CircularProgress, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { searchState } from "@/recoil/search-state";
 import { MidPointApi } from "@/axios/mid-point";
 import { COLORS } from "@/constants/css";
 import FormInput from "@/components/home/form-input";
 import useTimeoutFn from "@/hooks/use-timeout-fn";
+import { accessTokenState } from "@/recoil/acess-token-state";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
 export default function Home() {
-  const router = useRouter();
+  const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleInputClickRoute = (index: number) => {
     router.push(`/search?id=${index}`);
@@ -65,6 +73,8 @@ export default function Home() {
   const [run] = useTimeoutFn({
     fn: async () => {
       handleButtonClickSubmit();
+
+      if (!hasAccessToken) router.push("/login");
     },
     ms: 500,
   });
@@ -101,18 +111,62 @@ export default function Home() {
               </IconButton>
             )}
           </Box>
-          <SubmitButton type='button' onClick={run}>
-            {isLoading ? (
-              <CircularProgress
-                size='2rem'
-                sx={{
-                  color: "white",
-                }}
-              />
-            ) : (
-              <span>{BUTTON_SUBMIT_TEXT}</span>
-            )}
-          </SubmitButton>
+          <Stack
+            spacing={1.5}
+            sx={{
+              width: "80%",
+              marginTop: "4rem",
+              textAlign: "center",
+              "& span": {
+                fontSize: "1.5rem",
+              },
+            }}>
+            <Button
+              type='button'
+              onClick={run}
+              variant='contained'
+              color='secondary'
+              sx={{
+                fontSize: "1.5rem",
+                height: "4.5rem",
+                borderRadius: "8px",
+                textAlign: "center",
+              }}>
+              {isLoading ? (
+                <CircularProgress
+                  size='2rem'
+                  sx={{
+                    color: "white",
+                  }}
+                />
+              ) : (
+                <span>{BUTTON_SUBMIT_TEXT}</span>
+              )}
+            </Button>
+            <span>OR</span>
+            <Button
+              type='button'
+              onClick={run}
+              variant='contained'
+              color='primary'
+              sx={{
+                fontSize: "1.5rem",
+                height: "4.5rem",
+                borderRadius: "8px",
+                textAlign: "center",
+              }}>
+              {isLoading ? (
+                <CircularProgress
+                  size='2rem'
+                  sx={{
+                    color: "white",
+                  }}
+                />
+              ) : (
+                <span>{BUTTON_SUBMIT_TEXT}</span>
+              )}
+            </Button>
+          </Stack>
           <Toaster />
         </Form>
       </MainContainer>
@@ -122,7 +176,8 @@ export default function Home() {
 const MainContainer = styled.main`
   width: 100%;
   max-height: 625px;
-  height: 76vh;
+  min-height: 509px;
+  height: 80vh;
   background-color: ${COLORS.backgroundPrimary};
   display: flex;
   flex-direction: column;
@@ -140,7 +195,7 @@ const TextP = styled.p`
 `;
 
 const BorderContainer = styled.div`
-  height: 25px;
+  height: 3rem;
   width: 100%;
   background-color: ${COLORS.backgroundPrimary};
   margin-top: -15px;
@@ -154,17 +209,4 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
   position: relative;
-`;
-
-const SubmitButton = styled.button`
-  width: 80%;
-  height: 4.8rem;
-  background-color: ${COLORS.mainOrange};
-  color: white;
-  text-align: center;
-  border-radius: 8px;
-  border: none;
-  position: absolute;
-  bottom: 3.5rem;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
 `;

@@ -28,7 +28,7 @@ const FormInput = ({
         sx={{
           width: "100%",
           "& input": {
-            height: "2.3rem",
+            height: "2rem",
             fontSize: "1.5rem",
           },
         }}
