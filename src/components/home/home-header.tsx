@@ -2,11 +2,24 @@ import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import Image from "next/image";
 
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 const HEADER_TEXT = "어디서 만날까?";
-
-const Header = () => {
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+interface HeaderProps {
+  token?: string;
+}
+const Header = ({ token }: HeaderProps) => {
   return (
     <HeaderContainer>
+      {token ? (
+        <HeaderIconWrap>
+          <AccountCircleIcon />
+        </HeaderIconWrap>
+      ) : (
+        <HeaderIconWrap>
+          <KeyboardBackspaceIcon />
+        </HeaderIconWrap>
+      )}
       <TextP>{HEADER_TEXT}</TextP>
       <Image
         src='/Logo.png'
@@ -38,4 +51,14 @@ const TextP = styled.p`
   font-size: 12px;
   margin-bottom: 0;
   opacity: 0.7;
+`;
+
+const HeaderIconWrap = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-left: 2rem;
+  svg {
+    font-size: 3rem;
+  }
 `;

@@ -1,4 +1,4 @@
-import Main from "@/components/places/main";
+import Main from "@/components/place/main";
 
 interface Props {
   title: string;

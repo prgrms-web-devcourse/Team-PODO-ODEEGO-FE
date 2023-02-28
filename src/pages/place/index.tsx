@@ -14,7 +14,7 @@ const PlacePage = () => {
   const getTabData = useRecoilValue(tabState);
 
   // const [cafeData, setCafeData] = useState<Props[]>([]);
-
+  // PlacePage 복구
   const [place, setPlace] = useState("강남역");
   const [address, setAddress] = useState("강남구 강남대로 396");
 
