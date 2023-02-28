@@ -1,13 +1,9 @@
-"use client";
-
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import FormInput from "../components/form-input";
 import { Button } from "@mui/material";
 import styled from "@emotion/styled";
-
-import React, { useEffect } from "react";
 
 const SignupSchema = yup.object().shape({
   username: yup
@@ -40,18 +36,13 @@ const SignupSchema = yup.object().shape({
 type SignupFormData = yup.InferType<typeof SignupSchema>;
 
 interface SignupFormProps {
-  data?: any;
+  data?: unknown;
   station?: string;
   onSuccess(): void;
   onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
-const SignupForm = ({
-  data,
-  station,
-  onSuccess,
-  onKeyDown,
-}: SignupFormProps) => {
+const SignupForm = ({ data, onSuccess, onKeyDown }: SignupFormProps) => {
   const { control, handleSubmit } = useForm<SignupFormData>({
     defaultValues: {
       username: "",
@@ -61,10 +52,10 @@ const SignupForm = ({
     resolver: yupResolver(SignupSchema),
   });
 
-  const getSubwayStation = useWatch({
-    control,
-    name: "subway",
-  });
+  // const getSubwayStation = useWatch({
+  //   control,
+  //   name: "subway",
+  // });
 
   const onSubmit = async (data: SignupFormData) => {
     try {

@@ -17,6 +17,7 @@ interface FormInputProps<T extends FieldValues> {
   width?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   defaultValue?: FieldPathValue<T, FieldPath<T>>;
+  [props: string]: unknown;
 }
 
 const FormInput = <T extends FieldValues>({
@@ -27,6 +28,7 @@ const FormInput = <T extends FieldValues>({
   label,
   width,
   type = "text",
+  ...props
 }: FormInputProps<T>) => {
   const {
     field: { value, onBlur, onChange, ref },
@@ -56,6 +58,7 @@ const FormInput = <T extends FieldValues>({
       type={type}
       defaultValue={defaultValue}
       inputRef={ref}
+      {...props}
     />
   );
 };
