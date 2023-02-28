@@ -33,16 +33,46 @@ const BUTTON_GROUPS_DEFAULT_TEXT = "링크로 주소 받기";
 const BUTTON_GROUPS_ALT_TEXT = "모임 보러가기";
 
 export default function Home() {
+  const [groupId, setGroupId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
   const [token, setToken] = useRecoilState(accessTokenState);
-  const [groupId, setGroupId] = useState("");
+  const count = useRecoilValue(countState);
   const [addressList, setAddressList] = useRecoilState(searchState);
-  const { inputs, addInput, removeInput } = useMultipleInputs();
-  const [isLoading, setIsLoading] = useState(false);
   const setMidPointResponse = useSetRecoilState(MidPointState);
+  const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
   const { openModal } = useModal();
-  const count = useRecoilValue(countState);
+
+  const loginModalConfig = {
+    children: <LoginConfirmModal />,
+    btnText: {
+      confirm: "로그인하기",
+      close: "취소",
+    },
+    handleConfirm: async () => {
+      router.push("/login");
+    },
+  };
+
+  const selectModalConfig = {
+    children: <SelectModal />,
+    btnText: {
+      confirm: "모임 만들기",
+      close: "취소",
+    },
+    handleConfirm: async () => {
+      await (() => new Promise((r) => setTimeout(r, 3000)))();
+      //TODO: count parseINt, 및 ""이 아닐 때, api call
+      console.log("call making group api:  ", count);
+      console.log("set group id");
+      console.log("go to the group page");
+      setIsLoading(false);
+    },
+    handleClose: () => {
+      setIsLoading(false);
+    },
+  };
 
   useEffect(() => {
     const initGroupId = async () => {
@@ -64,16 +94,7 @@ export default function Home() {
   const handleButtonClickGroups = async () => {
     if (isLoading) return;
     if (!hasAccessToken) {
-      openModal({
-        children: <LoginConfirmModal />,
-        btnText: {
-          confirm: "로그인하기",
-          close: "취소",
-        },
-        handleConfirm: async () => {
-          router.push("/login");
-        },
-      });
+      openModal(loginModalConfig);
       return;
     }
     if (groupId) {
@@ -83,28 +104,12 @@ export default function Home() {
     }
 
     setIsLoading(true);
-    openModal({
-      children: <SelectModal />,
-      btnText: {
-        confirm: "모임 만들기",
-        close: "취소",
-      },
-      handleConfirm: async () => {
-        await (() => new Promise((r) => setTimeout(r, 3000)))();
-        //TODO: count parseINt, 및 ""이 아닐 때, api call
-        console.log("call making group api:  ", count);
-        console.log("set group id");
-        console.log("go to the group page");
-      },
-      handleClose: () => {
-        setIsLoading(false);
-      },
-    });
+    openModal(selectModalConfig);
+    setIsLoading(false);
   };
 
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
-    setIsLoading(true);
 
     const addressListCopy = addressList.filter((a) => a.name !== "");
     if (addressListCopy.length < 2) {
@@ -113,10 +118,10 @@ export default function Home() {
       return;
     }
 
+    setIsLoading(true);
     const data = await MidPointApi.postMidPoint(addressListCopy);
     await (() => new Promise((r) => setTimeout(r, 3000)))();
 
-    setAddressList(addressListCopy);
     setIsLoading(false);
 
     if (data.status === 400) {
@@ -128,18 +133,13 @@ export default function Home() {
       setMidPointResponse(data);
       router.push("/map");
     }
+
+    setAddressList(addressListCopy);
   };
 
   const { run: debounceMidPoint } = useTimeoutFn({
     fn: async () => {
       handleButtonClickMiddlePointSubmit();
-    },
-    ms: 500,
-  });
-
-  const { run: debounceGroup } = useTimeoutFn({
-    fn: async () => {
-      handleButtonClickGroups();
     },
     ms: 500,
   });
@@ -204,7 +204,7 @@ export default function Home() {
             />
             <span>OR</span>
             <HomeButton
-              onClick={debounceGroup}
+              onClick={handleButtonClickGroups}
               hasCondition={!!groupId}
               defaultText={BUTTON_GROUPS_DEFAULT_TEXT}
               altText={BUTTON_GROUPS_ALT_TEXT}
