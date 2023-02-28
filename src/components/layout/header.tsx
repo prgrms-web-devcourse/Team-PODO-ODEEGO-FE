@@ -9,7 +9,7 @@ const Header = () => {
     <HeaderContainer>
       <TextP>{HEADER_TEXT}</TextP>
       <Image
-        src='/LOGO.svg'
+        src='/logo.svg'
         alt='Odeego Logo'
         width={137}
         height={46}
