@@ -32,19 +32,18 @@ const SearchConfirm = () => {
         router.push("/");
       },
       handleConfirm: async () => {
-        // await sleep(1000);
-        router.push(`/search?id=${id}`);
+        // router.push(`/search?id=${id}`);
       },
     });
   };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const id = params.get("id");
+    const id = params.get("id"); // 방 ID
     if (id !== null) handleOpenModal(id);
   }, []);
 
-  return <></>;
+  // return <></>;
 };
 
 export default SearchConfirm;

@@ -1,5 +1,12 @@
 import axios from "axios";
 
+interface StartPointPros {
+  groupId: string;
+  stationName: string;
+  lat: number;
+  lng: number;
+}
+
 export const SearchAPI = {
   getSubway: async (value: string) => {
     try {
@@ -18,7 +25,7 @@ export const SearchAPI = {
     }
   },
 
-  sendStartPoint: async (value: object) => {
+  sendStartPoint: async (value: StartPointPros) => {
     try {
       const result = await axios.patch(
         `http://52.78.224.123:8080/api/v1/mid-points/starts`,

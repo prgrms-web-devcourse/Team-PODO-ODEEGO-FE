@@ -6,7 +6,7 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import React, { useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
-import { InputAdornment, TextField } from "@mui/material";
+import { Button, InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
@@ -18,6 +18,7 @@ const SearchInput = () => {
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken, setTestToken] = useRecoilState<any>(tokenRecoilState); // 로그인 토큰 가져오기.
   const id = parseInt(useSearchParams().get("id") || "0", 10);
+  const { openModal, closeModal } = useModal();
 
   const router = useRouter();
 
@@ -29,7 +30,7 @@ const SearchInput = () => {
   const handleLocationClick = (val: searchOriginProps) => {
     if (id === undefined || id === null) return;
 
-    handleOpenModal(val);
+    handleStartPointModal(val);
   };
 
   const { data: resultSubway } = useQuery(
@@ -52,16 +53,13 @@ const SearchInput = () => {
     setValue(value);
   };
 
-  const { openModal } = useModal();
-
-  const modalContent = () => {
-    return <></>;
+  const setStartPointModalContent = () => {
+    return <p>출발역은 수정할 수 없습니다.</p>;
   };
 
-  // const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-  const handleOpenModal = (val: searchOriginProps) => {
+  const handleStartPointModal = (val: searchOriginProps) => {
     const obj = {
+      groupId: id,
       name: val.place_name,
       lat: val.y,
       lng: val.x,
@@ -69,7 +67,7 @@ const SearchInput = () => {
     };
 
     openModal({
-      children: modalContent(),
+      children: setStartPointModalContent(),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
@@ -82,18 +80,30 @@ const SearchInput = () => {
           ...prev.slice(id + 1),
         ]);
 
+        // 임시 값.
+        SearchAPI.sendStartPoint({
+          groupId: obj.groupId.toString(),
+          stationName: obj.name,
+          lat: +obj.lat,
+          lng: +obj.lng,
+        });
+
         router.push("/");
       },
-      handleClose: () => {
-        // router.push("/");
-      },
     });
+  };
+
+  const handleClickButton = (e) => {
+    e.preventDefault();
+
+    console.log("click");
   };
 
   return (
     <SearchContainer>
       <SearchInputWrapper>
         <TextField
+          autoFocus
           sx={{
             width: "100%",
           }}
@@ -132,7 +142,7 @@ const SearchInput = () => {
           </SearchToggleBox>
         </SearchToggleBoxContainer>
       )}
-      <p>test</p>
+      <Button onClick={handleClickButton}>test</Button>
     </SearchContainer>
   );
 };
