@@ -3,7 +3,15 @@ import { SUBWAY } from "@/constants/css";
 export interface BaseResponse {
   id: string;
   name: string;
-  address: string;
+  address?: string | null;
+  lat: number;
+  lng: number;
+}
+
+export interface StationResponse {
+  id?: string; //dummy-data를 위해 잠시 추가
+  name: string;
+  address?: string | null;
   lat: number;
   lng: number;
 }
@@ -11,7 +19,7 @@ export interface BaseResponse {
 export interface PathResponse {
   startStation: string;
   time: number;
-  stations: BaseResponse[];
+  stations: StationResponse[];
 }
 
 export interface EndpointResponse extends BaseResponse {
@@ -20,32 +28,56 @@ export interface EndpointResponse extends BaseResponse {
 }
 
 export interface MidpointResponse {
-  start: BaseResponse[];
-  midpoints: EndpointResponse[];
+  start: StationResponse[];
+  midPointResponses: EndpointResponse[];
 }
 
 export const DefaultMidpointValue = {
   start: [
+    //StationResponse[]
     {
-      id: "",
       name: "",
-      address: "",
+      address: "", //null
       lat: 37.5172,
       lng: 127.0473,
     },
   ],
-  end: [
+  midPointResponses: [
+    {
+      //BaseResponse
+      id: "",
+      name: "",
+      address: "", //null
+      lat: 37.5172,
+      lng: 127.0473,
+      line: "3호선",
+      path: [
+        //StationResponse[]
+        {
+          startStation: "강남역",
+          time: 1,
+          path: [
+            {
+              name: "",
+              address: "",
+              lat: 37.5172,
+              lng: 127.0473,
+            },
+          ],
+        },
+      ],
+    },
     {
       id: "",
       name: "",
-      address: "",
+      address: "", //null
       lat: 37.5172,
       lng: 127.0473,
-      start: [
+      line: "3호선",
+      path: [
         {
-          name: "",
-          address: "",
-          time: 80,
+          startStation: "잠실역",
+          time: 1,
           path: [
             {
               name: "",

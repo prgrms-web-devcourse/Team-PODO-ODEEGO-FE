@@ -24,7 +24,7 @@ export const dummyData: MidpointResponse = {
       lng: 127.109,
     },
   ],
-  midpoints: [
+  midPointResponses: [
     {
       id: "fddffssssf",
       name: "강남역A",

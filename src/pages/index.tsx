@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
 import { MidPointApi } from "@/axios/mid-point";
 import { COLORS } from "@/constants/css";
@@ -16,6 +16,7 @@ import { accessTokenState } from "@/recoil/acess-token-state";
 import { GroupsApi } from "@/axios/groups";
 import HomeButton from "@/components/home/home-button";
 import useModal from "@/hooks/use-modal";
+import { MidPointState } from "@/recoil/midpoint-state";
 
 const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
 const BUTTON_MID_POINT_TEXT = "중간지점 찾기";
@@ -30,6 +31,7 @@ export default function Home() {
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const [isMidPointApiLoading, setIsMidPointApiLoading] = useState(false);
   const [isGroupsApiLoading, setIsGroupsApiLoading] = useState(false);
+  const setMidPointResponse = useSetRecoilState(MidPointState);
   const router = useRouter();
   const { openModal } = useModal();
 
@@ -114,10 +116,8 @@ export default function Home() {
     } else if (data.start.length < 2) {
       toast.error("중복 출발지입니다.");
     } else {
-      //TODO
-      // - recoil에 저장
-      // - map page로 이동
-      console.log(data);
+      setMidPointResponse(data);
+      router.push("/map");
     }
   };
 
@@ -179,6 +179,8 @@ export default function Home() {
                 fontSize: "1.5rem",
               },
             }}>
+            {" "}
+            {/* isLoading => circularProgress */}
             <HomeButton
               onClick={debounceMidPoint}
               isLoading={isMidPointApiLoading}

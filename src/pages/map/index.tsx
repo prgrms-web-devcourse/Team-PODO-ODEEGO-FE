@@ -10,19 +10,24 @@ import { dummyData } from "@/utils/dummy-data";
 const MapPage = () => {
   const [currentMidway, setCurrentMidway] = useState(0);
   const mapContainerRef = useRef(null);
-  const { start, midpoints } = dummyData;
+  const { start, midPointResponses } = dummyData;
+  //home-address page와  싱크 맞추면서 수정된 부분 : dummy -> useRecoilValue
+  // const { start, midPointResponses } = useRecoilValue(MidPointState);
   const { map, setBoundToMidpoint } = useMap({
     mapContainerRef,
-    initialCenter: { lat: midpoints[0].lat, lng: midpoints[0].lng },
+    initialCenter: {
+      lat: midPointResponses[0].lat,
+      lng: midPointResponses[0].lng,
+    },
     startPoints: start,
   });
 
   const handleNavigate = (id: string) => {
-    const midpoint = midpoints.find((data) => data.id === id);
+    const midpoint = midPointResponses.find((data) => data.id === id);
     if (!midpoint) return;
     if (!map) return;
     setBoundToMidpoint({ lat: midpoint.lat, lng: midpoint.lng }, map);
-    setCurrentMidway(midpoints.indexOf(midpoint));
+    setCurrentMidway(midPointResponses.indexOf(midpoint));
   };
 
   return (
@@ -33,7 +38,7 @@ const MapPage = () => {
           <Close htmlColor={COLORS.altGreen} fontSize='inherit' />
         </Header>
         <Stack direction='row' spacing={4} justifyContent='center'>
-          {midpoints.map((data, index) => (
+          {midPointResponses.map((data, index) => (
             <MidpointButton
               key={data.id}
               id={data.id}
