@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const SearchAPI = {
-  getSubway: async (value: string) => {
+  getSubway: async (value: string | undefined) => {
     try {
       const result = await axios.get(
         `http://dapi.kakao.com/v2/local/search/keyword.json?query=${value}&category_group_code=SW8`,
