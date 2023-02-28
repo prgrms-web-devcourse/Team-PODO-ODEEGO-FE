@@ -74,8 +74,8 @@ const SearchInput = () => {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
       },
+      // 출발지 확정시
       handleConfirm: () => {
-        // await sleep(1000);
         setRecoilData((prev: searchProps[]) => [
           ...prev.slice(0, id),
           obj,
