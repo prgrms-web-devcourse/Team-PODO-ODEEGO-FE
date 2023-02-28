@@ -53,10 +53,15 @@ const SearchInput = () => {
   };
 
   const { data: resultSubway } = useQuery(
-    ["search", value],
-    () => SearchAPI.getSubway(value),
+    ["search", value], // key가 충분히 unique 한가?
+    () => {
+      console.log("change");
+      return SearchAPI.getSubway(value);
+    },
     {
       enabled: value.length > 0,
+      refetchOnMount: true,
+      staleTime: 10000,
     }
   );
 
