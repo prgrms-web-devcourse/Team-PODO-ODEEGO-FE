@@ -17,7 +17,7 @@ interface searchProps {
   name: string;
   lat: string;
   lng: string;
-  address: string;
+  address?: string;
 }
 
 export type { searchOriginProps, searchProps };

@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { Button, InputAdornment, TextField } from "@mui/material";
@@ -16,15 +16,37 @@ const SearchInput = () => {
   const [value, setValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
-  const [testToken, setTestToken] = useRecoilState<any>(tokenRecoilState); // 로그인 토큰 가져오기.
-  const id = parseInt(useSearchParams().get("id") || "0", 10);
-  const { openModal, closeModal } = useModal();
+  const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
+  const id = parseInt(useSearchParams().get("id") || "0", 10); // input Id(주소입력창)
+  const groupId = useSearchParams().get("id") || "0";
+  const { openModal } = useModal();
 
   const router = useRouter();
 
-  if (!testToken) {
-    // 로그인 화면으로 대체해야함.
-    router.push("/");
+  const setLoginModalContent = () => {
+    return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
+  };
+
+  // 링크를 공유 받았을 때.
+  if (groupId) {
+    if (!testToken) {
+      openModal({
+        children: setLoginModalContent(),
+        btnText: {
+          confirm: "로그인하기!",
+          close: "취소",
+        },
+        handleConfirm: () => {
+          // 로그인 화면으로 대체 예정.
+          // router.push("/");
+        },
+        handleClose: () => {
+          window.close();
+        },
+      });
+      // 로그인 화면으로 대체 예정.
+      router.push("/");
+    }
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
@@ -59,11 +81,11 @@ const SearchInput = () => {
 
   const handleStartPointModal = (val: searchOriginProps) => {
     const obj = {
-      groupId: id,
-      name: val.place_name,
+      groupId: groupId,
+      name: val.place_name, //stationName
       lat: val.y,
       lng: val.x,
-      address: val.address_name,
+      // address: val.address_name, // 필요없는듯?
     };
 
     openModal({
@@ -74,13 +96,14 @@ const SearchInput = () => {
       },
       // 출발지 확정시
       handleConfirm: () => {
+        // 공유된 링크로 접속할 때는 안쓰일듯?
         setRecoilData((prev: searchProps[]) => [
           ...prev.slice(0, id),
           obj,
           ...prev.slice(id + 1),
         ]);
 
-        // 임시 값.
+        // 주소를 BE로 send
         SearchAPI.sendStartPoint({
           groupId: obj.groupId.toString(),
           stationName: obj.name,
@@ -93,9 +116,9 @@ const SearchInput = () => {
     });
   };
 
-  const handleClickButton = (e) => {
+  // 개인 정보 받아오기 API가 완성되면 '내주소'를 TextField에 넣을 수 있게한다
+  const handleClickButton = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     console.log("click");
   };
 
@@ -142,7 +165,9 @@ const SearchInput = () => {
           </SearchToggleBox>
         </SearchToggleBoxContainer>
       )}
-      <Button onClick={handleClickButton}>test</Button>
+      <Button onClick={handleClickButton} color='primary'>
+        내 주소 입력하기
+      </Button>
     </SearchContainer>
   );
 };

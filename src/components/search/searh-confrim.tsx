@@ -11,6 +11,7 @@ const SearchConfirm = () => {
     return (
       <>
         <Container>
+          {/* 닉네임을 받아올 수 있는가? */}
           <H1>000님이 주소를 요청했습니다.</H1>
           <P>약속 장소를 찾기 위해 주소가 필요합니다.</P>
           <P>계속 하시겠습니까?</P>
@@ -19,8 +20,7 @@ const SearchConfirm = () => {
     );
   };
 
-  // const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
+  // 여기서 id 값을 알 필요가 있을까?
   const handleOpenModal = (id: string) => {
     openModal({
       children: modalContent(),
