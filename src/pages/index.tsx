@@ -69,23 +69,25 @@ export default function Home() {
       router.push("/login");
       return;
     }
+    if (groupId) {
+      //router.push(`/groups/${groupId}`);
+      return;
+    }
     console.log(token, hasAccessToken);
 
     setIsGroupsApiLoading(true);
-    if (!groupId) {
-      openModal({
-        children: modalContent(),
-        btnText: {
-          confirm: "모임 만들기",
-          close: "취소",
-        },
-        handleConfirm: async () => {
-          await (() => new Promise((r) => setTimeout(r, 1000)))();
-          console.log("call making group api ");
-          // router.push(`/groups/${groupId}`);
-        },
-      });
-    }
+    openModal({
+      children: modalContent(),
+      btnText: {
+        confirm: "모임 만들기",
+        close: "취소",
+      },
+      handleConfirm: async () => {
+        await (() => new Promise((r) => setTimeout(r, 1000)))();
+        console.log("call making group api ");
+        // router.push(`/groups/${groupId}`);
+      },
+    });
     setIsGroupsApiLoading(false);
   };
 
