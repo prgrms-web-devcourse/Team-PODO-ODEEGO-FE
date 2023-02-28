@@ -54,11 +54,11 @@ const { SEARCH, LOGIN, MAP } = ROUTES;
 export default function Home() {
   const [groupId, setGroupId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
   const count = useRecoilValue(countState);
   const setMidPointResponse = useSetRecoilState(MidPointState);
   //useRecoilValue로 바꾸기
   const [token, setToken] = useRecoilState(accessTokenState);
+  const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
@@ -71,26 +71,7 @@ export default function Home() {
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      router.push(LOGIN);
-    },
-  };
-
-  const selectModalConfig = {
-    children: <SelectModal />,
-    btnText: {
-      confirm: MAKE_A_GROUP_TEXT,
-      close: CLOSE_TEXT,
-    },
-    handleConfirm: async () => {
-      await (() => new Promise((r) => setTimeout(r, 3000)))();
-      //TODO: count parseINt, 및 ""이 아닐 때, api call
-      console.log("call making group api:  ", count);
-      console.log("set group id");
-      console.log("go to the group page");
-      setIsLoading(false);
-    },
-    handleClose: () => {
-      setIsLoading(false);
+      router.push(`${LOGIN}`);
     },
   };
 
@@ -124,7 +105,26 @@ export default function Home() {
     }
 
     setIsLoading(true);
-    openModal(selectModalConfig);
+    openModal({
+      children: <SelectModal />,
+      btnText: {
+        confirm: MAKE_A_GROUP_TEXT,
+        close: CLOSE_TEXT,
+      },
+      handleConfirm: async () => {
+        if (count === "") return;
+
+        const { groupId } = await GroupsApi.postCreateGroup(
+          49,
+          parseInt(count, 10)
+        );
+        setIsLoading(false);
+        console.log(`go to the group page : /group/${groupId}`);
+      },
+      handleClose: () => {
+        setIsLoading(false);
+      },
+    });
     setIsLoading(false);
   };
 
@@ -155,7 +155,7 @@ export default function Home() {
       console.log(token);
       console.log(data);
       setMidPointResponse(data);
-      router.push(MAP);
+      router.push(`${MAP}`);
     }
 
     setAddressList(notEmptyAddressList);
