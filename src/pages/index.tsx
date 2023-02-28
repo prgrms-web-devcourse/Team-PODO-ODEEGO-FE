@@ -26,20 +26,40 @@ import { MidPointState } from "@/recoil/midpoint-state";
 import SelectModal from "@/components/home/select-modal";
 import LoginConfirmModal from "@/components/home/login-modal";
 import { countState } from "@/recoil/count-state";
+import { ERROR_TEXT } from "@/constants/error";
+import { STATUS_CODE } from "@/constants/status";
+import { ROUTES } from "@/constants/routes";
+import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 
-const MAIN_TEXT = "만날 사람 주소를 추가해주세요";
-const BUTTON_MID_POINT_TEXT = "중간지점 찾기";
-const BUTTON_GROUPS_DEFAULT_TEXT = "링크로 주소 받기";
-const BUTTON_GROUPS_ALT_TEXT = "모임 보러가기";
+const { MAIN } = MAIN_TEXT;
+
+const {
+  BUTTON_MID_POINT_TEXT,
+  BUTTON_GROUPS_ALT_TEXT,
+  BUTTON_GROUPS_DEFAULT_TEXT,
+} = BUTTON_TEXT;
+
+const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
+
+const {
+  ERROR_DUPLICATE_START_POINT,
+  ERROR_MISSING_START_POINT,
+  ERROR_OUT_OF_BOUND,
+} = ERROR_TEXT;
+
+const { ERROR_400 } = STATUS_CODE;
+
+const { SEARCH, LOGIN, MAP } = ROUTES;
 
 export default function Home() {
   const [groupId, setGroupId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
-  const [token, setToken] = useRecoilState(accessTokenState);
   const count = useRecoilValue(countState);
-  const [addressList, setAddressList] = useRecoilState(searchState);
   const setMidPointResponse = useSetRecoilState(MidPointState);
+  //useRecoilValue로 바꾸기
+  const [token, setToken] = useRecoilState(accessTokenState);
+  const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
   const { openModal } = useModal();
@@ -47,19 +67,19 @@ export default function Home() {
   const loginModalConfig = {
     children: <LoginConfirmModal />,
     btnText: {
-      confirm: "로그인하기",
-      close: "취소",
+      confirm: LOGIN_TEXT,
+      close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      router.push("/login");
+      router.push(LOGIN);
     },
   };
 
   const selectModalConfig = {
     children: <SelectModal />,
     btnText: {
-      confirm: "모임 만들기",
-      close: "취소",
+      confirm: MAKE_A_GROUP_TEXT,
+      close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
       await (() => new Promise((r) => setTimeout(r, 3000)))();
@@ -88,7 +108,7 @@ export default function Home() {
   }, [hasAccessToken]);
 
   const handleInputClickRoute = (index: number) => {
-    router.push(`/search?id=${index}`);
+    router.push(`${SEARCH}?id=${index}`);
   };
 
   const handleButtonClickGroups = async () => {
@@ -111,30 +131,34 @@ export default function Home() {
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
 
-    const addressListCopy = addressList.filter((a) => a.name !== "");
-    if (addressListCopy.length < 2) {
-      toast.error("주소를 2개 이상 입력해주세요.");
+    const notEmptyAddressList = addressList.filter((a) => a.name !== "");
+    if (notEmptyAddressList.length < 2) {
+      toast.error(ERROR_MISSING_START_POINT);
       setIsLoading(false);
       return;
     }
 
     setIsLoading(true);
-    const data = await MidPointApi.postMidPoint(addressListCopy);
+
+    const data = await MidPointApi.postMidPoint(notEmptyAddressList);
     await (() => new Promise((r) => setTimeout(r, 3000)))();
 
     setIsLoading(false);
 
-    if (data.status === 400) {
-      toast.error("수도권 내의 범위로 출발지를 입력해주세요.");
+    if (data.status === ERROR_400) {
+      toast.error(ERROR_OUT_OF_BOUND);
     } else if (data.start.length < 2) {
-      toast.error("중복 출발지입니다.");
+      toast.error(ERROR_DUPLICATE_START_POINT);
     } else {
+      //TODO
+      // - 지우기
       console.log(token);
+      console.log(data);
       setMidPointResponse(data);
-      router.push("/map");
+      router.push(MAP);
     }
 
-    setAddressList(addressListCopy);
+    setAddressList(notEmptyAddressList);
   };
 
   const { run: debounceMidPoint } = useTimeoutFn({
@@ -151,7 +175,7 @@ export default function Home() {
       <Header />
       <MainContainer>
         <BorderContainer />
-        <TextP>{MAIN_TEXT}</TextP>
+        <TextP>{MAIN}</TextP>
         <Form>
           <Box
             sx={{
