@@ -74,6 +74,4 @@ const TabItem = styled.div`
   }
 `;
 
-const TabSpan=styled.span`
-
-`
+// const TabSpan = styled.span``;
