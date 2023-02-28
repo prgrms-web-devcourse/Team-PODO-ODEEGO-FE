@@ -3,26 +3,45 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSetRecoilState } from "recoil";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
+import useModal from "@/hooks/use-modal";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const id = parseInt(useSearchParams().get("id") || "0", 10);
 
   const router = useRouter();
 
+  const handleLocationClick = (val: searchOriginProps) => {
+    if (id === undefined || id === null) return;
+
+    handleOpenModal(val);
+  };
+
+  const { data: resultSubway } = useQuery(
+    ["search", value],
+    () => SearchAPI.getSubway(value),
+    {
+      enabled: value.length > 0,
+    }
+  );
+
+  // useEffect(() => {
+  //   setSubway([...resultSubway]);
+  // }, [resultSubway]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    if (!value.includes("역")) {
-      setErrorMessage("역만 입력해주세요");
+    if (!resultSubway || resultSubway.length === 0) {
+      setErrorMessage("검색 결과가 없습니다");
     } else {
       setErrorMessage("");
     }
@@ -30,33 +49,43 @@ const SearchInput = () => {
     setValue(value);
   };
 
-  const handleLocationClick = (val: searchOriginProps) => {
-    if (id === undefined || id === null) return;
+  const { openModal } = useModal();
 
+  const modalContent = () => {
+    return <></>;
+  };
+
+  // const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  const handleOpenModal = (val: searchOriginProps) => {
     const obj = {
       name: val.place_name,
       lat: val.y,
       lng: val.x,
       address: val.address_name,
     };
-    setRecoilData((prev: searchProps[]) => [
-      ...prev.slice(0, id),
-      obj,
-      ...prev.slice(id + 1),
-    ]);
 
-    if (val) {
-      router.push("/");
-    }
+    openModal({
+      children: modalContent(),
+      btnText: {
+        confirm: "장소를 확정합니다.",
+        close: "다시 선택합니다.",
+      },
+      handleConfirm: () => {
+        // await sleep(1000);
+        setRecoilData((prev: searchProps[]) => [
+          ...prev.slice(0, id),
+          obj,
+          ...prev.slice(id + 1),
+        ]);
+
+        router.push("/");
+      },
+      handleClose: () => {
+        // router.push("/");
+      },
+    });
   };
-
-  const { data: resultSubway } = useQuery(
-    ["search", value],
-    () => SearchAPI.getSubway(value),
-    {
-      enabled: value.length > 0 && value.includes("역"),
-    }
-  );
 
   return (
     <SearchContainer>
@@ -78,19 +107,15 @@ const SearchInput = () => {
           type='text'
           onChange={handleChange}
         />
-        {errorMessage.length > 0 && value.length > 0 && (
-          <NotFound
-            title={"역만 입력해주세요"}
-            icon={"지하철역"}
-            sxNumber={50}
-          />
+        {(resultSubway?.length <= 0 || !resultSubway) && (
+          <NotFound title={errorMessage} icon={"지하철역"} sxNumber={50} />
         )}
       </SearchInputWrapper>
 
-      {resultSubway?.data?.documents?.length > 0 && (
-        <SearchToggleBox>
-          {resultSubway?.data?.documents?.map(
-            (val: searchOriginProps, index: number) => {
+      {resultSubway?.length > 0 && (
+        <SearchToggleBoxContainer>
+          <SearchToggleBox>
+            {resultSubway.map((val: searchOriginProps, index: number) => {
               return (
                 <SearchToggleWrapper key={index}>
                   <SearchToggleData
@@ -100,10 +125,11 @@ const SearchInput = () => {
                   </SearchToggleData>
                 </SearchToggleWrapper>
               );
-            }
-          )}
-        </SearchToggleBox>
+            })}
+          </SearchToggleBox>
+        </SearchToggleBoxContainer>
       )}
+      <p>test</p>
     </SearchContainer>
   );
 };
@@ -118,45 +144,50 @@ const SearchInputWrapper = styled.div`
 
 const SearchContainer = styled.div`
   width: 100%;
-  position: relative;
   margin: auto;
   border: 0;
 `;
 
-const SearchToggleBox = styled.div`
-  margin-top: 50px;
-  height: 200px;
-  overflow-y: auto;
+const SearchToggleBoxContainer = styled.div`
+  height: 643px;
+  width: 370px;
+  overflow: scroll;
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
 
-  max-height: 884px;
-  width: 370px;
   background-color: #fff;
-  position: absolute;
-  top: 45px;
   border: #464646;
   padding: 15px;
 `;
 
-const SearchToggleWrapper = styled.ul`
-  position: relative;
+const SearchToggleBox = styled.ul`
+  /* max-height: 200px; */
+  overflow: scroll;
+  ::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+  }
+  width: 370px;
+  background-color: #fff;
+  border: #464646;
+  padding: 15px;
+`;
+
+const SearchToggleWrapper = styled.li`
+  list-style: none;
   right: 9%;
 `;
 
-const SearchToggleData = styled.li`
+const SearchToggleData = styled.div`
   padding: 10px 8px;
   width: 100%;
   font-size: 14px;
   font-weight: bold;
   letter-spacing: 2px;
   border-bottom: 1px solid rgba(236, 244, 255, 0.95);
-  list-style: none;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
     cursor: pointer;
   }
-  position: relative;
 `;

@@ -12,7 +12,8 @@ export const SearchAPI = {
         }
       );
 
-      return result;
+      // result 에서 data 만 꺼내서 return 할까?
+      return result.data.documents;
     } catch (err) {
       throw new Error((<Error>err).message);
     }
