@@ -13,6 +13,7 @@ export default async function handler(
   const { capacity } = req.body;
   const requestUrl = `${API_END_POINT}/api/test/groups?member-id=${memberId}`;
   console.log(`API routes(/api/test/groups): ${requestUrl}`);
+
   try {
     const response = await axios({
       url: requestUrl,
@@ -27,6 +28,6 @@ export default async function handler(
     res.status(200).json({ groupId });
   } catch (e) {
     console.error(e);
-    res.status(400).json({ error: "Error", status: 400 });
+    res.status(400).send({ error: "Error", status: 400 });
   }
 }

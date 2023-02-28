@@ -3,4 +3,5 @@ export const ERROR_TEXT = {
   ERROR_DUPLICATE_START_POINT: "중복 출발지입니다.",
   ERROR_MISSING_START_POINT: "주소를 2개 이상 입력해주세요.",
   ERROR_NETWORK: "네트워크 오류.",
+  ERROR_ALREADY_EXIST_GROUP: "이미 약속방이 존재합니다",
 };

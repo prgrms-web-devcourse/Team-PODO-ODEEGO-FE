@@ -25,11 +25,12 @@ import useModal from "@/hooks/use-modal";
 import { MidPointState } from "@/recoil/midpoint-state";
 import SelectModal from "@/components/home/select-modal";
 import LoginConfirmModal from "@/components/home/login-modal";
-import { countState } from "@/recoil/count-state";
 import { ERROR_TEXT } from "@/constants/error";
 import { STATUS_CODE } from "@/constants/status";
 import { ROUTES } from "@/constants/routes";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
+import { getLocalStorage, setLocalStorage } from "@/utils/storage";
+import { COUNT } from "@/constants/local-storage";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -45,6 +46,7 @@ const {
   ERROR_DUPLICATE_START_POINT,
   ERROR_MISSING_START_POINT,
   ERROR_OUT_OF_BOUND,
+  ERROR_ALREADY_EXIST_GROUP,
 } = ERROR_TEXT;
 
 const { ERROR_400 } = STATUS_CODE;
@@ -54,7 +56,6 @@ const { SEARCH, LOGIN, MAP } = ROUTES;
 export default function Home() {
   const [groupId, setGroupId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const count = useRecoilValue(countState);
   const setMidPointResponse = useSetRecoilState(MidPointState);
   //useRecoilValue로 바꾸기
   const [token, setToken] = useRecoilState(accessTokenState);
@@ -83,6 +84,7 @@ export default function Home() {
       const groupId = data?.groups?.[0]?.groupId || "";
 
       setGroupId(groupId);
+      setLocalStorage(COUNT, "");
     };
 
     initGroupId();
@@ -112,13 +114,18 @@ export default function Home() {
         close: CLOSE_TEXT,
       },
       handleConfirm: async () => {
+        const count = getLocalStorage(COUNT, "");
         if (count === "") return;
 
-        const { groupId } = await GroupsApi.postCreateGroup(
-          49,
-          parseInt(count, 10)
-        );
+        const data = await GroupsApi.postCreateGroup(49, parseInt(count, 10));
         setIsLoading(false);
+
+        if (data.status === ERROR_400) {
+          toast.error(ERROR_ALREADY_EXIST_GROUP);
+          return;
+        }
+
+        const { groupId } = data;
         console.log(`go to the group page : /group/${groupId}`);
       },
       handleClose: () => {

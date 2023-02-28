@@ -1,4 +1,5 @@
-import { countState } from "@/recoil/count-state";
+import { COUNT } from "@/constants/local-storage";
+import { setLocalStorage } from "@/utils/storage";
 import styled from "@emotion/styled";
 import {
   FormControl,
@@ -6,12 +7,13 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { useRecoilState } from "recoil";
+import { useState } from "react";
 
 const SelectModal = () => {
-  const [count, setCount] = useRecoilState(countState);
+  const [count, setCount] = useState("");
 
   const handleChange = (e: SelectChangeEvent) => {
+    setLocalStorage(COUNT, e.target.value);
     setCount(e.target.value);
   };
 
@@ -22,6 +24,7 @@ const SelectModal = () => {
         <Select
           id='count-select-standard'
           value={count}
+          placeholder='몇 명'
           sx={{
             fontSize: "1.5rem",
 
@@ -34,9 +37,15 @@ const SelectModal = () => {
           <MenuItem value='' sx={{ display: "none" }}>
             <em>-</em>
           </MenuItem>
-          <MenuItem value='2'>2명</MenuItem>
-          <MenuItem value='3'>3명</MenuItem>
-          <MenuItem value='4'>4명</MenuItem>
+          <MenuItem value='2' sx={{ fontSize: "1.3rem", minHeight: 0 }}>
+            2명
+          </MenuItem>
+          <MenuItem value='3' sx={{ fontSize: "1.3rem", minHeight: 0 }}>
+            3명
+          </MenuItem>
+          <MenuItem value='4' sx={{ fontSize: "1.3rem", minHeight: 0 }}>
+            4명
+          </MenuItem>
         </Select>
       </FormControl>
     </>
