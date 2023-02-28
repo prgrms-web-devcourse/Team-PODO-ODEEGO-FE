@@ -1,0 +1,41 @@
+import { GroupDetailResponse } from "@/types/api/group";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchGroup = async (groupId: string, token: string) => {
+  try {
+    // **TODO: 모임 상세 정보 찾기 API로 변경
+    const { data } = await axios.get<GroupDetailResponse>(
+      "http://52.78.224.123:8080/api/test/groups/bb644fe4-8f34-4775-882a-c1d2ee01f322"
+    );
+    console.log(token);
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteGroup = async (groupId: string, token: string) => {
+  try {
+    await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/groups/${groupId}`,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+const useGroup = (groupId: string, token: string) => {
+  return useQuery(["group"], () => fetchGroup(groupId, token), {
+    refetchOnMount: true,
+    staleTime: 10000,
+  });
+};
+
+export { useGroup, fetchGroup, deleteGroup };
