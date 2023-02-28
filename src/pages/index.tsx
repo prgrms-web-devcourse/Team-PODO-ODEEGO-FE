@@ -70,7 +70,8 @@ export default function Home() {
       return;
     }
     if (groupId) {
-      //router.push(`/groups/${groupId}`);
+      //router.push(`/group/${groupId}`);
+      console.log("go to the group page");
       return;
     }
     console.log(token, hasAccessToken);
@@ -85,7 +86,8 @@ export default function Home() {
       handleConfirm: async () => {
         await (() => new Promise((r) => setTimeout(r, 1000)))();
         console.log("call making group api ");
-        // router.push(`/groups/${groupId}`);
+        setGroupId("hello");
+        // router.push(`/group/${groupId}`);
       },
     });
     setIsGroupsApiLoading(false);
@@ -96,23 +98,13 @@ export default function Home() {
     setIsMidPointApiLoading(true);
 
     const addressListCopy = addressList.filter((a) => a.address !== "");
-    const filteredAddressList = addressListCopy
-      .filter((a) => a.address !== "")
-      .map((a) => {
-        return {
-          name: a.name.split(" ")[0],
-          lat: parseFloat(a.lat),
-          lng: parseFloat(a.lng),
-        };
-      });
-
-    if (filteredAddressList.length < 2) {
+    if (addressListCopy.length < 2) {
       toast.error("주소를 2개 이상 입력해주세요.");
       setIsMidPointApiLoading(false);
       return;
     }
 
-    const data = await MidPointApi.postMidPoint(filteredAddressList);
+    const data = await MidPointApi.postMidPoint(addressListCopy);
 
     setAddressList(addressListCopy);
     setIsMidPointApiLoading(false);

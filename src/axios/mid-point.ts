@@ -1,19 +1,24 @@
+import { searchProps } from "@/types/search-props";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
 
-interface Address {
-  name: string;
-  lat: number;
-  lng: number;
-}
-
 export const MidPointApi = {
-  postMidPoint: async (addressList: Address[]) => {
+  postMidPoint: async (addressList: searchProps[]) => {
+    const filteredAddressList = addressList
+      .filter((a) => a.address !== "")
+      .map((a) => {
+        return {
+          name: a.name.split(" ")[0],
+          lat: parseFloat(a.lat),
+          lng: parseFloat(a.lng),
+        };
+      });
+
     try {
       const { data } = await HTTP.post({
         url: "/v1/mid-point/search",
         data: {
-          stations: addressList,
+          stations: filteredAddressList,
         },
       });
 
