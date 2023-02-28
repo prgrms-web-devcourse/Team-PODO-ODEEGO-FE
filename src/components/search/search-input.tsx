@@ -49,7 +49,6 @@ const SearchInput = () => {
 
   const handleLocationClick = (val: searchOriginProps) => {
     if (id === undefined || id === null) return;
-
     handleStartPointModal(val);
   };
 
@@ -115,12 +114,15 @@ const SearchInput = () => {
         });
 
         if (host) {
+          // 주소 입력하고 모임 화면(홈페이지16)으로 redirection
           console.log("방장임!");
         } else {
+          // 주소 입력 후 메인 화면으로 redirection
           console.log("방장아님!");
+          router.push("/");
         }
 
-        router.push("/");
+        // router.push("/");
       },
     });
   };
