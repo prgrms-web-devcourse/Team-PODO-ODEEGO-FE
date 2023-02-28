@@ -1,5 +1,6 @@
 export interface ParticipantResponse {
-  username: string;
+  memberId: string;
+  nickname: string;
   start: {
     stationName: string;
     lat: number;
@@ -10,6 +11,6 @@ export interface ParticipantResponse {
 export interface GroupDetailResponse {
   capacity: number;
   remainingTime: Date;
-  owner: string;
+  hostId: string;
   participants: ParticipantResponse[];
 }

@@ -10,7 +10,8 @@ import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 
 interface InputState {
-  username: string;
+  memberId: string;
+  nickname: string;
   stationName: string;
   lat: number;
   lng: number;
@@ -22,18 +23,25 @@ const GroupPage = ({
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState<InputState[]>();
-  const { capacity, remainingTime, participants, owner } = data;
-  console.log(capacity, remainingTime, participants, owner);
+  const { capacity, remainingTime, participants, hostId } = data;
+  console.log(capacity, remainingTime, participants, hostId);
 
   const getInputsByParticipant = useCallback(() => {
     if (participants && participants.length > 0) {
-      const inputsByParticipants = participants.map(({ username, start }) => {
-        const { stationName, lat, lng } = start;
-        return { username, stationName, lat, lng };
-      });
+      const inputsByParticipants = participants.map(
+        ({ memberId, nickname, start }) => {
+          const { stationName, lat, lng } = start;
+          return { memberId, nickname, stationName, lat, lng };
+        }
+      );
       return Array.from(
         { length: capacity },
-        (_, i) => inputsByParticipants[i] ?? { username: "", stationName: "" }
+        (_, i) =>
+          inputsByParticipants[i] ?? {
+            memberId: "",
+            nickname: "",
+            stationName: "",
+          }
       );
     }
 
@@ -48,12 +56,12 @@ const GroupPage = ({
     setInputs(initialInputs);
   }, [getInputsByParticipant]);
 
-  const handleInputClick = (username: string) => {
+  const handleInputClick = (memberId: string) => {
     router.push({
       pathname: "/search",
       query: {
         id: router.query.groupId,
-        owner: username === owner,
+        host: memberId === hostId,
       },
     });
   };
@@ -92,16 +100,16 @@ const GroupPage = ({
           <form>
             <Stack spacing={1.5}>
               {inputs &&
-                inputs.map(({ username, stationName }, index) => (
+                inputs.map(({ nickname, stationName, memberId }, index) => (
                   <div key={index}>
                     <FormInput
                       index={index}
                       address={stationName}
                       placeholder='주소가 아직 없어요...'
-                      onClick={() => handleInputClick(username)}
+                      onClick={() => handleInputClick(memberId)}
                     />
                     <InputLabel>
-                      {stationName ? `${username}이 입력했습니다` : ""}
+                      {stationName ? `${nickname}이 입력했습니다` : ""}
                     </InputLabel>
                   </div>
                 ))}
