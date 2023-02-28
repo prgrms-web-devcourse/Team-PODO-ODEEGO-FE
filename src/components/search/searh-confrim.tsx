@@ -43,7 +43,7 @@ const SearchConfirm = () => {
     if (id !== null) handleOpenModal();
   }, []);
 
-  // return <></>;
+  return <></>;
 };
 
 export default SearchConfirm;
