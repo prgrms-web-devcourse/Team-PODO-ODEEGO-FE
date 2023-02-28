@@ -10,7 +10,6 @@ import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
-import axios from "axios";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
