@@ -47,7 +47,7 @@ export default function Home() {
       <Main text={MAIN_TEXT}>
         <AddressForm />
       </Main>
-      <Link href='/group/3'>Go to Room</Link>
+      <Link href='/group/bb644fe4-8f34-4775-882a-c1d2ee01f322'>TEST GROUP</Link>
       <Button onClick={handleOpenModal}>Open Modal</Button>
       <div>
         <Link href='/search'>search</Link>
