@@ -1,8 +1,7 @@
-import { Button, CircularProgress } from "@mui/material";
+import { Button } from "@mui/material";
 
 interface HomeButtonProps {
   onClick: () => void;
-  isLoading: boolean;
   hasCondition?: boolean;
   defaultText: string;
   altText?: string;
@@ -21,7 +20,6 @@ interface HomeButtonProps {
 const HomeButton = ({
   color,
   onClick,
-  isLoading,
   hasCondition,
   defaultText,
   altText,
@@ -38,18 +36,7 @@ const HomeButton = ({
           borderRadius: "8px",
           textAlign: "center",
         }}>
-        {isLoading ? (
-          <CircularProgress
-            size='2rem'
-            sx={{
-              color: "white",
-            }}
-          />
-        ) : hasCondition ? (
-          <span>{altText}</span>
-        ) : (
-          <span>{defaultText}</span>
-        )}
+        {hasCondition ? <span>{altText}</span> : <span>{defaultText}</span>}
       </Button>
     </>
   );
