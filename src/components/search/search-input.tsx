@@ -2,7 +2,7 @@ import { SearchAPI } from "@/pages/api/search";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import React, { useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
@@ -10,14 +10,21 @@ import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
+import { tokenRecoilState } from "@/recoil/token-recoil";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
+  const [testToken, setTestToken] = useRecoilState<any>(tokenRecoilState); // 로그인 토큰 가져오기.
   const id = parseInt(useSearchParams().get("id") || "0", 10);
 
   const router = useRouter();
+
+  if (!testToken) {
+    // 로그인 화면으로 대체해야함.
+    router.push("/");
+  }
 
   const handleLocationClick = (val: searchOriginProps) => {
     if (id === undefined || id === null) return;
@@ -32,10 +39,6 @@ const SearchInput = () => {
       enabled: value.length > 0,
     }
   );
-
-  // useEffect(() => {
-  //   setSubway([...resultSubway]);
-  // }, [resultSubway]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -162,7 +165,6 @@ const SearchToggleBoxContainer = styled.div`
 `;
 
 const SearchToggleBox = styled.ul`
-  /* max-height: 200px; */
   overflow: scroll;
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
