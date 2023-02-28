@@ -18,7 +18,9 @@ const SearchInput = () => {
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
   const id = parseInt(useSearchParams().get("id") || "0", 10); // input Id(주소입력창)
-  const groupId = useSearchParams().get("id") || "0";
+  const groupId = useSearchParams().get("id") || "0"; // 방 Id
+  const host = useSearchParams().get("host") || null;
+
   const { openModal } = useModal();
 
   const router = useRouter();
@@ -35,9 +37,6 @@ const SearchInput = () => {
         btnText: {
           confirm: "로그인하기!",
           close: "취소",
-        },
-        handleConfirm: () => {
-          //
         },
         handleClose: () => {
           window.close();
@@ -62,7 +61,7 @@ const SearchInput = () => {
     }
   );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
     if (!resultSubway || resultSubway.length === 0) {
@@ -74,8 +73,13 @@ const SearchInput = () => {
     setValue(value);
   };
 
-  const setStartPointModalContent = () => {
-    return <p>출발역은 수정할 수 없습니다.</p>;
+  const setStartPointModalContent = (startPoint: string) => {
+    return (
+      <>
+        <p>{startPoint}</p>
+        <p>출발역은 수정할 수 없습니다.</p>
+      </>
+    );
   };
 
   const handleStartPointModal = (val: searchOriginProps) => {
@@ -88,7 +92,7 @@ const SearchInput = () => {
     };
 
     openModal({
-      children: setStartPointModalContent(),
+      children: setStartPointModalContent(obj.name),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
@@ -109,6 +113,12 @@ const SearchInput = () => {
           lat: +obj.lat,
           lng: +obj.lng,
         });
+
+        if (host) {
+          console.log("방장임!");
+        } else {
+          console.log("방장아님!");
+        }
 
         router.push("/");
       },
@@ -140,7 +150,7 @@ const SearchInput = () => {
             ),
           }}
           type='text'
-          onChange={handleChange}
+          onChange={handleChangeStartPoint}
         />
         {(resultSubway?.length <= 0 || !resultSubway) && (
           <NotFound title={errorMessage} icon={"지하철역"} sxNumber={50} />

@@ -26,15 +26,13 @@ export const SearchAPI = {
   },
 
   sendStartPoint: async (value: StartPointPros) => {
+    console.log(value);
     try {
       const result = await axios.patch(
         `http://52.78.224.123:8080/api/v1/mid-points/starts`,
         {
           body: {
-            groupId: "백엔드에서 만든 그룹 아이디", // value.groupId
-            stationName: "출발지A역", // value.stationName
-            lat: 1.123123, // value.lat
-            lng: 11.123123, // value.lng
+            value,
           },
         }
       );
