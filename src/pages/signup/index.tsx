@@ -15,7 +15,7 @@ const Index = () => {
   const token = "";
   return (
     <SignUpContainer>
-      <Header token={token} />
+      <Header userImage={token} />
       <BorderContainer />
       <SignUpTitle>홍길동 님의 가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

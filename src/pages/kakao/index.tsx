@@ -1,5 +1,9 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import Header from "@/components/home/home-header";
+import SignUpSearchInput from "@/components/signup/signup-search";
+import styled from "@emotion/styled";
+import { COLORS } from "@/constants/css";
 
 const Kakao = () => {
   const router = useRouter();
@@ -10,6 +14,8 @@ const Kakao = () => {
   // );
   // const [firstData, setFirstData] = useState("");
 
+  const [userImage, setTokenImage] = useState("");
+  // const token = "";
   useEffect(() => {
     try {
       const NewTest = async () => {
@@ -18,6 +24,8 @@ const Kakao = () => {
             `http://15.165.99.21:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
           );
           const data = await res2.json();
+
+          console.log(data);
 
           const res = await fetch(
             `http://15.165.99.21:8080/api/v1/auth/user/me`,
@@ -31,6 +39,8 @@ const Kakao = () => {
 
           const data3 = await res.json();
           console.log(data3);
+
+          setTokenImage(data3.profileImageUrl);
         }
 
         // axios
@@ -99,6 +109,38 @@ const Kakao = () => {
     }
   }, [router]);
 
-  return <h2>로그인 중입니다..</h2>;
+  console.log(userImage);
+
+  return (
+    <SignUpContainer>
+      <Header userImage={userImage} />
+      <BorderContainer />
+      <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
+
+      <SignUpSearchInput />
+    </SignUpContainer>
+  );
 };
 export default Kakao;
+
+const SignUpTitle = styled.h1`
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+`;
+
+const BorderContainer = styled.div`
+  height: 25px;
+  width: 100%;
+  background-color: ${COLORS.backgroundPrimary};
+  margin-top: -15px;
+  border-radius: 20px 20px 0 0;
+`;
+
+const SignUpContainer = styled.div`
+  width: 100%;
+  margin: 0 auto;
+`;

@@ -20,7 +20,7 @@ const LoginPage = () => {
   const token = "";
   return (
     <LoginContainer>
-      <Header token={token} />
+      <Header userImage={token} />
       <BorderContainer />
 
       <LoginWrapper>

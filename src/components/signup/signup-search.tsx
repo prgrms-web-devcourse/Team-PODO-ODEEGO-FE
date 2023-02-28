@@ -9,6 +9,7 @@ import NotFound from "@/components/search/not-found";
 
 import useSignupSearch from "@/hooks/use-signup-search";
 import SignupInput from "@/components/signup/signup-input";
+import { COLORS } from "@/constants/css";
 
 const SignUpSearchInput = () => {
   const router = useRouter();
@@ -32,6 +33,11 @@ const SignUpSearchInput = () => {
     }
   );
 
+  console.log(isToggleBoxLoading);
+
+  console.log("isLoading", isLoading);
+
+  console.log(resultSubway);
   return (
     <SignUpSearchContainer>
       <SignUpSearchInputWrapper>
@@ -57,7 +63,8 @@ const SignUpSearchInput = () => {
         </form>
       </SignUpSearchInputWrapper>
 
-      {isToggleBoxLoading === isLoading ? null : (
+      {isLoading === isToggleBoxLoading ||
+      resultSubway?.data.documents.length <= 0 ? null : (
         <SignUpSearchToggleBox>
           {resultSubway?.data?.documents?.map(
             (val: searchOriginProps, index: number) => {

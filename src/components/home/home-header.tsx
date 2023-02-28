@@ -2,18 +2,22 @@ import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import Image from "next/image";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 interface HeaderProps {
-  token?: string;
+  userImage?: string;
 }
-const Header = ({ token }: HeaderProps) => {
+const Header = ({ userImage }: HeaderProps) => {
+  console.log(userImage);
+
   return (
     <HeaderContainer>
-      {token ? (
+      {userImage ? (
         <HeaderIconWrap>
-          <AccountCircleIcon />
+          <Image
+            src='http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'
+            alt='user'
+          />
         </HeaderIconWrap>
       ) : (
         <HeaderIconWrap>
