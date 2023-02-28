@@ -37,8 +37,7 @@ const SearchInput = () => {
           close: "취소",
         },
         handleConfirm: () => {
-          // 로그인 화면으로 대체 예정.
-          // router.push("/");
+          //
         },
         handleClose: () => {
           window.close();
@@ -103,7 +102,7 @@ const SearchInput = () => {
           ...prev.slice(id + 1),
         ]);
 
-        // 주소를 BE로 send
+        // 선택한 주소를 BE로 보낸다.
         SearchAPI.sendStartPoint({
           groupId: obj.groupId.toString(),
           stationName: obj.name,
@@ -116,7 +115,7 @@ const SearchInput = () => {
     });
   };
 
-  // 개인 정보 받아오기 API가 완성되면 '내주소'를 TextField에 넣을 수 있게한다
+  // 개인 정보 받아오기 API가 완성되면 '내주소'를 TextField에 넣을 수 있게한다.
   const handleClickButton = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     console.log("click");

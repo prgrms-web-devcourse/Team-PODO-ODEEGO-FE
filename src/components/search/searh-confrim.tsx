@@ -21,7 +21,7 @@ const SearchConfirm = () => {
   };
 
   // 여기서 id 값을 알 필요가 있을까?
-  const handleOpenModal = (id: string) => {
+  const handleOpenModal = () => {
     openModal({
       children: modalContent(),
       btnText: {
@@ -40,7 +40,7 @@ const SearchConfirm = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const id = params.get("id"); // 방 ID
-    if (id !== null) handleOpenModal(id);
+    if (id !== null) handleOpenModal();
   }, []);
 
   // return <></>;
