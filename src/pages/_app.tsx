@@ -7,7 +7,7 @@ import Layout from "../components/layout/layout";
 import Script from "next/script";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "@/styles/theme";
-
+// vercel auth test
 declare global {
   // Kakao 함수를 전역에서 사용할 수 있도록 선언
   interface Window {
