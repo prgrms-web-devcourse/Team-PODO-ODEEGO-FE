@@ -13,7 +13,7 @@ const LoginPage = () => {
   const router = useRouter();
   function kakaoLogin() {
     window.Kakao.Auth.authorize({
-      redirectUri: "http://localhost:3000/kakao",
+      redirectUri: "https://localhost:3000/kakao",
     });
   }
   console.log(router);
