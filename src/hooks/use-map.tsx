@@ -8,7 +8,7 @@ interface useMapProps {
   initialCenter: { lat: number; lng: number };
   startPoints: BaseResponse[];
 }
-
+// vercel auth test
 const useMap = ({
   mapContainerRef,
   initialCenter,
