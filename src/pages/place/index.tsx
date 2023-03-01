@@ -1,6 +1,4 @@
 import styled from "@emotion/styled";
-
-import React, { useState } from "react";
 import PlaceInput from "@/components/place/place-input";
 import PlaceTabList from "@/components/place/place-tab-list";
 import { useRecoilValue } from "recoil";
@@ -15,12 +13,12 @@ const PlacePage = () => {
 
   // const [cafeData, setCafeData] = useState<Props[]>([]);
   // PlacePage 복구
-  const [place] = useState("강남역");
-  const [address] = useState("강남구 강남대로 396");
+  // const [place] = useState("강남역");
+  // const [address] = useState("강남구 강남대로 396");
 
   const { data, isLoading } = useQuery(
     ["place", getTabData],
-    () => PlaceAPI.getPlace(place, address, getTabData),
+    () => PlaceAPI.getPlace("강남역", "강남구 강남대로 396", getTabData),
     {
       keepPreviousData: true,
     }

@@ -21,7 +21,7 @@ export interface EndpointResponse extends BaseResponse {
 
 export interface MidpointResponse {
   start: BaseResponse[];
-  midpoints: EndpointResponse[];
+  midPointResponses: EndpointResponse[];
 }
 
 export const DefaultMidpointValue = {

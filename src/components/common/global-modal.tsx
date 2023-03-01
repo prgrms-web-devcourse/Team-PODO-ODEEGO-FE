@@ -1,5 +1,6 @@
 import { COLORS } from "@/constants/css";
 import useModal from "@/hooks/use-modal";
+import useTimeoutFn from "@/hooks/use-timeout-fn";
 import { ModalProps, modalState } from "@/recoil/modal-state";
 import styled from "@emotion/styled";
 import { Modal, Backdrop, Button } from "@mui/material";
@@ -20,12 +21,16 @@ const _Modal = ({
 }: ModalProps) => {
   const { closeModal } = useModal();
   const [show, setShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setShow(true);
   }, []);
 
   const close = () => {
+    if (isLoading) return;
+    if (handleClose) handleClose();
+
     setShow(false);
     setTimeout(() => {
       closeModal();
@@ -33,14 +38,24 @@ const _Modal = ({
   };
 
   const onConfirm = async () => {
+    setIsLoading(true);
     if (handleConfirm) await handleConfirm();
+    setIsLoading(false);
+
     close();
   };
 
   const onCancel = () => {
-    if (handleClose) handleClose();
+    // if (handleClose) handleClose();
     close();
   };
+
+  const { run: onConfirmDebounce } = useTimeoutFn({
+    fn: async () => {
+      onConfirm();
+    },
+    ms: 500,
+  });
 
   return (
     <Modal
@@ -61,7 +76,10 @@ const _Modal = ({
           {btnText ? (
             <FlexContainer direction='row'>
               {btnText.confirm && (
-                <Button variant='contained' color='primary' onClick={onConfirm}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={onConfirmDebounce}>
                   {btnText.confirm}
                 </Button>
               )}
