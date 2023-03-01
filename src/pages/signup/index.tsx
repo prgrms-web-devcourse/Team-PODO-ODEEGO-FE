@@ -2,7 +2,6 @@ import { useRouter } from "next/navigation";
 
 import React from "react";
 import styled from "@emotion/styled";
-// import Header from "@/components/home/home-header";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
