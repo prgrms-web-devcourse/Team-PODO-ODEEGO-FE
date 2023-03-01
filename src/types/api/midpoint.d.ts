@@ -2,7 +2,7 @@ import { SUBWAY } from "@/constants/css";
 
 export interface BaseResponse {
   id: string;
-  name: string;
+  stationName: string;
   address: string;
   lat: number;
   lng: number;
@@ -28,7 +28,7 @@ export const DefaultMidpointValue = {
   start: [
     {
       id: "",
-      name: "",
+      stationName: "",
       address: "",
       lat: 37.5172,
       lng: 127.0473,
@@ -37,18 +37,18 @@ export const DefaultMidpointValue = {
   end: [
     {
       id: "",
-      name: "",
+      stationName: "",
       address: "",
       lat: 37.5172,
       lng: 127.0473,
       start: [
         {
-          name: "",
+          stationName: "",
           address: "",
           time: 80,
           path: [
             {
-              name: "",
+              stationName: "",
               address: "",
               lat: 37.5172,
               lng: 127.0473,

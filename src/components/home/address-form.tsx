@@ -1,15 +1,15 @@
 import styled from "@emotion/styled";
-import { Box, IconButton } from "@mui/material";
+import { Container, IconButton, Stack } from "@mui/material";
 import { MouseEvent, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import CircularProgress from "@mui/material/CircularProgress";
-import FormInput from "./form-input";
 import { useRouter } from "next/navigation";
 import { COLORS } from "@/constants/css";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
+import FormInput from "../common/form-input";
 
 const BUTTON_SUBMIT_TEXT = "중간지점 찾기";
 
@@ -30,7 +30,7 @@ const AddressForm = () => {
       .filter((a) => a.address !== "")
       .map((a) => {
         return {
-          name: a.name,
+          stationName: a.stationName,
           lat: a.lat,
           lng: a.lng,
         };
@@ -61,31 +61,28 @@ const AddressForm = () => {
 
   return (
     <Form>
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}>
-        {inputs.map((input, index) => (
-          <FormInput
-            key={index}
-            index={index}
-            address={input.address}
-            onClick={() => handleInputClickRoute(index)}
-            onRemove={removeInput}
-          />
-        ))}
-        {inputs.length < 4 && (
-          <IconButton
-            aria-label='add'
-            sx={{ color: "#b4c9bc" }}
-            onClick={(e) => addInput(e)}>
-            <AddIcon />
-          </IconButton>
-        )}
-      </Box>
+      <Container>
+        <Stack spacing={1.5}>
+          {inputs.map((input, index) => (
+            <FormInput
+              key={index}
+              index={index}
+              address={input.address}
+              placeholder='주소 입력하기'
+              onClick={() => handleInputClickRoute(index)}
+              onRemove={removeInput}
+            />
+          ))}
+          {inputs.length < 4 && (
+            <IconButton
+              aria-label='add'
+              sx={{ color: "#b4c9bc" }}
+              onClick={(e) => addInput(e)}>
+              <AddIcon />
+            </IconButton>
+          )}
+        </Stack>
+      </Container>
       <SubmitButton type='submit' onClick={handleButtonClickSubmit}>
         {isLoading ? (
           <CircularProgress

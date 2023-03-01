@@ -33,10 +33,10 @@ const SearchInput = () => {
   const handleLocationClick = (val: searchOriginProps) => {
     if (id === undefined || id === null) return;
 
-    const obj = {
-      name: val.place_name,
-      lat: val.y,
-      lng: val.x,
+    const obj: searchProps = {
+      stationName: val.place_name,
+      lat: +val.y,
+      lng: +val.x,
       address: val.address_name,
     };
     setRecoilData((prev: searchProps[]) => [

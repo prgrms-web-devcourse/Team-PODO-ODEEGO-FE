@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { DirectionsSubwayFilledOutlined } from "@mui/icons-material";
 
 interface MidPointButtonProps {
-  name: string;
+  stationName: string;
   isCurrent: boolean;
   onClick(id: string): void;
   id: string;
@@ -11,7 +11,7 @@ interface MidPointButtonProps {
 
 const MidPointButton = ({
   onClick,
-  name,
+  stationName,
   isCurrent,
   id,
 }: MidPointButtonProps) => {
@@ -26,7 +26,7 @@ const MidPointButton = ({
         style={{
           color: isCurrent ? COLORS.textPrimary : COLORS.textSecondary,
         }}>
-        {name}
+        {stationName}
       </span>
     </Button>
   );
