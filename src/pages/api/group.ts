@@ -6,7 +6,7 @@ const fetchGroup = async (groupId: string, token: string) => {
   try {
     // **TODO: 모임 상세 정보 찾기 API로 변경
     const { data } = await axios.get<GroupDetailResponse>(
-      "http://52.78.224.123:8080/api/test/groups/bb644fe4-8f34-4775-882a-c1d2ee01f322"
+      `http://52.78.224.123:8080/api/test/groups/${groupId}`
     );
     console.log(token);
 
