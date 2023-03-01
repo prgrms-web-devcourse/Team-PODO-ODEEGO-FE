@@ -13,7 +13,7 @@ const LoginPage = () => {
   const router = useRouter();
   function kakaoLogin() {
     window.Kakao.Auth.authorize({
-      redirectUri: "https://localhost:3000/kakao",
+      redirectUri: "https://team-podo-odeego-fe-sigma.vercel.app/kakao",
     });
   }
   console.log(router);
