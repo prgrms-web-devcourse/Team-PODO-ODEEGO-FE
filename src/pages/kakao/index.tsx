@@ -34,8 +34,8 @@ const Kakao = () => {
 
           const res = await fetch(
             // 배포 서버
-            `https://52.78.224.123:8080/api/v1/auth/user/me`,
 
+            `https://52.78.224.123:8080/api/v1/auth/user/me`,
             // 개인 서버
             // `http://15.165.99.21:8080/api/v1/auth/user/me`,
             {
