@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function Home() {
+  //배포 확인용입니다~
   // useModal 훅 사용 예시입니다. 작업할땐 삭제해주세요. (line 9 - line 39)
   const { openModal } = useModal();
   const router = useRouter();
