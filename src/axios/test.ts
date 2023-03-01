@@ -2,9 +2,9 @@ import axios from "axios";
 import HTTP from "./config/axios-instance";
 
 export const TestApi = {
-  getAll: async (nickname: string) => {
+  postDummyUser: async (nickname: string) => {
     try {
-      const { data } = await HTTP.get({
+      const { data } = await HTTP.post({
         //TODO
         // - 지우기
         url: `/test/members?nickname=${nickname}`,

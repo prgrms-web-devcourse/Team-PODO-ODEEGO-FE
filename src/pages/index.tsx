@@ -31,6 +31,7 @@ import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { getLocalStorage, setLocalStorage } from "@/utils/storage";
 import { COUNT } from "@/constants/local-storage";
 import Header from "@/components/layout/header";
+import { TestApi } from "@/axios/test";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -92,7 +93,10 @@ export default function Home() {
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
-      const data = await GroupsApi.postCreateGroup(101, parseInt(count, 10));
+      const data = await GroupsApi.postCreateGroup(
+        parseInt(token),
+        parseInt(count, 10)
+      );
       setLocalStorage(COUNT, "");
 
       if (data.status === ERROR_400) {
@@ -111,16 +115,29 @@ export default function Home() {
       if (!hasAccessToken) return "";
 
       //TODO 실제 모임조회 api로 바꾸기
-      const data = await GroupsApi.getAll();
+      const data = await GroupsApi.getAll(token);
       const groupId = data?.groups?.[0]?.groupId || "";
 
       setGroupId(groupId);
-      setGroupId("");
+      // setGroupId("");
       setLocalStorage(COUNT, "");
     };
 
     initGroupId();
-  }, [hasAccessToken, setGroupId]);
+  }, [hasAccessToken, setGroupId, token]);
+
+  //tmp 더미 회원 생성 메서드
+  const createTmpDummyUser = async () => {
+    const nickname = "k" + Math.random() + "";
+
+    try {
+      const { memberId } = await TestApi.postDummyUser(nickname);
+
+      setToken(memberId);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleInputClickRoute = (index: number) => {
     router.push(`${SEARCH}?id=${index}`);
@@ -184,7 +201,7 @@ export default function Home() {
 
   return (
     <>
-      <Button onClick={() => setToken("hello")}>Set Token</Button>
+      <Button onClick={createTmpDummyUser}>Set Token</Button>
       <Header />
       <MainContainer>
         <BorderContainer />
