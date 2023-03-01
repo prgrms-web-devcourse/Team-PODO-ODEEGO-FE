@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-
 import React from "react";
 import styled from "@emotion/styled";
 import SignUpSearchInput from "@/components/signup/signup-search";
@@ -7,10 +5,6 @@ import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
 
 const Index = () => {
-  const router = useRouter();
-
-  console.log(router);
-
   // 임시 로그인 토큰
   // const token = "";
   return (

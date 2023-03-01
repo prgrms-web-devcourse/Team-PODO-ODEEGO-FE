@@ -9,6 +9,17 @@ import Header from "@/components/layout/header";
 const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
+
+  const { pathname } = router;
+
+  console.log(pathname);
+  console.log(authCode);
+
+  // const handleBackClick=()=>{
+  //   if(pathname === "/signin"){
+  //     router.push(`${ROUTES.LOGIN}}`)
+  //   }
+  // }
   //
   // const [key, setKey] = useState(
   //   "no0GyXiyp3x5whSPxfkdEmFSHXuGPn0ResRXWMcECinI2gAAAYaXTULM"

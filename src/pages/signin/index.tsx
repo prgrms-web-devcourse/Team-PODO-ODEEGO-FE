@@ -29,7 +29,6 @@ const LoginPage = () => {
       <BorderContainer />
 
       <LoginWrapper>
-        <h3>로그인</h3>
         <Image src={kakao_image} alt={"dsa"} onClick={kakaoLogin} />
       </LoginWrapper>
     </LoginContainer>
@@ -56,7 +55,7 @@ const LoginWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
-  height: 30vh;
+  height: 50vh;
   h3 {
     margin-bottom: 60px;
   }

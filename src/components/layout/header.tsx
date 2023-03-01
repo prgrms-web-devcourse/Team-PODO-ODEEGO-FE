@@ -22,8 +22,13 @@ const Header = ({ userImage, token }: HeaderProps) => {
   console.log(pathname);
 
   const handleBackClick = () => {
-    if (pathname === "/signin") {
-      router.push(`${ROUTES.HOME}`);
+    switch (pathname) {
+      case "/signin":
+        router.push(`${ROUTES.HOME}`);
+        break;
+      case "/signup":
+        router.push(`${ROUTES.LOGIN}`);
+        break;
     }
   };
 
