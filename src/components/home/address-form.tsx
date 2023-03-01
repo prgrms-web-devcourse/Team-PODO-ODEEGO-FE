@@ -30,7 +30,7 @@ const AddressForm = () => {
       .filter((a) => a.address !== "")
       .map((a) => {
         return {
-          stationName: a.name,
+          stationName: a.stationName,
           lat: a.lat,
           lng: a.lng,
         };
