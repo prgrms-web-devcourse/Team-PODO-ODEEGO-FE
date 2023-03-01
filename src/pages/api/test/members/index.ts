@@ -9,16 +9,19 @@ export default async function handler(
 ) {
   //TODO
   // - groups api로 바꿀 것
-  const requestUrl = `${API_END_POINT}/api/v1/groups?member-id=96`;
-  console.log(`API routes(/api/v1/group?member-id=): ${requestUrl}`);
+  const { nickname } = req.query;
+  const requestUrl = `${API_END_POINT}/api/test/members?nickname=${nickname}`;
+  console.log(`API routes(/api/test/members?nickname=): ${requestUrl}`);
 
   try {
-    const { data } = await axios({
+    const response = await axios({
       url: requestUrl,
-      method: "get",
+      method: "post",
     });
 
-    res.status(200).json(data);
+    const memberId = response.headers.location.split("/")[4];
+
+    res.status(200).json({ memberId });
   } catch (e) {
     console.error(e);
     res.status(400).json({ error: "Error", status: 400 });

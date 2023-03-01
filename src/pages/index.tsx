@@ -92,7 +92,7 @@ export default function Home() {
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
-      const data = await GroupsApi.postCreateGroup(93, parseInt(count, 10));
+      const data = await GroupsApi.postCreateGroup(101, parseInt(count, 10));
       setLocalStorage(COUNT, "");
 
       if (data.status === ERROR_400) {
@@ -115,6 +115,7 @@ export default function Home() {
       const groupId = data?.groups?.[0]?.groupId || "";
 
       setGroupId(groupId);
+      setGroupId("");
       setLocalStorage(COUNT, "");
     };
 

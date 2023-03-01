@@ -5,14 +5,16 @@ import { Stack } from "@mui/material";
 import { useRef, useState } from "react";
 import { ArrowBack, Close } from "@mui/icons-material";
 import useMap from "@/hooks/use-map";
-import { dummyData } from "@/utils/dummy-data";
+// import { dummyData } from "@/utils/dummy-data";
+import { useRecoilValue } from "recoil";
+import { MidPointState } from "@/recoil/midpoint-state";
 
 const MapPage = () => {
   const [currentMidway, setCurrentMidway] = useState(0);
   const mapContainerRef = useRef(null);
-  const { start, midPointResponses } = dummyData;
+  // const { start, midPointResponses } = dummyData;
   //home-address page와  싱크 맞추면서 수정된 부분 : dummy -> useRecoilValue
-  // const { start, midPointResponses } = useRecoilValue(MidPointState);
+  const { start, midPointResponses } = useRecoilValue(MidPointState);
   const { map, setBoundToMidpoint } = useMap({
     mapContainerRef,
     initialCenter: {

@@ -6,14 +6,13 @@ export const GroupsApi = {
     try {
       const { data } = await HTTP.get({
         //TODO
-        // - /v1/groups api로 바꿀 것
         // - axios instance에 accessToken 추가 : refreshToken이 있어서... 잠시 보류
         url: "/v1/groups",
       });
 
       console.log(data);
 
-      return { groups: [{ groupId: "", capacity: 4 }] };
+      return data;
     } catch (e) {
       console.error(e);
       if (axios.isAxiosError(e) && e.response?.status === 400) {
@@ -37,7 +36,6 @@ export const GroupsApi = {
 
       return data;
     } catch (e) {
-      console.error(e);
       if (axios.isAxiosError(e) && e.response?.status === 400) {
         return { error: "Error", status: 400 };
       }
