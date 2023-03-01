@@ -24,7 +24,10 @@ const GroupPage = () => {
   const [inputs, setInputs] = useState<InputState[]>();
   const token = useRecoilValue(tokenRecoilState);
   const { groupId } = router.query;
-  const { data, isLoading, isError } = useGroup(groupId as string, token);
+  const { data, isLoading, isError } = useGroup(
+    groupId as string,
+    token as string
+  );
 
   const getInputsByParticipant = useCallback(() => {
     if (!data) return;

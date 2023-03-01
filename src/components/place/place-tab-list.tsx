@@ -73,7 +73,3 @@ const TabItem = styled.div`
     padding: 0.4rem 1rem;
   }
 `;
-
-const TabSpan=styled.span`
-
-`

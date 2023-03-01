@@ -13,7 +13,7 @@ const NotFound = ({ title, icon, sxNumber }: NotFoundProps) => {
 
   useEffect(() => {
     setIconName(icon);
-  }, []);
+  }, [icon]);
 
   return (
     <NotFountContainer>
