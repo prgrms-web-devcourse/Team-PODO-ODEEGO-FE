@@ -6,14 +6,14 @@ import { COLORS } from "@/constants/css";
 
 interface AddressFormInputProps {
   index: number;
-  name: string;
+  stationName: string;
   onClick: () => void;
   onRemove: (e: MouseEvent<HTMLButtonElement>, index: number) => void;
 }
 
 const FormInput = ({
   index,
-  name,
+  stationName,
   onClick,
   onRemove,
 }: AddressFormInputProps) => {
@@ -33,7 +33,7 @@ const FormInput = ({
           },
         }}
         disabled
-        value={name}
+        value={stationName}
       />
       <IconButton
         aria-label='delete'

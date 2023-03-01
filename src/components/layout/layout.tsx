@@ -19,5 +19,4 @@ const Container = styled.div`
   max-width: ${SIZE.width};
   margin: auto;
   box-sizing: border-box;
-  overflow: hidden;
 `;

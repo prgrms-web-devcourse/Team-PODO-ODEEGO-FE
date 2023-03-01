@@ -3,26 +3,26 @@ import { MouseEvent, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 
 interface InputItem {
-  name: string;
+  stationName: string;
 }
 
 const useMultipleInputs = () => {
   const [inputs, setInputs] = useState<InputItem[]>([
     {
-      name: "",
+      stationName: "",
     },
     {
-      name: "",
+      stationName: "",
     },
   ]);
   const [addressList, setAddressList] = useRecoilState(searchState);
 
   useEffect(() => {
-    const newInputs = addressList.map((a) => ({ name: a.name }));
+    const newInputs = addressList.map((a) => ({ stationName: a.stationName }));
 
     const arrayLength = newInputs.length >= 2 ? 2 : newInputs.length;
     const emptyInputs = new Array(2 - arrayLength).fill({
-      name: "",
+      stationName: "",
     });
 
     setInputs([...newInputs, ...emptyInputs]);
@@ -30,21 +30,21 @@ const useMultipleInputs = () => {
 
   const addInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setInputs((prev) => [...prev, { name: "" }]);
+    setInputs((prev) => [...prev, { stationName: "" }]);
   };
 
   const removeInput = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     e.stopPropagation();
 
     if (index === 0 || index === 1) {
-      if (!inputs[index] || inputs[index].name === "") return;
+      if (!inputs[index] || inputs[index].stationName === "") return;
       setAddressList((prev) =>
         prev.map((address, i) =>
-          i === index ? { ...address, name: "" } : address
+          i === index ? { ...address, stationName: "" } : address
         )
       );
       setInputs((prev) =>
-        prev.map((input, i) => (i === index ? { name: "" } : input))
+        prev.map((input, i) => (i === index ? { stationName: "" } : input))
       );
     } else {
       setAddressList((prev) => prev.filter((_, i) => i != index));

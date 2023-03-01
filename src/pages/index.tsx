@@ -22,8 +22,8 @@ import { GroupsApi } from "@/axios/groups";
 import HomeButton from "@/components/home/home-button";
 import useModal from "@/hooks/use-modal";
 import { MidPointState } from "@/recoil/midpoint-state";
-import SelectModal from "@/components/home/select-modal";
-import LoginConfirmModal from "@/components/home/login-modal";
+import SelectModal from "@/components/home/modal/select-modal";
+import LoginConfirmModal from "@/components/home/modal/login-modal";
 import { ERROR_TEXT } from "@/constants/error";
 import { STATUS_CODE } from "@/constants/status";
 import { ROUTES } from "@/constants/routes";
@@ -47,6 +47,7 @@ const {
   ERROR_MISSING_START_POINT,
   ERROR_OUT_OF_BOUND,
   ERROR_ALREADY_EXIST_GROUP,
+  ERROR_UNSELECT_PEOPLE_COUNT,
 } = ERROR_TEXT;
 
 const { ERROR_400 } = STATUS_CODE;
@@ -73,6 +74,32 @@ export default function Home() {
     },
     handleConfirm: async () => {
       router.push(`${LOGIN}`);
+    },
+  };
+
+  const selectModalConfig = {
+    children: <SelectModal />,
+    btnText: {
+      confirm: MAKE_A_GROUP_TEXT,
+      close: CLOSE_TEXT,
+    },
+    handleConfirm: async () => {
+      const count = getLocalStorage(COUNT, "");
+      if (count === "") {
+        toast.error(ERROR_UNSELECT_PEOPLE_COUNT);
+        return;
+      }
+
+      const data = await GroupsApi.postCreateGroup(49, parseInt(count, 10));
+      setLocalStorage(COUNT, "");
+
+      if (data.status === ERROR_400) {
+        toast.error(ERROR_ALREADY_EXIST_GROUP);
+        return;
+      }
+
+      const { groupId } = data;
+      console.log(`go to the group page : /group/${groupId}`);
     },
   };
 
@@ -107,31 +134,7 @@ export default function Home() {
     }
 
     setIsLoading(true);
-    openModal({
-      children: <SelectModal />,
-      btnText: {
-        confirm: MAKE_A_GROUP_TEXT,
-        close: CLOSE_TEXT,
-      },
-      handleConfirm: async () => {
-        const count = getLocalStorage(COUNT, "");
-        if (count === "") return;
-
-        const data = await GroupsApi.postCreateGroup(49, parseInt(count, 10));
-        setIsLoading(false);
-
-        if (data.status === ERROR_400) {
-          toast.error(ERROR_ALREADY_EXIST_GROUP);
-          return;
-        }
-
-        const { groupId } = data;
-        console.log(`go to the group page : /group/${groupId}`);
-      },
-      handleClose: () => {
-        setIsLoading(false);
-      },
-    });
+    openModal(selectModalConfig);
     setIsLoading(false);
   };
 
@@ -195,7 +198,7 @@ export default function Home() {
               <FormInput
                 key={index}
                 index={index}
-                name={input.name}
+                stationName={input.stationName}
                 onClick={() => !isLoading && handleInputClickRoute(index)}
                 onRemove={(e) => !isLoading && removeInput(e, index)}
               />
