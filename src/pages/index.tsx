@@ -11,7 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { searchState } from "@/recoil/search-state";
 import { MidPointApi } from "@/axios/mid-point";
 import { COLORS } from "@/constants/css";
@@ -52,15 +52,14 @@ const {
 
 const { ERROR_400 } = STATUS_CODE;
 
-const { SEARCH, LOGIN, MAP } = ROUTES;
+const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
 
 export default function Home() {
-  const [groupId, setGroupId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [groupId, setGroupId] = useState("");
   const setMidPointResponse = useSetRecoilState(MidPointState);
-  //useRecoilValue로 바꾸기
   const [token, setToken] = useRecoilState(accessTokenState);
-  const hasAccessToken = useRecoilValue(accessTokenState) ? true : false;
+  const hasAccessToken = token ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
@@ -90,7 +89,10 @@ export default function Home() {
         return;
       }
 
-      const data = await GroupsApi.postCreateGroup(49, parseInt(count, 10));
+      //모임 생성 Test API
+      // - 현재 약속방을 삭제하는 기능이 없음
+      // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
+      const data = await GroupsApi.postCreateGroup(93, parseInt(count, 10));
       setLocalStorage(COUNT, "");
 
       if (data.status === ERROR_400) {
@@ -100,6 +102,7 @@ export default function Home() {
 
       const { groupId } = data;
       console.log(`go to the group page : /group/${groupId}`);
+      router.push(`${GROUP}/${groupId}`);
     },
   };
 
@@ -107,6 +110,7 @@ export default function Home() {
     const initGroupId = async () => {
       if (!hasAccessToken) return "";
 
+      //TODO 실제 모임조회 api로 바꾸기
       const data = await GroupsApi.getAll();
       const groupId = data?.groups?.[0]?.groupId || "";
 
@@ -115,7 +119,7 @@ export default function Home() {
     };
 
     initGroupId();
-  }, [hasAccessToken]);
+  }, [hasAccessToken, setGroupId]);
 
   const handleInputClickRoute = (index: number) => {
     router.push(`${SEARCH}?id=${index}`);
@@ -128,8 +132,8 @@ export default function Home() {
       return;
     }
     if (groupId) {
-      //router.push(`/group/${groupId}`);
-      console.log("go to the group page");
+      console.log(`go to the group page : /group/${groupId}`);
+      router.push(`${GROUP}/${groupId}`);
       return;
     }
 
@@ -162,7 +166,6 @@ export default function Home() {
     } else {
       //TODO
       // - 지우기
-      console.log(token);
       console.log(data);
       setMidPointResponse(data);
       router.push(`${MAP}`);
@@ -181,7 +184,6 @@ export default function Home() {
   return (
     <>
       <Button onClick={() => setToken("hello")}>Set Token</Button>
-      <Button onClick={() => setGroupId("hello")}>Set GroupID</Button>
       <Header />
       <MainContainer>
         <BorderContainer />
