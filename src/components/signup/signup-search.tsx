@@ -32,6 +32,12 @@ const SignUpSearchInput = () => {
     }
   );
 
+  console.log(isToggleBoxLoading);
+
+  console.log("isLoading", isLoading);
+
+  console.log(resultSubway);
+
   return (
     <SignUpSearchContainer>
       <SignUpSearchInputWrapper>
@@ -43,7 +49,7 @@ const SignUpSearchInput = () => {
             handleStationKeyDown={handleStationKeyDown}
           />
 
-          {errorMessage?.station?.length > 0 && values?.station?.length > 0 && (
+          {errorMessage?.station?.length && (
             <NotFound
               title={"역만 입력해주세요"}
               icon={"지하철역"}
@@ -57,7 +63,8 @@ const SignUpSearchInput = () => {
         </form>
       </SignUpSearchInputWrapper>
 
-      {isToggleBoxLoading === isLoading ? null : (
+      {isLoading === isToggleBoxLoading ||
+      resultSubway?.data.documents.length <= 0 ? null : (
         <SignUpSearchToggleBox>
           {resultSubway?.data?.documents?.map(
             (val: searchOriginProps, index: number) => {
