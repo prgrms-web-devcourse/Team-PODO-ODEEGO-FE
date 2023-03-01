@@ -17,8 +17,6 @@ const LoginPage = () => {
       //redirectUri: "http://localhost:3000/kakao",
       // 배포 리다이랙션 주소
       redirectUri: "https://odeego.vercel.app/kakao",
-
-      // test
     });
   }
   console.log(router);
