@@ -24,7 +24,7 @@ const Kakao = () => {
         if (authCode) {
           const res2 = await fetch(
             // 배포 서버
-            `http://52.78.224.123:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
+            `https://52.78.224.123:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
             // 개인서버
             // `http://15.165.99.21:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
           );
@@ -34,7 +34,7 @@ const Kakao = () => {
 
           const res = await fetch(
             // 배포 서버
-            `http://52.78.224.123:8080/api/v1/auth/user/me`,
+            `https://52.78.224.123:8080/api/v1/auth/user/me`,
             // 개인 서버
             // `http://15.165.99.21:8080/api/v1/auth/user/me`,
             {
