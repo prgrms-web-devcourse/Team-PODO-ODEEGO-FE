@@ -4,7 +4,10 @@ export default function Document() {
   return (
     <Html lang='en'>
       <Head>
-        {/* <script src='https://developers.kakao.com/sdk/js/kakao.js'></script> */}
+        <meta
+          http-equiv='Content-Security-Policy'
+          content='upgrade-insecure-requests'
+        />
       </Head>
       <body>
         <Main />
