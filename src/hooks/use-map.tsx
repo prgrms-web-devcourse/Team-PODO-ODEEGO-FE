@@ -10,6 +10,7 @@ interface useMapProps {
 }
 
 const useMap = ({
+  // test
   mapContainerRef,
   initialCenter,
   startPoints,
