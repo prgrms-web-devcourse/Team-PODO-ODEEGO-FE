@@ -17,13 +17,18 @@ const SearchInput = () => {
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
-  const id = parseInt(useSearchParams().get("id") || "0", 10); // input Id(주소입력창)
+  const id = useSearchParams().get("id") || null; // input Id(주소입력창)
   const groupId = useSearchParams().get("groupId") || null; // 방 Id
   const host = useSearchParams().get("host") || null;
 
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
   const router = useRouter();
+
+  window.addEventListener("popstate", () => {
+    console.log("goback");
+    closeModal();
+  });
 
   const setLoginModalContent = () => {
     return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
@@ -44,8 +49,8 @@ const SearchInput = () => {
     openModal({
       children: ConfirmEnterSearchPageModal(),
       btnText: {
-        confirm: "장소를 확정합니다.",
-        close: "다시 선택합니다.",
+        confirm: "예",
+        close: "아니오",
       },
       // 출발지 확정시
       handleConfirm: () => {
@@ -137,11 +142,12 @@ const SearchInput = () => {
       // 출발지 확정시
       handleConfirm: () => {
         // 공유된 링크로 접속할 때는 안쓰일듯?
-        setRecoilData((prev: searchProps[]) => [
-          ...prev.slice(0, id),
-          obj,
-          ...prev.slice(id + 1),
-        ]);
+        if (id !== null)
+          setRecoilData((prev: searchProps[]) => [
+            ...prev.slice(0, +id),
+            obj,
+            ...prev.slice(+id + 1),
+          ]);
 
         // 선택한 주소를 BE로 보낸다.
         // SearchAPI.sendStartPoint({
