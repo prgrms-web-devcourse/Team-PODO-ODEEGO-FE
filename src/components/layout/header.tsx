@@ -26,7 +26,7 @@ const Header = ({ userImage }: HeaderProps) => {
       )}
       <TextP>{HEADER_TEXT}</TextP>
       <Image
-        src='/Logo.png'
+        src='/logo1.svg'
         alt='Odeego Logo'
         width={137}
         height={46}

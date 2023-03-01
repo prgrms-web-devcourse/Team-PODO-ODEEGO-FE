@@ -4,7 +4,7 @@ export const SIZE = {
 } as const;
 
 export const COLORS = {
-  backgroundPrimary: "#FAFCF8",
+  backgroundPrimary: "#F8FCF9",
   backgroundSecondary: "#FDFDFD",
   backgroundAccent: "#5AB27D",
   textPrimary: "#464646",
