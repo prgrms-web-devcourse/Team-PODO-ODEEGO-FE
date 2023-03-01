@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Header from "@/components/home/home-header";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
+// import Header from "@/components/layout/header";
 
 const Kakao = () => {
   const router = useRouter();
@@ -21,6 +21,9 @@ const Kakao = () => {
       const NewTest = async () => {
         if (authCode) {
           const res2 = await fetch(
+            // 배포 서버
+            // `http://52.78.224.123:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
+            // 개인서버
             `http://15.165.99.21:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
           );
           const data = await res2.json();
@@ -28,6 +31,9 @@ const Kakao = () => {
           console.log(data);
 
           const res = await fetch(
+            // 배포 서버
+            // `http://52.78.224.123:8080/api/v1/auth/user/me`,
+            // 개인 서버
             `http://15.165.99.21:8080/api/v1/auth/user/me`,
             {
               headers: {
@@ -113,7 +119,7 @@ const Kakao = () => {
 
   return (
     <SignUpContainer>
-      <Header userImage={userImage} />
+      {/*<Header />*/}
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

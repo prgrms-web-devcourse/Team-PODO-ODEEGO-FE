@@ -4,9 +4,9 @@ import React from "react";
 import { errorType, valueType } from "@/types/register-props";
 
 interface SignupInputProps<T, U> {
-  values: T;
+  values?: T;
   handleValue: (arg: React.ChangeEvent<HTMLInputElement>) => void;
-  errorMessage: U;
+  errorMessage?: U;
   handleStationKeyDown: (arg: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 

@@ -9,7 +9,6 @@ import NotFound from "@/components/search/not-found";
 
 import useSignupSearch from "@/hooks/use-signup-search";
 import SignupInput from "@/components/signup/signup-input";
-import { COLORS } from "@/constants/css";
 
 const SignUpSearchInput = () => {
   const router = useRouter();
@@ -49,7 +48,7 @@ const SignUpSearchInput = () => {
             handleStationKeyDown={handleStationKeyDown}
           />
 
-          {errorMessage?.station?.length > 0 && values?.station?.length > 0 && (
+          {errorMessage?.station?.length && (
             <NotFound
               title={"역만 입력해주세요"}
               icon={"지하철역"}

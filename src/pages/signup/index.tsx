@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 
 import React from "react";
 import styled from "@emotion/styled";
-import Header from "@/components/home/home-header";
+// import Header from "@/components/home/home-header";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import { COLORS } from "@/constants/css";
 
@@ -12,10 +12,10 @@ const Index = () => {
   console.log(router);
 
   // 임시 로그인 토큰
-  const token = "";
+  // const token = "";
   return (
     <SignUpContainer>
-      <Header userImage={token} />
+      {/*<Header userImage={token} />*/}
       <BorderContainer />
       <SignUpTitle>홍길동 님의 가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 
