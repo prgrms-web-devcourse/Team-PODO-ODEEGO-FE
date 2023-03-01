@@ -147,6 +147,7 @@ export default function Home() {
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
+
       return;
     }
     if (groupId) {
