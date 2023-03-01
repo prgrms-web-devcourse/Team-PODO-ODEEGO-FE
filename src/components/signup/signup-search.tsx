@@ -43,13 +43,14 @@ const SignUpSearchInput = () => {
             handleStationKeyDown={handleStationKeyDown}
           />
 
-          {errorMessage?.station?.length > 0 && values?.station?.length > 0 && (
-            <NotFound
-              title={"역만 입력해주세요"}
-              icon={"지하철역"}
-              sxNumber={50}
-            />
-          )}
+          {errorMessage?.station?.length &&
+            errorMessage?.station?.length > 0 && (
+              <NotFound
+                title={"역만 입력해주세요"}
+                icon={"지하철역"}
+                sxNumber={50}
+              />
+            )}
 
           <SignUpButton onClick={handleSignUpSubmit}>
             내 주소 저장하기

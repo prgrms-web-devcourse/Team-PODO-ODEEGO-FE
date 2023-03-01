@@ -1,12 +1,12 @@
 /*global kakao*/
 
-import { StationResponse } from "@/types/api/midpoint";
+import { BaseResponse } from "@/types/api/midpoint";
 import { useState, useEffect, RefObject, useCallback } from "react";
 
 interface useMapProps {
   mapContainerRef: RefObject<HTMLElement>;
   initialCenter: { lat: number; lng: number };
-  startPoints: StationResponse[];
+  startPoints: BaseResponse[];
 }
 
 const useMap = ({
