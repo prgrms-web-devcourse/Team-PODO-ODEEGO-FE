@@ -16,6 +16,7 @@ const Kakao = () => {
   // const [firstData, setFirstData] = useState("");
 
   const [userImage, setTokenImage] = useState("");
+  const [token, setToken] = useState("");
   // const token = "";
   useEffect(() => {
     try {
@@ -47,7 +48,14 @@ const Kakao = () => {
           const data3 = await res.json();
           console.log(data3);
 
-          setTokenImage(data3.profileImageUrl);
+          // 여기서 잘라서 보내기
+
+          const sliceImage = data3.profileImageUrl.slice(
+            21,
+            data3.accessToken.length
+          );
+          setToken(data3.accessToken);
+          setTokenImage(sliceImage);
         }
 
         // axios
@@ -120,7 +128,7 @@ const Kakao = () => {
 
   return (
     <SignUpContainer>
-      <Header />
+      <Header userImage={userImage} token={token} />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

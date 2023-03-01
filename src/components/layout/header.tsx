@@ -6,18 +6,18 @@ const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 interface HeaderProps {
   userImage?: string;
+  token?: string;
 }
-const Header = ({ userImage }: HeaderProps) => {
+
+const Header = ({ userImage, token }: HeaderProps) => {
   console.log(userImage);
 
+  console.log(token);
   return (
     <HeaderContainer>
       {userImage ? (
         <HeaderIconWrap>
-          <Image
-            src='http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_640x640.jpg'
-            alt='user'
-          />
+          <Image src={userImage} alt='user' width={20} height={30} />
         </HeaderIconWrap>
       ) : (
         <HeaderIconWrap>
