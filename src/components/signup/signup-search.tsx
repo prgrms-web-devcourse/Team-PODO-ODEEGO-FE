@@ -37,6 +37,7 @@ const SignUpSearchInput = () => {
   console.log("isLoading", isLoading);
 
   console.log(resultSubway);
+
   return (
     <SignUpSearchContainer>
       <SignUpSearchInputWrapper>
