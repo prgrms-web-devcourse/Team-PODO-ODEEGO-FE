@@ -16,6 +16,25 @@ const fetchGroup = async (groupId: string, token: string) => {
   }
 };
 
+const createGroup = async (memberId: string, capacity: number) => {
+  try {
+    axios.post(
+      `http://52.78.224.123:8080/api/test/?
+    member-id=${memberId}`,
+      {
+        capacity: capacity,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
 const deleteGroup = async (groupId: string, token: string) => {
   try {
     await axios.delete(
@@ -38,4 +57,4 @@ const useGroup = (groupId: string, token: string) => {
   });
 };
 
-export { useGroup, fetchGroup, deleteGroup };
+export { useGroup, fetchGroup, deleteGroup, createGroup };
