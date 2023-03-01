@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { Button, InputAdornment, TextField } from "@mui/material";
@@ -18,7 +18,7 @@ const SearchInput = () => {
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
   const id = parseInt(useSearchParams().get("id") || "0", 10); // input Id(주소입력창)
-  const groupId = useSearchParams().get("id") || "0"; // 방 Id
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id
   const host = useSearchParams().get("host") || null;
 
   const { openModal } = useModal();
@@ -28,6 +28,39 @@ const SearchInput = () => {
   const setLoginModalContent = () => {
     return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
   };
+
+  const ConfirmEnterSearchPageModal = () => {
+    return (
+      <>
+        {/* 닉네임을 받아올 수 있는가? */}
+        <h1>000님이 주소를 요청했습니다.</h1>
+        <p>약속 장소를 찾기 위해 주소가 필요합니다.</p>
+        <p>계속 하시겠습니까?</p>
+      </>
+    );
+  };
+
+  const handleConfirmEnterSearchPage = () => {
+    openModal({
+      children: ConfirmEnterSearchPageModal(),
+      btnText: {
+        confirm: "장소를 확정합니다.",
+        close: "다시 선택합니다.",
+      },
+      // 출발지 확정시
+      handleConfirm: () => {
+        // router.push("/");
+      },
+    });
+  };
+
+  // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
+  useEffect(() => {
+    console.log(`groupId: ${groupId}`);
+    if (groupId !== null) {
+      handleConfirmEnterSearchPage();
+    }
+  }, []);
 
   // 링크를 공유 받았을 때.
   if (groupId) {
