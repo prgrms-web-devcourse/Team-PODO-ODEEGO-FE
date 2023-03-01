@@ -150,12 +150,14 @@ const SearchInput = () => {
           ]);
 
         // 선택한 주소를 BE로 보낸다.
-        // SearchAPI.sendStartPoint({
-        //   groupId: obj.groupId.toString(),
-        //   stationName: obj.stationName,
-        //   lat: +obj.lat,
-        //   lng: +obj.lng,
-        // });
+        if (obj.groupId !== null) {
+          SearchAPI.sendStartPoint({
+            groupId: obj.groupId,
+            stationName: obj.stationName,
+            lat: +obj.lat,
+            lng: +obj.lng,
+          });
+        }
 
         if (host) {
           // 주소 입력하고 모임 화면(홈페이지16)으로 redirection
