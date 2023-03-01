@@ -4,6 +4,8 @@ import Image from "next/image";
 
 const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { ROUTES } from "@/constants/routes";
+import { useRouter } from "next/router";
 interface HeaderProps {
   userImage?: string;
   token?: string;
@@ -13,6 +15,18 @@ const Header = ({ userImage, token }: HeaderProps) => {
   console.log(userImage);
 
   console.log(token);
+
+  const router = useRouter();
+
+  const { pathname } = router;
+  console.log(pathname);
+
+  const handleBackClick = () => {
+    if (pathname === "/signin") {
+      router.push(`${ROUTES.HOME}`);
+    }
+  };
+
   return (
     <HeaderContainer>
       {userImage ? (
@@ -21,7 +35,7 @@ const Header = ({ userImage, token }: HeaderProps) => {
         </HeaderIconWrap>
       ) : (
         <HeaderIconWrap>
-          <KeyboardBackspaceIcon />
+          <KeyboardBackspaceIcon onClick={handleBackClick} />
         </HeaderIconWrap>
       )}
       <TextP>{HEADER_TEXT}</TextP>
