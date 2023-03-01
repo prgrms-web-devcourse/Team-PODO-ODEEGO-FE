@@ -14,10 +14,10 @@ interface searchOriginProps {
 }
 
 interface searchProps {
-  stationName: string;
-  lat: number;
-  lng: number;
-  address: string;
+  name: string;
+  lat: string;
+  lng: string;
+  address?: string;
 }
 
 export type { searchOriginProps, searchProps };
