@@ -32,6 +32,12 @@ const SignUpSearchInput = () => {
     }
   );
 
+  console.log(isToggleBoxLoading);
+
+  console.log("isLoading", isLoading);
+
+  console.log(resultSubway);
+
   return (
     <SignUpSearchContainer>
       <SignUpSearchInputWrapper>
@@ -42,23 +48,21 @@ const SignUpSearchInput = () => {
             errorMessage={errorMessage}
             handleStationKeyDown={handleStationKeyDown}
           />
-
-          {errorMessage?.station?.length &&
-            errorMessage?.station?.length > 0 && (
-              <NotFound
-                title={"역만 입력해주세요"}
-                icon={"지하철역"}
-                sxNumber={50}
-              />
-            )}
-
+          {errorMessage?.station?.length && (
+            <NotFound
+              title={"역만 입력해주세요"}
+              icon={"지하철역"}
+              sxNumber={50}
+            />
+          )}
           <SignUpButton onClick={handleSignUpSubmit}>
             내 주소 저장하기
           </SignUpButton>
         </form>
       </SignUpSearchInputWrapper>
 
-      {isToggleBoxLoading === isLoading ? null : (
+      {isLoading === isToggleBoxLoading ||
+      resultSubway?.data.documents.length <= 0 ? null : (
         <SignUpSearchToggleBox>
           {resultSubway?.data?.documents?.map(
             (val: searchOriginProps, index: number) => {

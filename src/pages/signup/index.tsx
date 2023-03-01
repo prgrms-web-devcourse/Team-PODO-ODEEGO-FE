@@ -12,10 +12,10 @@ const Index = () => {
   console.log(router);
 
   // 임시 로그인 토큰
-  const token = "";
+  // const token = "";
   return (
     <SignUpContainer>
-      <Header token={token} />
+      <Header />
       <BorderContainer />
       <SignUpTitle>홍길동 님의 가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 
