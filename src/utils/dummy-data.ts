@@ -4,21 +4,21 @@ export const dummyData: MidpointResponse = {
   start: [
     {
       id: "dsksjfn3",
-      name: "강남역",
+      stationName: "강남역",
       address: "강남대로 무슨로 무슨길 711",
       lat: 37.5172,
       lng: 127.0473,
     },
     {
       id: "dfkhss3",
-      name: "판교역",
+      stationName: "판교역",
       address: "강남대로 무슨로 무슨길 711",
       lat: 37.3948,
       lng: 127.1112,
     },
     {
       id: "kdfhauiehr3",
-      name: "오리역",
+      stationName: "오리역",
       address: "강남대로 무슨로 무슨길 711",
       lat: 37.3398,
       lng: 127.109,
@@ -27,7 +27,7 @@ export const dummyData: MidpointResponse = {
   midPointResponses: [
     {
       id: "fddffssssf",
-      name: "강남역A",
+      stationName: "강남역A",
       address: "강남대로 무슨로 무슨길 711",
       lat: 37.5172,
       lng: 127.0473,
@@ -39,21 +39,21 @@ export const dummyData: MidpointResponse = {
           stations: [
             {
               id: "dsksjfn3",
-              name: "강남역",
+              stationName: "강남역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.5172,
               lng: 127.0473,
             },
             {
               id: "dfkhss3",
-              name: "판교역",
+              stationName: "판교역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.3948,
               lng: 127.1112,
             },
             {
               id: "kdfhauiehr3",
-              name: "오리역",
+              stationName: "오리역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.3398,
               lng: 127.109,
@@ -64,7 +64,7 @@ export const dummyData: MidpointResponse = {
     },
     {
       id: "3fjsd9fd",
-      name: "강남역B",
+      stationName: "강남역B",
       address: "강남대로 무슨로 무슨길 711",
       lat: 37.5172,
       lng: 127.0473,
@@ -76,21 +76,21 @@ export const dummyData: MidpointResponse = {
           stations: [
             {
               id: "dsksjfn3",
-              name: "강남역",
+              stationName: "강남역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.5172,
               lng: 127.0473,
             },
             {
               id: "dfkhss3",
-              name: "판교역",
+              stationName: "판교역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.3948,
               lng: 127.1112,
             },
             {
               id: "kdfhauiehr3",
-              name: "오리역",
+              stationName: "오리역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.3398,
               lng: 127.109,
@@ -101,7 +101,7 @@ export const dummyData: MidpointResponse = {
     },
     {
       id: "dfssljdfl3",
-      name: "판교역",
+      stationName: "판교역",
       address: "강남대로 무슨로 무슨길 711",
       lat: 37.3948,
       lng: 127.1112,
@@ -113,21 +113,21 @@ export const dummyData: MidpointResponse = {
           stations: [
             {
               id: "dsksjfn3",
-              name: "강남역",
+              stationName: "강남역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.5172,
               lng: 127.0473,
             },
             {
               id: "dfkhss3",
-              name: "판교역",
+              stationName: "판교역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.3948,
               lng: 127.1112,
             },
             {
               id: "kdfhauiehr3",
-              name: "오리역",
+              stationName: "오리역",
               address: "강남대로 무슨로 무슨길 711",
               lat: 37.3398,
               lng: 127.109,

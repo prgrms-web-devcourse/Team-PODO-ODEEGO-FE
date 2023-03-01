@@ -42,7 +42,7 @@ const MapPage = () => {
             <MidpointButton
               key={data.id}
               id={data.id}
-              name={data.name}
+              stationName={data.stationName}
               isCurrent={currentMidway === index}
               onClick={handleNavigate}
             />

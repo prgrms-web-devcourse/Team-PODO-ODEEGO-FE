@@ -1,4 +1,3 @@
-import Header from "@/components/home/home-header";
 import styled from "@emotion/styled";
 import {
   Box,
@@ -31,6 +30,7 @@ import { ROUTES } from "@/constants/routes";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { getLocalStorage, setLocalStorage } from "@/utils/storage";
 import { COUNT } from "@/constants/local-storage";
+import Header from "@/components/layout/header";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -138,7 +138,7 @@ export default function Home() {
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
 
-    const notEmptyAddressList = addressList.filter((a) => a.name !== "");
+    const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
     if (notEmptyAddressList.length < 2) {
       toast.error(ERROR_MISSING_START_POINT);
       setIsLoading(false);

@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang='en'>
       <Head>
-        <script src='https://developers.kakao.com/sdk/js/kakao.js'></script>
+        {/* <script src='https://developers.kakao.com/sdk/js/kakao.js'></script> */}
       </Head>
       <body>
         <Main />
