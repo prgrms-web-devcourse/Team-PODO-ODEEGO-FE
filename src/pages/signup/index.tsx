@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 // import Header from "@/components/home/home-header";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import { COLORS } from "@/constants/css";
+import Header from "@/components/layout/header";
 
 const Index = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const Index = () => {
   // const token = "";
   return (
     <SignUpContainer>
-      {/*<Header userImage={token} />*/}
+      <Header />
       <BorderContainer />
       <SignUpTitle>홍길동 님의 가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

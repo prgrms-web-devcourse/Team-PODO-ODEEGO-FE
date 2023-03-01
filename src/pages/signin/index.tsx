@@ -7,6 +7,7 @@ import { COLORS } from "@/constants/css";
 import Image from "next/image";
 
 import kakao_image from "public/kakao_login_medium_wide.png";
+import Header from "@/components/layout/header";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const LoginPage = () => {
   // const token = "";
   return (
     <LoginContainer>
-      {/*<Header userImage={token} />*/}
+      <Header />
 
       <BorderContainer />
 
