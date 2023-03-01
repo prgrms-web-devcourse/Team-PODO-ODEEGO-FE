@@ -18,8 +18,8 @@ const MapPage = () => {
   const { map, setBoundToMidpoint } = useMap({
     mapContainerRef,
     initialCenter: {
-      lat: midPointResponses[0].lat,
-      lng: midPointResponses[0].lng,
+      lat: midPointResponses[0]?.lat,
+      lng: midPointResponses[0]?.lng,
     },
     startPoints: start,
   });
