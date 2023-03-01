@@ -16,7 +16,7 @@ const LoginPage = () => {
       //개인 테스트용 리다이랙션 주소
       //redirectUri: "http://localhost:3000/kakao",
       // 배포 리다이랙션 주소
-      redirectUri: "https://team-podo-odeego-fe-sigma.vercel.app/kakao",
+      redirectUri: "https://odeego.vercel.app/kakao",
 
       // test
     });
