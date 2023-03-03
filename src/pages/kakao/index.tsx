@@ -23,6 +23,8 @@ const Kakao = () => {
           });
           const resultKakao = await responseKakao.json();
 
+          console.log(resultKakao);
+
           const responseBackend = await fetch(
             // 배포 서버
             `https://odeego.shop/api/v1/auth/user/me`,
@@ -37,10 +39,12 @@ const Kakao = () => {
               method: "POST",
             }
           );
-
           const getBackendToken = await responseBackend.json();
-
           localStorage.setItem("token", getBackendToken.accessToken);
+          localStorage.setItem(
+            "logoutToken",
+            resultKakao.tokenResponse.access_token
+          );
         }
       };
 
