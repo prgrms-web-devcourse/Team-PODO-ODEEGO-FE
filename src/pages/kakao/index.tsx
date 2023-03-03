@@ -10,27 +10,12 @@ const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  // const { pathname } = router;
+  const { pathname } = router;
 
-  // const handleBackClick=()=>{
-  //   if(pathname === "/signin"){
-  //     router.push(`${ROUTES.LOGIN}}`)
-  //   }
-  // }
-  //
-  // const [key, setKey] = useState(
-  //   "no0GyXiyp3x5whSPxfkdEmFSHXuGPn0ResRXWMcECinI2gAAAYaXTULM"
-  // );
-  // const [firstData, setFirstData] = useState("");
-
-  //
-
-  // const [userImage, setTokenImage] = useState("");
-  // const [token, setToken] = useRecoilState(tokenState);
-  // const token = "";
   useEffect(() => {
     try {
       const NewTest = async () => {
+        console.log(pathname);
         if (authCode) {
           const response = await fetch(`/api/kakao-login`, {
             method: "POST",

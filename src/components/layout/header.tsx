@@ -12,10 +12,6 @@ interface HeaderProps {
 }
 
 const Header = ({ userImage, token }: HeaderProps) => {
-  console.log(userImage);
-
-  console.log(token);
-
   const router = useRouter();
 
   const { pathname } = router;
@@ -26,8 +22,9 @@ const Header = ({ userImage, token }: HeaderProps) => {
       case "/signin":
         router.push(`${ROUTES.HOME}`);
         break;
-      case "/signup":
+      case "/kakao":
         router.push(`${ROUTES.LOGIN}`);
+        localStorage.setItem("token", "");
         break;
     }
   };
