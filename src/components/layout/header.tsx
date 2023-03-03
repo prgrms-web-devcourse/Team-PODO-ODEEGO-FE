@@ -15,7 +15,6 @@ const Header = ({ userImage, token }: HeaderProps) => {
   const router = useRouter();
 
   const { pathname } = router;
-  console.log(pathname);
 
   const handleBackClick = async () => {
     switch (pathname) {
@@ -25,11 +24,9 @@ const Header = ({ userImage, token }: HeaderProps) => {
       case "/kakao":
         router.push(`${ROUTES.LOGIN}`);
         localStorage.setItem("token", "");
-
         const token = localStorage.getItem("logoutToken" || "");
 
-        console.log(token);
-        const responseKakao = await fetch(`/api/kakao-logout`, {
+        await fetch(`/api/kakao-logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -39,9 +36,6 @@ const Header = ({ userImage, token }: HeaderProps) => {
           }),
         });
 
-        const resultKakao = await responseKakao.json();
-
-        console.log(resultKakao);
         break;
     }
   };

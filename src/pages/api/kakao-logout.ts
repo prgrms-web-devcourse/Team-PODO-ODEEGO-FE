@@ -19,8 +19,6 @@ export default async function handler(
 ) {
   const { token } = req.body;
 
-  console.log(token);
-
   const tokenResponse = await getTokenFromKakao(token);
   res.status(200).json({ tokenResponse });
 }
