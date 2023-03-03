@@ -8,7 +8,7 @@ export const MidPointApi = {
       .filter((a) => a.address !== "")
       .map((a) => {
         return {
-          stationName: a.name.split(" ")[0],
+          stationName: a.stationName.split(" ")[0],
           lat: parseFloat(a.lat),
           lng: parseFloat(a.lng),
         };

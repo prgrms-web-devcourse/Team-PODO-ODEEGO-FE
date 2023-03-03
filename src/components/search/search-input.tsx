@@ -89,14 +89,14 @@ const SearchInput = () => {
   const handleStartPointModal = (val: searchOriginProps) => {
     const obj = {
       groupId: groupId,
-      name: val.place_name, //stationName
+      stationName: val.place_name, //stationName
       lat: val.y,
       lng: val.x,
       // address: val.address_name, // 필요없는듯?
     };
 
     openModal({
-      children: setStartPointModalContent(obj.name),
+      children: setStartPointModalContent(obj.stationName),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
@@ -113,7 +113,7 @@ const SearchInput = () => {
         // 선택한 주소를 BE로 보낸다.
         SearchAPI.sendStartPoint({
           groupId: obj.groupId.toString(),
-          stationName: obj.name,
+          stationName: obj.stationName,
           lat: +obj.lat,
           lng: +obj.lng,
         });
