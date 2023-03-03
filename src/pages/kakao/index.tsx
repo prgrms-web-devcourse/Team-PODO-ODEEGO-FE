@@ -60,6 +60,8 @@ const Kakao = () => {
 
           const data3 = await res.json();
           console.log(data3);
+
+          localStorage.setItem("token", data3.accessToken);
         }
       };
 
