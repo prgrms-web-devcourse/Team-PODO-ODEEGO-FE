@@ -8,7 +8,7 @@ import Header from "@/components/layout/header";
 
 const Kakao = () => {
   const router = useRouter();
-  // const { code: authCode } = router.query;
+  const { code: authCode } = router.query;
 
   // const { pathname } = router;
 
@@ -31,7 +31,7 @@ const Kakao = () => {
   useEffect(() => {
     try {
       const NewTest = async () => {
-        console.log("fdas");
+        console.log(authCode);
       };
       NewTest();
     } catch (e) {
