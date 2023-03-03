@@ -10,25 +10,20 @@ const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const { pathname } = router;
-
   useEffect(() => {
     try {
       const NewTest = async () => {
-        console.log(pathname);
         if (authCode) {
-          const response = await fetch(`/api/kakao-login`, {
+          const responseKakao = await fetch(`/api/kakao-login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ authCode }),
           });
+          const resultKakao = await responseKakao.json();
 
-          const data = await response.json();
-          console.log(data);
-
-          const res = await fetch(
+          const responseBackend = await fetch(
             // 배포 서버
             `https://odeego.shop/api/v1/auth/user/me`,
             // 배포 서버
@@ -37,16 +32,15 @@ const Kakao = () => {
             // `http://15.165.99.21:8080/api/v1/auth/user/me`,
             {
               headers: {
-                Authorization: `Bearer ${data.tokenResponse.access_token}`,
+                Authorization: `Bearer ${resultKakao.tokenResponse.access_token}`,
               },
               method: "POST",
             }
           );
 
-          const data3 = await res.json();
-          console.log(data3);
+          const getBackendToken = await responseBackend.json();
 
-          localStorage.setItem("token", data3.accessToken);
+          localStorage.setItem("token", getBackendToken.accessToken);
         }
       };
 
