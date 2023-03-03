@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
@@ -26,8 +26,10 @@ const Kakao = () => {
   // );
   // const [firstData, setFirstData] = useState("");
 
-  const [userImage, setTokenImage] = useState("");
-  const [token, setToken] = useState("");
+  //
+
+  // const [userImage, setTokenImage] = useState("");
+  // const [token, setToken] = useRecoilState(tokenState);
   // const token = "";
   useEffect(() => {
     try {
@@ -36,7 +38,7 @@ const Kakao = () => {
           const res2 = await fetch(
             // 배포 서버
             `https://odeego.shop/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
-            //             // 개인서버
+            // 개인서버
             // `http://15.165.99.21:8080/api/v1/auth/login/oauth2/callback/kakao?code=${authCode}`
           );
 
@@ -63,13 +65,14 @@ const Kakao = () => {
           console.log(data3);
 
           // 여기서 잘라서 보내기
-
-          const sliceImage = data3.profileImageUrl.slice(
-            21,
-            data3.accessToken.length
-          );
-          setToken(data3.accessToken);
-          setTokenImage(sliceImage);
+          //
+          // const sliceImage = data3.profileImageUrl.slice(
+          //   21,
+          //   data3.accessToken.length
+          // );
+          //
+          localStorage.setItem("token", data3.accessToken);
+          // setTokenImage(sliceImage);
         }
 
         // axios
@@ -138,11 +141,11 @@ const Kakao = () => {
     }
   }, [router]);
 
-  console.log(userImage);
+  // console.log(userImage);
 
   return (
     <SignUpContainer>
-      <Header userImage={userImage} token={token} />
+      <Header />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

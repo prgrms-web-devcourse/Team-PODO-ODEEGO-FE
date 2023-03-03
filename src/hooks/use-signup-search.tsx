@@ -9,6 +9,10 @@ const useSignupSearch = () => {
 
   const [isToggleBoxLoading, setToggleBoxIsLoading] = useState(true);
 
+  const [token, setToken] = useState("");
+
+  console.log(token);
+
   const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -30,14 +34,37 @@ const useSignupSearch = () => {
   const handleLocationClick = (val: searchOriginProps) => {
     setToggleBoxIsLoading(false);
 
+    setToken(localStorage.getItem("token") || "");
     setValue({
       ...values,
-      station: val.place_name,
+      defaultStationName: val.place_name,
     });
   };
 
-  const handleSignUpSubmit = (e: React.MouseEvent<HTMLElement>) => {
+  const handleSignUpSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+    const res = await fetch(
+      // 배포 서버
+      `https://odeego.shop/api/v1/members/sign-up`,
+      // 배포 서버
+      // `https://52.78.224.123:8080/api/v1/auth/user/me`,
+      // 개인 서버
+      // `http://15.165.99.21:8080/api/v1/auth/user/me`,
+      {
+        body: JSON.stringify({
+          nickname: values.nickname,
+          defaultStationName: values.defaultStationName,
+        }),
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        method: "PATCH",
+      }
+    );
+
+    console.log(res);
+
     console.log(values);
   };
 

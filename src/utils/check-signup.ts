@@ -3,7 +3,7 @@ import { omit } from "lodash";
 
 type StateWithoutStation = Pick<
   errorType,
-  "nickname" | "nickname_len" | "station"
+  "nickname" | "nickname_len" | "defaultStationName"
 >;
 
 //ㅇㄴ
@@ -15,14 +15,14 @@ const checkSignup = {
     setErrorMessage: (arg: Pick<StateWithoutStation, never>) => void
   ) => {
     switch (name) {
-      case "station":
+      case "defaultStationName":
         if (!value.includes("역")) {
           setErrorMessage({
             ...errorMessage,
-            station: "역만 입력해주세요",
+            defaultStationName: "역만 입력해주세요",
           });
         } else {
-          const newObj = omit(errorMessage, "station");
+          const newObj = omit(errorMessage, "defaultStationName");
           setErrorMessage(newObj);
         }
         break;

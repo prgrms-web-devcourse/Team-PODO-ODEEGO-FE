@@ -25,18 +25,14 @@ const SignUpSearchInput = () => {
   } = useSignupSearch();
 
   const { data: resultSubway, isLoading } = useQuery(
-    ["search", values.station],
-    () => SearchAPI.getSubway(values.station),
+    ["search", values.defaultStationName],
+    () => SearchAPI.getSubway(values.defaultStationName),
     {
-      enabled: values.station?.includes("역") && values.station.length > 0,
+      enabled:
+        values.defaultStationName?.includes("역") &&
+        values.defaultStationName.length > 0,
     }
   );
-
-  console.log(isToggleBoxLoading);
-
-  console.log("isLoading", isLoading);
-
-  console.log(resultSubway);
 
   return (
     <SignUpSearchContainer>
@@ -48,7 +44,7 @@ const SignUpSearchInput = () => {
             errorMessage={errorMessage}
             handleStationKeyDown={handleStationKeyDown}
           />
-          {errorMessage?.station?.length && (
+          {errorMessage?.defaultStationName?.length && (
             <NotFound
               title={"역만 입력해주세요"}
               icon={"지하철역"}

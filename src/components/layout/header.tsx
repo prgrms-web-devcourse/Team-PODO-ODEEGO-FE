@@ -34,9 +34,9 @@ const Header = ({ userImage, token }: HeaderProps) => {
 
   return (
     <HeaderContainer>
-      {userImage ? (
+      {token ? (
         <HeaderIconWrap>
-          <Image src={userImage} alt='user' width={20} height={30} />
+          <Image src={`${userImage}`} alt='user' width={20} height={30} />
         </HeaderIconWrap>
       ) : (
         <HeaderIconWrap>
