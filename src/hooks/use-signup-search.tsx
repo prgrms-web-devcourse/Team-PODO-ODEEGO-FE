@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { searchOriginProps } from "@/types/search-props";
 import checkSignup from "@/utils/check-signup";
 import { errorType, valueType } from "@/types/register-props";
+import { useRouter } from "next/router";
 
 const useSignupSearch = () => {
   const [values, setValue] = useState<Partial<valueType>>({});
@@ -11,6 +12,7 @@ const useSignupSearch = () => {
 
   const [token, setToken] = useState("");
 
+  const router = useRouter();
   console.log(token);
 
   const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +64,10 @@ const useSignupSearch = () => {
         method: "PATCH",
       }
     );
+
+    if (res.ok) {
+      router.push("/");
+    }
 
     console.log(res);
 
