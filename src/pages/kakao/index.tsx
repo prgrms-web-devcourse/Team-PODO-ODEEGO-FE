@@ -31,8 +31,20 @@ const Kakao = () => {
   useEffect(() => {
     try {
       const NewTest = async () => {
-        console.log(authCode);
+        if (authCode) {
+          const response = await fetch(`/api/kakao-login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ authCode }),
+          });
+
+          const data = await response.json();
+          console.log(data);
+        }
       };
+
       NewTest();
     } catch (e) {
       alert(e);
