@@ -42,6 +42,24 @@ const Kakao = () => {
 
           const data = await response.json();
           console.log(data);
+
+          const res = await fetch(
+            // 배포 서버
+            `https://odeego.shop/api/v1/auth/user/me`,
+            // 배포 서버
+            // `https://52.78.224.123:8080/api/v1/auth/user/me`,
+            // 개인 서버
+            // `http://15.165.99.21:8080/api/v1/auth/user/me`,
+            {
+              headers: {
+                Authorization: `Bearer ${data.tokenResponse.access_token}`,
+              },
+              method: "POST",
+            }
+          );
+
+          const data3 = await res.json();
+          console.log(data3);
         }
       };
 
