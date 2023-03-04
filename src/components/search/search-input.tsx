@@ -25,11 +25,6 @@ const SearchInput = () => {
 
   const router = useRouter();
 
-  window.addEventListener("popstate", () => {
-    console.log("goback");
-    closeModal();
-  });
-
   const setLoginModalContent = () => {
     return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
   };
@@ -61,28 +56,29 @@ const SearchInput = () => {
 
   // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
-    console.log(`groupId: ${groupId}`);
+    window.addEventListener("popstate", () => {
+      closeModal();
+    });
+
     if (groupId !== null) {
-      handleConfirmEnterSearchPage();
+      if (!host) handleConfirmEnterSearchPage();
     }
   }, []);
 
   // 링크를 공유 받았을 때.
-  if (groupId) {
-    if (!testToken) {
-      openModal({
-        children: setLoginModalContent(),
-        btnText: {
-          confirm: "로그인하기!",
-          close: "취소",
-        },
-        handleClose: () => {
-          window.close();
-        },
-      });
-      // 로그인 화면으로 대체 예정.
-      router.push("/");
-    }
+  if (groupId && !testToken) {
+    openModal({
+      children: setLoginModalContent(),
+      btnText: {
+        confirm: "로그인하기!",
+        close: "취소",
+      },
+      handleClose: () => {
+        window.close();
+      },
+    });
+    // 로그인 화면으로 대체 예정.
+    router.push("/");
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
@@ -164,6 +160,7 @@ const SearchInput = () => {
           console.log("방장임!");
         } else {
           // 주소 입력 후 메인 화면으로 redirection
+          //
           console.log("방장아님!");
           router.push("/");
         }
