@@ -20,16 +20,13 @@ const LoginPage = () => {
     });
   }
 
-  // 프론트 ,백엔드 전역적으로 url 찾을 수 있는지 찾아보기
   console.log(router);
   // 임시 로그인 토큰
   // const token = "";
   return (
     <LoginContainer>
       <Header />
-
       <BorderContainer />
-
       <LoginWrapper>
         <Image src={kakao_image} alt={"dsa"} onClick={kakaoLogin} />
       </LoginWrapper>

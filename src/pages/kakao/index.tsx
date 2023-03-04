@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
@@ -9,6 +9,8 @@ import Header from "@/components/layout/header";
 const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
+
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     try {
@@ -40,6 +42,8 @@ const Kakao = () => {
             }
           );
           const getBackendToken = await responseBackend.json();
+
+          setToken(getBackendToken.accessToken);
           localStorage.setItem("token", getBackendToken.accessToken);
           localStorage.setItem(
             "logoutToken",
@@ -49,8 +53,8 @@ const Kakao = () => {
       };
 
       NewTest();
-    } catch (e) {
-      alert(e);
+    } catch (err) {
+      console.error(err);
     }
   }, [router]);
 
@@ -58,7 +62,7 @@ const Kakao = () => {
 
   return (
     <SignUpContainer>
-      <Header />
+      <Header token={token} />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

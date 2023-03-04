@@ -6,15 +6,24 @@ const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
-interface HeaderProps {
-  userImage?: string;
+import { useEffect, useState } from "react";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+interface TokenProps {
   token?: string;
 }
 
-const Header = ({ userImage, token }: HeaderProps) => {
+const Header = ({ token }: TokenProps) => {
   const router = useRouter();
 
   const { pathname } = router;
+
+  const [tokenData, setToken] = useState<string>("");
+
+  useEffect(() => {
+    const getToken = localStorage.getItem("logoutToken");
+    if (!getToken) return;
+    setToken(getToken);
+  }, [router, token]);
 
   const handleBackClick = async () => {
     switch (pathname) {
@@ -22,8 +31,6 @@ const Header = ({ userImage, token }: HeaderProps) => {
         router.push(`${ROUTES.HOME}`);
         break;
       case "/kakao":
-        router.push(`${ROUTES.LOGIN}`);
-        localStorage.setItem("token", "");
         const token = localStorage.getItem("logoutToken" || "");
 
         await fetch(`/api/kakao-logout`, {
@@ -35,22 +42,51 @@ const Header = ({ userImage, token }: HeaderProps) => {
             token,
           }),
         });
-
+        setToken("");
+        localStorage.setItem("token", "");
+        localStorage.setItem("logoutToken", "");
+        router.push(`${ROUTES.LOGIN}`);
         break;
+    }
+  };
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("logoutToken" || "");
+    try {
+      await fetch(`/api/kakao-logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+        }),
+      });
+      setToken("");
+      localStorage.setItem("logoutToken", "");
+      router.push(`${ROUTES.HOME}`);
+    } catch (e) {
+      alert(e);
     }
   };
 
   return (
     <HeaderContainer>
-      {token ? (
+      {tokenData && (
         <HeaderIconWrap>
-          <Image src={`${userImage}`} alt='user' width={20} height={30} />
-        </HeaderIconWrap>
-      ) : (
-        <HeaderIconWrap>
-          <KeyboardBackspaceIcon onClick={handleBackClick} />
+          <KeyboardBackspaceIcon
+            style={{
+              marginTop: "0.6rem",
+            }}
+            onClick={handleBackClick}
+          />
+
+          <HeaderLogout>
+            <ExitToAppIcon onClick={handleLogout} />
+          </HeaderLogout>
         </HeaderIconWrap>
       )}
+
       <TextP>{HEADER_TEXT}</TextP>
       <Image
         src='/logo1.svg'
@@ -64,6 +100,15 @@ const Header = ({ userImage, token }: HeaderProps) => {
 };
 
 export default Header;
+
+const HeaderLogout = styled.h2`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  right: 2rem;
+`;
 
 const HeaderContainer = styled.header`
   height: 17.4rem;
