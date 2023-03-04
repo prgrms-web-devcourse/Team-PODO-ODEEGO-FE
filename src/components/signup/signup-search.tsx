@@ -48,7 +48,6 @@ const SignUpSearchInput = () => {
             errorMessage={errorMessage}
             handleStationKeyDown={handleStationKeyDown}
           />
-
           {errorMessage?.station?.length && (
             <NotFound
               title={"역만 입력해주세요"}
@@ -56,7 +55,6 @@ const SignUpSearchInput = () => {
               sxNumber={50}
             />
           )}
-
           <SignUpButton onClick={handleSignUpSubmit}>
             내 주소 저장하기
           </SignUpButton>
