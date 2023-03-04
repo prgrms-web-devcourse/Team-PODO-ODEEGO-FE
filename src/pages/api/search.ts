@@ -29,7 +29,7 @@ export const SearchAPI = {
     console.log(value);
     try {
       const result = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/mid-points/starts`,
+        `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/mid-points/starts?memberId=99`,
         {
           body: {
             value,
