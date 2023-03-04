@@ -14,7 +14,7 @@ interface searchOriginProps {
 }
 
 interface searchProps {
-  name: string;
+  stationName: string;
   lat: string;
   lng: string;
   address?: string;

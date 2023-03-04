@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { Button, InputAdornment, TextField } from "@mui/material";
@@ -17,11 +17,11 @@ const SearchInput = () => {
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
-  const id = parseInt(useSearchParams().get("id") || "0", 10); // input Id(주소입력창)
-  const groupId = useSearchParams().get("id") || "0"; // 방 Id
+  const id = useSearchParams().get("id") || null; // input Id(주소입력창)
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id
   const host = useSearchParams().get("host") || null;
 
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
   const router = useRouter();
 
@@ -29,22 +29,56 @@ const SearchInput = () => {
     return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
   };
 
-  // 링크를 공유 받았을 때.
-  if (groupId) {
-    if (!testToken) {
-      openModal({
-        children: setLoginModalContent(),
-        btnText: {
-          confirm: "로그인하기!",
-          close: "취소",
-        },
-        handleClose: () => {
-          window.close();
-        },
-      });
-      // 로그인 화면으로 대체 예정.
-      router.push("/");
+  const ConfirmEnterSearchPageModal = () => {
+    return (
+      <>
+        {/* 닉네임을 받아올 수 있는가? */}
+        <h1>000님이 주소를 요청했습니다.</h1>
+        <p>약속 장소를 찾기 위해 주소가 필요합니다.</p>
+        <p>계속 하시겠습니까?</p>
+      </>
+    );
+  };
+
+  const handleConfirmEnterSearchPage = () => {
+    openModal({
+      children: ConfirmEnterSearchPageModal(),
+      btnText: {
+        confirm: "예",
+        close: "아니오",
+      },
+      // 출발지 확정시
+      handleConfirm: () => {
+        // router.push("/");
+      },
+    });
+  };
+
+  // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
+  useEffect(() => {
+    window.addEventListener("popstate", () => {
+      closeModal();
+    });
+
+    if (groupId !== null) {
+      if (!host) handleConfirmEnterSearchPage();
     }
+  }, []);
+
+  // 링크를 공유 받았을 때.
+  if (groupId && !testToken) {
+    openModal({
+      children: setLoginModalContent(),
+      btnText: {
+        confirm: "로그인하기!",
+        close: "취소",
+      },
+      handleClose: () => {
+        window.close();
+      },
+    });
+    // 로그인 화면으로 대체 예정.
+    router.push("/");
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
@@ -89,14 +123,14 @@ const SearchInput = () => {
   const handleStartPointModal = (val: searchOriginProps) => {
     const obj = {
       groupId: groupId,
-      name: val.place_name, //stationName
+      stationName: val.place_name, //stationName
       lat: val.y,
       lng: val.x,
-      // address: val.address_name, // 필요없는듯?
+      address: val.address_name, // 필요없는듯?
     };
 
     openModal({
-      children: setStartPointModalContent(obj.name),
+      children: setStartPointModalContent(obj.stationName),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
@@ -104,25 +138,29 @@ const SearchInput = () => {
       // 출발지 확정시
       handleConfirm: () => {
         // 공유된 링크로 접속할 때는 안쓰일듯?
-        setRecoilData((prev: searchProps[]) => [
-          ...prev.slice(0, id),
-          obj,
-          ...prev.slice(id + 1),
-        ]);
+        if (id !== null)
+          setRecoilData((prev: searchProps[]) => [
+            ...prev.slice(0, +id),
+            obj,
+            ...prev.slice(+id + 1),
+          ]);
 
         // 선택한 주소를 BE로 보낸다.
-        SearchAPI.sendStartPoint({
-          groupId: obj.groupId.toString(),
-          stationName: obj.name,
-          lat: +obj.lat,
-          lng: +obj.lng,
-        });
+        if (obj.groupId !== null) {
+          SearchAPI.sendStartPoint({
+            groupId: obj.groupId,
+            stationName: obj.stationName,
+            lat: +obj.lat,
+            lng: +obj.lng,
+          });
+        }
 
         if (host) {
           // 주소 입력하고 모임 화면(홈페이지16)으로 redirection
           console.log("방장임!");
         } else {
           // 주소 입력 후 메인 화면으로 redirection
+          //
           console.log("방장아님!");
           router.push("/");
         }
