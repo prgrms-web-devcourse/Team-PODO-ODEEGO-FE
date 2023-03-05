@@ -1,11 +1,11 @@
 export const getLocalStorage = (key: string, defaultValue = "") => {
-  if (typeof window === undefined) return defaultValue;
+  if (defaultValue === undefined) return;
 
   const storage = localStorage;
   try {
-    const storedValue = JSON.parse(storage.getItem(key) || '""');
+    const storedValue = JSON.parse(storage.getItem(key) || "");
 
-    return storedValue ? storedValue : defaultValue;
+    return storedValue;
   } catch (error) {
     console.error(error);
     return defaultValue;
@@ -13,7 +13,7 @@ export const getLocalStorage = (key: string, defaultValue = "") => {
 };
 
 export const setLocalStorage = <T>(key: string, value: T) => {
-  if (typeof window === undefined) return "";
+  if (value === undefined) return;
 
   const storage = localStorage;
   try {
@@ -24,7 +24,7 @@ export const setLocalStorage = <T>(key: string, value: T) => {
 };
 
 export const removeLocalStorage = (key: string) => {
-  if (typeof window === undefined) return "";
+  if (key === "") return;
 
   const storage = localStorage;
   try {

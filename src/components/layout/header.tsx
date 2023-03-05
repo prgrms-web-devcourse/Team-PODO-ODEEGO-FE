@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import axios from "axios";
+import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 interface TokenProps {
   token?: string;
 }
@@ -21,7 +22,8 @@ const Header = ({ token }: TokenProps) => {
   const [tokenData, setToken] = useState<string>("");
 
   useEffect(() => {
-    const getToken = localStorage.getItem("logoutToken");
+    const getToken = getLocalStorage("logoutToken");
+    // const getToken = localStorage.getItem("logoutToken");
     if (!getToken) return;
     setToken(getToken);
   }, [router, token]);
@@ -33,7 +35,8 @@ const Header = ({ token }: TokenProps) => {
         break;
 
       case "/kakao":
-        const token = localStorage.getItem("logoutToken" || "");
+        const token = getLocalStorage("logoutToken");
+        // const token = localStorage.getItem("logoutToken" || "");
         await fetch(`/api/kakao-logout`, {
           method: "POST",
           headers: {
@@ -45,16 +48,16 @@ const Header = ({ token }: TokenProps) => {
         });
 
         setToken("");
-        localStorage.setItem("token", "");
-        localStorage.setItem("logoutToken", "");
+        removeLocalStorage("token");
+        removeLocalStorage("logoutToken");
         router.push(`${ROUTES.LOGIN}`);
         break;
     }
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token" || "");
-    const logoutToken = localStorage.getItem("logoutToken" || "");
+    const token = getLocalStorage("token");
+    const logoutToken = getLocalStorage("logoutToken");
 
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
@@ -80,8 +83,8 @@ const Header = ({ token }: TokenProps) => {
 
       setToken("");
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("logoutToken");
+      removeLocalStorage("token");
+      removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
 
       return response;

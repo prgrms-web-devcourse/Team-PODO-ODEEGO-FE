@@ -4,6 +4,7 @@ import checkSignup from "@/utils/check-signup";
 import { errorType, valueType } from "@/types/register-props";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { getLocalStorage } from "@/utils/storage";
 
 const useSignupSearch = () => {
   const [values, setValue] = useState<Partial<valueType>>({});
@@ -37,7 +38,7 @@ const useSignupSearch = () => {
   const handleLocationClick = (val: searchOriginProps) => {
     setToggleBoxIsLoading(false);
 
-    setToken(localStorage.getItem("token") || "");
+    setToken(getLocalStorage("token"));
     setValue({
       ...values,
       defaultStationName: val.place_name,
@@ -57,7 +58,7 @@ const useSignupSearch = () => {
 
     const response = await axios.patch(registerUrl, data, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${getLocalStorage("token")}`,
         "Content-Type": "application/json",
       },
     });

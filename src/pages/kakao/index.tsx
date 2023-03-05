@@ -5,6 +5,7 @@ import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
 import axios from "axios";
+import { setLocalStorage } from "@/utils/storage";
 
 const Kakao = () => {
   const router = useRouter();
@@ -41,8 +42,9 @@ const Kakao = () => {
           );
 
           setToken(data.accessToken);
-          localStorage.setItem("token", data.accessToken);
-          localStorage.setItem(
+
+          setLocalStorage("token", data.accessToken);
+          setLocalStorage(
             "logoutToken",
             resultKakao.tokenResponse.access_token
           );

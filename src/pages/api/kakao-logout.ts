@@ -10,6 +10,7 @@ async function getTokenFromKakao(logoutToken: string) {
     },
   }).then((res) => res.json());
 
+  console.log(response);
   return response;
 }
 
