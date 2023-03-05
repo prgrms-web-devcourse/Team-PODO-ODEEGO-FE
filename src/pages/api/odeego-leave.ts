@@ -8,8 +8,7 @@ async function getTokenFromKakao(odeegoToken: string) {
       Authorization: `Bearer ${odeegoToken}`,
     },
   }).then((res) => res.json());
-  console.log("Test용");
-  console.log(response);
+
   return response;
 }
 

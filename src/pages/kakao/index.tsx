@@ -4,7 +4,7 @@ import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
-// import Header from "@/components/layout/header";
+import axios from "axios";
 
 const Kakao = () => {
   const router = useRouter();
@@ -16,35 +16,32 @@ const Kakao = () => {
     try {
       const NewTest = async () => {
         if (authCode) {
-          const responseKakao = await fetch(`/api/kakao-login`, {
+          const loginKakao = `/api/kakao-login`;
+
+          const responseKakao = await fetch(loginKakao, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ authCode }),
           });
+
           const resultKakao = await responseKakao.json();
 
-          console.log(resultKakao);
+          const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
-          const responseBackend = await fetch(
-            // 배포 서버
-            `https://odeego.shop/api/v1/auth/user/me`,
-            // 배포 서버
-            // `https://52.78.224.123:8080/api/v1/auth/user/me`,
-            // 개인 서버
-            // `http://15.165.99.21:8080/api/v1/auth/user/me`,
+          const { data } = await axios.post(
+            loginBackendUrl,
+            {},
             {
               headers: {
                 Authorization: `Bearer ${resultKakao.tokenResponse.access_token}`,
               },
-              method: "POST",
             }
           );
-          const getBackendToken = await responseBackend.json();
 
-          setToken(getBackendToken.accessToken);
-          localStorage.setItem("token", getBackendToken.accessToken);
+          setToken(data.accessToken);
+          localStorage.setItem("token", data.accessToken);
           localStorage.setItem(
             "logoutToken",
             resultKakao.tokenResponse.access_token

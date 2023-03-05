@@ -31,6 +31,7 @@ const Header = ({ token }: TokenProps) => {
       case "/signin":
         router.push(`${ROUTES.HOME}`);
         break;
+
       case "/kakao":
         const token = localStorage.getItem("logoutToken" || "");
         await fetch(`/api/kakao-logout`, {
@@ -53,12 +54,11 @@ const Header = ({ token }: TokenProps) => {
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token" || "");
-    // token 이름으로는 잘들어간다.
     const logoutToken = localStorage.getItem("logoutToken" || "");
 
     try {
-      const kakoLogoutUrl = `/api/kakao-logout`;
-      await fetch(kakoLogoutUrl, {
+      const kakaoLogoutUrl = `/api/kakao-logout`;
+      await fetch(kakaoLogoutUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,6 +70,7 @@ const Header = ({ token }: TokenProps) => {
 
       // 회원탈퇴
       const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
+
       const response = await axios.delete(odeegoLogoutUrl, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,13 +78,13 @@ const Header = ({ token }: TokenProps) => {
         },
       });
 
-      console.log(response);
-
       setToken("");
 
-      localStorage.setItem("token", "");
-      localStorage.setItem("logoutToken", "");
+      localStorage.removeItem("token");
+      localStorage.removeItem("logoutToken");
       router.push(`${ROUTES.HOME}`);
+
+      return response;
     } catch (e) {
       alert(e);
     }
