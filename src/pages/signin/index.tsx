@@ -14,9 +14,9 @@ const LoginPage = () => {
   function kakaoLogin() {
     window.Kakao.Auth.authorize({
       //개인 테스트용 리다이랙션 주소
-      redirectUri: "http://localhost:3000/kakao",
+      // redirectUri: "http://localhost:3000/kakao",
       // 배포 리다이랙션 주소
-      // redirectUri: "https://odeego.vercel.app/kakao",
+      redirectUri: "https://odeego.vercel.app/kakao",
     });
   }
 
