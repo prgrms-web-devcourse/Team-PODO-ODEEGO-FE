@@ -1,12 +1,12 @@
 type LocalStorage = typeof window.localStorage;
 
-export const getLocalStorage = (key: string, defaultValue = "") => {
-  if (defaultValue === undefined || defaultValue === null) return;
+export const getLocalStorage = (key: string) => {
+  if (key === undefined || key === null) return;
 
   const storage: LocalStorage = localStorage;
   try {
     const getItemValue = storage.getItem(key);
-    const storedValue = JSON.parse(getItemValue!);
+    const storedValue = JSON.parse(getItemValue as string);
 
     return storedValue;
   } catch (err) {
