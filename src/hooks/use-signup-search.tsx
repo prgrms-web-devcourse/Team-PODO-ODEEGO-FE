@@ -43,11 +43,19 @@ const useSignupSearch = () => {
     });
   };
 
+  // const [str, setString] = useState("");
+
   const handleSignUpSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
+
+    const { defaultStationName } = values;
+
+    console.log(defaultStationName);
+
     const res = await fetch(
       // 배포 서버
-      `https://odeego.shop/api/v1/members/sign-up`,
+      `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/sign-up`,
+      // `https://odeego.shop/api/v1/members/sign-up`, (되는 코드)
       // 배포 서버
       // `https://52.78.224.123:8080/api/v1/auth/user/me`,
       // 개인 서버

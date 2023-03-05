@@ -6,7 +6,8 @@ const fetchGroup = async (groupId: string, token: string) => {
   try {
     // **TODO: 모임 상세 정보 찾기 API로 변경
     const { data } = await axios.get<GroupDetailResponse>(
-      `https://52.78.224.123:8080/api/test/groups/${groupId}`
+      `https://odeego.shop/api/test/groups/${groupId}`
+      // `https://52.78.224.123:8080/api/test/groups/${groupId}`
     );
     console.log(token);
 
@@ -19,7 +20,7 @@ const fetchGroup = async (groupId: string, token: string) => {
 const createGroup = async (memberId: string, capacity: number) => {
   try {
     axios.post(
-      `https://52.78.224.123:8080/api/test/?
+      `https://odeego.shop/api/test/?
     member-id=${memberId}`,
       {
         capacity: capacity,

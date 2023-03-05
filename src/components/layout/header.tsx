@@ -8,6 +8,7 @@ import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import axios from "axios";
 interface TokenProps {
   token?: string;
 }
@@ -32,7 +33,6 @@ const Header = ({ token }: TokenProps) => {
         break;
       case "/kakao":
         const token = localStorage.getItem("logoutToken" || "");
-
         await fetch(`/api/kakao-logout`, {
           method: "POST",
           headers: {
@@ -42,6 +42,7 @@ const Header = ({ token }: TokenProps) => {
             token,
           }),
         });
+
         setToken("");
         localStorage.setItem("token", "");
         localStorage.setItem("logoutToken", "");
@@ -51,18 +52,36 @@ const Header = ({ token }: TokenProps) => {
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("logoutToken" || "");
+    const token = localStorage.getItem("token" || "");
+    // token 이름으로는 잘들어간다.
+    const logoutToken = localStorage.getItem("logoutToken" || "");
+
     try {
-      await fetch(`/api/kakao-logout`, {
+      const kakoLogoutUrl = `/api/kakao-logout`;
+      await fetch(kakoLogoutUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token,
+          logoutToken,
         }),
       });
+
+      // 회원탈퇴
+      const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
+      const response = await axios.delete(odeegoLogoutUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log(response);
+
       setToken("");
+
+      localStorage.setItem("token", "");
       localStorage.setItem("logoutToken", "");
       router.push(`${ROUTES.HOME}`);
     } catch (e) {

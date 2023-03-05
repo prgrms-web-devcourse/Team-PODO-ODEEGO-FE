@@ -57,22 +57,19 @@ const SignUpSearchInput = () => {
         </form>
       </SignUpSearchInputWrapper>
 
-      {isLoading === isToggleBoxLoading ||
-      resultSubway?.data.documents.length <= 0 ? null : (
+      {isLoading === isToggleBoxLoading || resultSubway?.length <= 0 ? null : (
         <SignUpSearchToggleBox>
-          {resultSubway?.data?.documents?.map(
-            (val: searchOriginProps, index: number) => {
-              return (
-                <SignUpSearchToggleWrapper key={index}>
-                  <SignUpSearchToggleData
-                    onClick={() => handleLocationClick(val)}
-                    key={index}>
-                    {val.place_name}
-                  </SignUpSearchToggleData>
-                </SignUpSearchToggleWrapper>
-              );
-            }
-          )}
+          {resultSubway?.map((val: searchOriginProps, index: number) => {
+            return (
+              <SignUpSearchToggleWrapper key={index}>
+                <SignUpSearchToggleData
+                  onClick={() => handleLocationClick(val)}
+                  key={index}>
+                  {val.place_name}
+                </SignUpSearchToggleData>
+              </SignUpSearchToggleWrapper>
+            );
+          })}
         </SignUpSearchToggleBox>
       )}
     </SignUpSearchContainer>
