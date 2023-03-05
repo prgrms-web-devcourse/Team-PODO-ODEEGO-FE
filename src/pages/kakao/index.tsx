@@ -15,7 +15,8 @@ const Kakao = () => {
 
   useEffect(() => {
     try {
-      const NewTest = async () => {
+      // 새로고침시 500에러나옴
+      const fetchKaokaoUserData = async () => {
         if (authCode) {
           const loginKakao = `/api/kakao-login`;
 
@@ -31,19 +32,26 @@ const Kakao = () => {
 
           const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
-          const { data } = await axios.post(
-            loginBackendUrl,
-            {},
-            {
-              headers: {
-                Authorization: `Bearer ${resultKakao.tokenResponse.access_token}`,
-              },
+          // 새로고침 임시 방편 코드
+          if (window.performance) {
+            if (performance.navigation.type == 1) {
+              console.error("The page is reloaded");
+            } else {
+              const { data } = await axios.post(
+                loginBackendUrl,
+                {},
+                {
+                  headers: {
+                    Authorization: `Bearer ${resultKakao.tokenResponse.access_token}`,
+                  },
+                }
+              );
+              setToken(data.accessToken);
+
+              setLocalStorage("token", data.accessToken);
             }
-          );
+          }
 
-          setToken(data.accessToken);
-
-          setLocalStorage("token", data.accessToken);
           setLocalStorage(
             "logoutToken",
             resultKakao.tokenResponse.access_token
@@ -51,9 +59,9 @@ const Kakao = () => {
         }
       };
 
-      NewTest();
+      fetchKaokaoUserData();
     } catch (err) {
-      console.error(err);
+      throw new Error((err as Error).message);
     }
   }, [router]);
 

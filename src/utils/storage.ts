@@ -1,26 +1,27 @@
 type LocalStorage = typeof window.localStorage;
 
 export const getLocalStorage = (key: string, defaultValue = "") => {
-  if (defaultValue === undefined) return;
+  if (defaultValue === undefined || defaultValue === null) return;
 
   const storage: LocalStorage = localStorage;
   try {
-    const storedValue = JSON.parse(storage.getItem(key) || "");
+    const getItemValue = storage.getItem(key);
+    const storedValue = JSON.parse(getItemValue!);
 
     return storedValue;
-  } catch (error) {
-    throw new Error((<Error>error).message);
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
 };
 
-export const setLocalStorage = <T>(key: string, value: T) => {
-  if (value === undefined) return;
+export const setLocalStorage = (key: string, value: string) => {
+  if (value === undefined || value === null) return;
 
   const storage: LocalStorage = localStorage;
   try {
     storage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    throw new Error((<Error>error).message);
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
 };
 
@@ -30,7 +31,7 @@ export const removeLocalStorage = (key: string) => {
   const storage: LocalStorage = localStorage;
   try {
     storage.removeItem(key);
-  } catch (error) {
-    throw new Error((<Error>error).message);
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
 };

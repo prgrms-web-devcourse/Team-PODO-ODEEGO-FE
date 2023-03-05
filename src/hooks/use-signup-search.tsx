@@ -58,7 +58,9 @@ const useSignupSearch = () => {
 
     const response = await axios.patch(registerUrl, data, {
       headers: {
-        Authorization: `Bearer ${getLocalStorage("token")}`,
+        Authorization: `Bearer ${JSON.parse(
+          localStorage.getItem("token") || ""
+        )}`,
         "Content-Type": "application/json",
       },
     });
@@ -67,33 +69,6 @@ const useSignupSearch = () => {
       router.push("/");
     }
     console.log(response);
-
-    // Axios 바꾸기 전 코드
-    // const res = await fetch(
-    //   // 배포 서버
-    //   registerUrl,
-    //   // `https://odeego.shop/api/v1/members/sign-up`, (되는 코드)
-    //   // 배포 서버
-    //   // `https://52.78.224.123:8080/api/v1/auth/user/me`,
-    //   // 개인 서버
-    //   // `http://15.165.99.21:8080/api/v1/auth/user/me`,
-    //   {
-    //     body: JSON.stringify({
-    //       nickname: values.nickname,
-    //       defaultStationName: values.defaultStationName,
-    //     }),
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //       "Content-Type": "application/json",
-    //     },
-    //     method: "PATCH",
-    //   }
-    // );
-    //
-    // if (res.ok) {
-    //   router.push("/");
-    // }
-    console.log(values);
   };
 
   return {

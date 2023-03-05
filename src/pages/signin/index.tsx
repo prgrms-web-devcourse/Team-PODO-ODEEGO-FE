@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-
 import React from "react";
 import styled from "@emotion/styled";
 // import Header from "@/components/home/home-header";
@@ -10,7 +8,6 @@ import kakao_image from "public/kakao_login_medium_wide.png";
 import Header from "@/components/layout/header";
 
 const LoginPage = () => {
-  const router = useRouter();
   function kakaoLogin() {
     window.Kakao.Auth.authorize({
       //개인 테스트용 리다이랙션 주소
@@ -23,7 +20,6 @@ const LoginPage = () => {
     });
   }
 
-  console.log(router);
   // 임시 로그인 토큰
   // const token = "";
   return (

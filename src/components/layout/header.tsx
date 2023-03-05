@@ -22,7 +22,7 @@ const Header = ({ token }: TokenProps) => {
   const [tokenData, setToken] = useState<string>("");
 
   useEffect(() => {
-    const getToken = getLocalStorage("logoutToken");
+    const getToken = getLocalStorage("token");
     // const getToken = localStorage.getItem("logoutToken");
     if (!getToken) return;
     setToken(getToken);
@@ -36,19 +36,20 @@ const Header = ({ token }: TokenProps) => {
 
       case "/kakao":
         const token = getLocalStorage("logoutToken");
-        // const token = localStorage.getItem("logoutToken" || "");
-        await fetch(`/api/kakao-logout`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token,
-          }),
-        });
 
-        setToken("");
-        removeLocalStorage("token");
+        try {
+          await fetch(`/api/kakao-logout`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token,
+            }),
+          });
+        } catch (err) {
+          throw new Error((err as Error).message);
+        }
         removeLocalStorage("logoutToken");
         router.push(`${ROUTES.LOGIN}`);
         break;
@@ -88,8 +89,8 @@ const Header = ({ token }: TokenProps) => {
       router.push(`${ROUTES.HOME}`);
 
       return response;
-    } catch (e) {
-      alert(e);
+    } catch (err) {
+      throw new Error((err as Error).message);
     }
   };
 
