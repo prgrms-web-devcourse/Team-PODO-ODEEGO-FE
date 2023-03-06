@@ -66,7 +66,7 @@ export default function Home() {
     },
   };
 
-  const getSelectModalConfig = (isValid: boolean) => ({
+  const getSelectModalConfig = (isValid: boolean, groupId = "") => ({
     children: <SelectModal isValid={isValid} />,
     btnText: {
       confirm: MAKE_A_GROUP_TEXT,
@@ -76,15 +76,14 @@ export default function Home() {
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
+      const gId = groupId;
       try {
         const count = getLocalStorage(COUNT, "");
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
         //만료된 방이 있다면, 방 삭제 후, 방 만들기
-        if (!isValid) {
-          const { groups } = await GroupsApi.getAll(token);
-          const { groupId } = groups[0];
-          await GroupsApi.deleteGroup(groupId, token);
+        if (!isValid && gId) {
+          await GroupsApi.deleteGroup(gId, token);
         }
 
         const data = await GroupsApi.postCreateGroup(
@@ -195,7 +194,7 @@ export default function Home() {
         await getNumberTypeTimeAndGroupIdFromGroupAPI(token);
 
       if (minutes === 0 || seconds === 0) {
-        openModal(getSelectModalConfig(false));
+        openModal(getSelectModalConfig(false, groupId));
       } else {
         openModal(getValidGroupModalConfig(minutes, seconds));
       }
