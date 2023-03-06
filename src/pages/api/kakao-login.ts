@@ -14,6 +14,8 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { authCode } = req.body;
+
+  console.log(authCode);
   const tokenResponse = await getTokenFromKakao(authCode);
   res.status(200).json({ tokenResponse });
 }
