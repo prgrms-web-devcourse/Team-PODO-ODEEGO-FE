@@ -46,7 +46,6 @@ const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 const {
   ERROR_DUPLICATE_START_POINT,
   ERROR_MISSING_START_POINT,
-  ERROR_OUT_OF_BOUND,
   ERROR_ALREADY_EXIST_GROUP,
   ERROR_UNSELECT_PEOPLE_COUNT,
 } = ERROR_TEXT;
@@ -164,29 +163,27 @@ export default function Home() {
     if (isLoading) return;
 
     const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
-    if (notEmptyAddressList.length < 2) {
-      toast.error(ERROR_MISSING_START_POINT);
-      setIsLoading(false);
-      return;
-    }
 
     setIsLoading(true);
+    try {
+      if (notEmptyAddressList.length < 2) {
+        throw new Error(ERROR_MISSING_START_POINT);
+      }
 
-    const data = await MidPointApi.postMidPoint(notEmptyAddressList);
-    await (() => new Promise((r) => setTimeout(r, 3000)))();
+      const data = await MidPointApi.postMidPoint(notEmptyAddressList);
+      setIsLoading(false);
 
-    setIsLoading(false);
+      if (data.start.length < 2) {
+        throw new Error(ERROR_DUPLICATE_START_POINT);
+      }
 
-    if (data.status === ERROR_400) {
-      toast.error(ERROR_OUT_OF_BOUND);
-    } else if (data.start.length < 2) {
-      toast.error(ERROR_DUPLICATE_START_POINT);
-    } else {
-      //TODO
-      // - 지우기
-      console.log(data);
       setMidPointResponse(data);
       router.push(`${MAP}`);
+    } catch (e) {
+      setIsLoading(false);
+
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      toast.error(errorMessage);
     }
 
     setAddressList(notEmptyAddressList);
