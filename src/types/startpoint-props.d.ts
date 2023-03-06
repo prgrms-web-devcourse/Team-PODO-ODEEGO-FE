@@ -1,5 +1,6 @@
 interface StartPointPros {
-  // groupId: string;
+  groupId?: string;
+  memberId?: string;
   stationName: string;
   lat: number;
   lng: number;
