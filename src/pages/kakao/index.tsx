@@ -36,6 +36,7 @@ const Kakao = () => {
 
           const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
+          console.log(loginBackendUrl);
           // 새로고침 임시 방편 코드
           if (window.performance) {
             if (performance.navigation.type == 1) {
@@ -50,6 +51,7 @@ const Kakao = () => {
                   },
                 }
               );
+              console.log(data);
               setToken(data.accessToken);
 
               setLocalStorage("token", data.accessToken);
