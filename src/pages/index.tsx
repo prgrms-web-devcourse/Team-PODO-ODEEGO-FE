@@ -104,12 +104,16 @@ export default function Home() {
       if (!hasAccessToken) return "";
 
       //TODO 실제 모임조회 api로 바꾸기
-      const data = await GroupsApi.getAll(token);
-      const groupId = data?.groups?.[0]?.groupId || "";
+      try {
+        const data = await GroupsApi.getAll(token);
+        const groupId = data?.groups?.[0]?.groupId || "";
 
-      setGroupId(groupId);
-      // setGroupId("");
-      setLocalStorage(COUNT, "");
+        setGroupId(groupId);
+        setLocalStorage(COUNT, "");
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
+      }
     };
 
     initGroupId();
