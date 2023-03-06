@@ -32,6 +32,7 @@ import { getLocalStorage, setLocalStorage } from "@/utils/storage";
 import { COUNT } from "@/constants/local-storage";
 import Header from "@/components/layout/header";
 import { TestApi } from "@/axios/test";
+import { validateAddressListUnderTwoLength } from "@/utils/error";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -43,12 +44,7 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const {
-  ERROR_DUPLICATE_START_POINT,
-  ERROR_MISSING_START_POINT,
-  ERROR_ALREADY_EXIST_GROUP,
-  ERROR_UNSELECT_PEOPLE_COUNT,
-} = ERROR_TEXT;
+const { ERROR_ALREADY_EXIST_GROUP, ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
 
 const { ERROR_400 } = STATUS_CODE;
 
@@ -166,17 +162,14 @@ export default function Home() {
 
     setIsLoading(true);
     try {
-      if (notEmptyAddressList.length < 2) {
-        throw new Error(ERROR_MISSING_START_POINT);
-      }
+      const errorMessage =
+        validateAddressListUnderTwoLength(notEmptyAddressList);
+      if (errorMessage) throw new Error(errorMessage);
 
       const data = await MidPointApi.postMidPoint(notEmptyAddressList);
       setIsLoading(false);
 
-      if (data.start.length < 2) {
-        throw new Error(ERROR_DUPLICATE_START_POINT);
-      }
-
+      setAddressList(notEmptyAddressList);
       setMidPointResponse(data);
       router.push(`${MAP}`);
     } catch (e) {
@@ -185,8 +178,6 @@ export default function Home() {
       const errorMessage = e instanceof Error ? e.message : String(e);
       toast.error(errorMessage);
     }
-
-    setAddressList(notEmptyAddressList);
   };
 
   const { run: debounceMidPoint } = useTimeoutFn({

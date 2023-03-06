@@ -32,7 +32,7 @@ export default async function handler(
 
       if (response && response.data && response.data.errorCode === "S001") {
         res
-          .status(400)
+          .status(404)
           .send({ message: ERROR_OUT_OF_BOUND_S001, status: "S001" });
       } else if (response && response.status === 404) {
         res.status(404).send({ message: ERROR_NOT_FOUND_404, status: 404 });
