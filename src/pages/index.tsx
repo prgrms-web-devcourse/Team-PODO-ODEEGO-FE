@@ -84,7 +84,7 @@ export default function Home() {
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      const count = getLocalStorage(COUNT, "");
+      const count = getLocalStorage(COUNT);
       if (count === "") {
         toast.error(ERROR_UNSELECT_PEOPLE_COUNT);
         return;
@@ -147,6 +147,7 @@ export default function Home() {
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
+
       return;
     }
     if (groupId) {

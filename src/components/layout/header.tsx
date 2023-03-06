@@ -4,39 +4,178 @@ import Image from "next/image";
 
 const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-interface HeaderProps {
-  userImage?: string;
+import { ROUTES } from "@/constants/routes";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import axios from "axios";
+import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
+interface TokenProps {
   token?: string;
 }
 
-const Header = ({ userImage, token }: HeaderProps) => {
-  console.log(userImage);
+const Header = ({ token }: TokenProps) => {
+  const router = useRouter();
 
-  console.log(token);
+  const { pathname } = router;
+
+  const [tokenData, setToken] = useState<string>("");
+
+  useEffect(() => {
+    const getToken = getLocalStorage("token");
+    // const getToken = localStorage.getItem("logoutToken");
+    if (!getToken) return;
+    setToken(getToken);
+  }, [router, token]);
+
+  const handleBackClick = async () => {
+    switch (pathname) {
+      case "/signin":
+        router.push(`${ROUTES.HOME}`);
+        break;
+
+      case "/kakao":
+        const token = getLocalStorage("logoutToken");
+
+        try {
+          await fetch(`/api/kakao-logout`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              token,
+            }),
+          });
+        } catch (err) {
+          throw new Error((err as Error).message);
+        }
+        removeLocalStorage("logoutToken");
+        router.push(`${ROUTES.LOGIN}`);
+        break;
+    }
+  };
+
+  const handleLogout = async () => {
+    const token = getLocalStorage("token");
+    const logoutToken = getLocalStorage("logoutToken");
+
+    try {
+      const kakaoLogoutUrl = `/api/kakao-logout`;
+      await fetch(kakaoLogoutUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          logoutToken,
+        }),
+      });
+
+      // 회원탈퇴
+      const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
+
+      const response = await axios.delete(odeegoLogoutUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      setToken("");
+
+      removeLocalStorage("token");
+      removeLocalStorage("logoutToken");
+      router.push(`${ROUTES.HOME}`);
+
+      return response;
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
+  };
+
   return (
     <HeaderContainer>
-      {userImage ? (
-        <HeaderIconWrap>
-          <Image src={userImage} alt='user' width={20} height={30} />
-        </HeaderIconWrap>
+      {tokenData ? (
+        <>
+          <HeaderIconWrap>
+            <KeyboardBackspaceIcon
+              style={{
+                marginTop: "0.9rem",
+                fontSize: "2rem",
+              }}
+              onClick={handleBackClick}
+            />
+
+            <HeaderLogout>
+              <ExitToAppIcon
+                style={{
+                  fontSize: "2rem",
+                }}
+                onClick={handleLogout}
+              />
+            </HeaderLogout>
+          </HeaderIconWrap>
+
+          {/*로그인시 margin이 너무 내려가고 있다.*/}
+          <TextLoginContainer>
+            <TextP>{HEADER_TEXT}</TextP>
+            <Image
+              src='/logo1.svg'
+              alt='Odeego Logo'
+              width={137}
+              height={46}
+              priority
+            />
+          </TextLoginContainer>
+        </>
       ) : (
-        <HeaderIconWrap>
-          <KeyboardBackspaceIcon />
-        </HeaderIconWrap>
+        <>
+          <TextNotLoginContainer>
+            <TextP>{HEADER_TEXT}</TextP>
+            <Image
+              src='/logo1.svg'
+              alt='Odeego Logo'
+              width={137}
+              height={46}
+              priority
+            />
+          </TextNotLoginContainer>
+        </>
       )}
-      <TextP>{HEADER_TEXT}</TextP>
-      <Image
-        src='/logo1.svg'
-        alt='Odeego Logo'
-        width={137}
-        height={46}
-        priority
-      />
     </HeaderContainer>
   );
 };
 
 export default Header;
+
+const TextLoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const TextNotLoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 3.2rem;
+
+  svg {
+    margin-bottom: 1rem;
+  }
+`;
+
+const HeaderLogout = styled.h2`
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  right: 2rem;
+`;
 
 const HeaderContainer = styled.header`
   height: 17.4rem;
@@ -62,7 +201,4 @@ const HeaderIconWrap = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-left: 2rem;
-  svg {
-    font-size: 3rem;
-  }
 `;
