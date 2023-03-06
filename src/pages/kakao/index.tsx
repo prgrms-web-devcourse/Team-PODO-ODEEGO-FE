@@ -13,6 +13,8 @@ const Kakao = () => {
 
   const [token, setToken] = useState("");
 
+  // const [token, setToken] = useRecoilState(accessTokenState);
+
   useEffect(() => {
     try {
       // 새로고침시 500에러나옴
