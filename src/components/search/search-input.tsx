@@ -121,16 +121,16 @@ const SearchInput = () => {
   };
 
   const handleStartPointModal = (val: searchOriginProps) => {
-    const obj = {
-      groupId: groupId,
+    const startPoint = {
+      groupId: "b6deb966-8179-43db-9f08-ec5271cbaccc",
       stationName: val.place_name, //stationName
       lat: val.y,
       lng: val.x,
-      address: val.address_name, // 필요없는듯?
+      // address: val.address_name, // 필요없는듯?
     };
 
     openModal({
-      children: setStartPointModalContent(obj.stationName),
+      children: setStartPointModalContent(startPoint.stationName),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
@@ -141,17 +141,17 @@ const SearchInput = () => {
         if (id !== null)
           setRecoilData((prev: searchProps[]) => [
             ...prev.slice(0, +id),
-            obj,
+            startPoint,
             ...prev.slice(+id + 1),
           ]);
 
         // 선택한 주소를 BE로 보낸다.
-        if (obj.groupId !== null) {
-          SearchAPI.sendStartPoint({
-            groupId: obj.groupId,
-            stationName: obj.stationName,
-            lat: +obj.lat,
-            lng: +obj.lng,
+        if (startPoint.groupId !== null) {
+          SearchAPI.HostSendStartPoint({
+            // groupId: startPoint.groupId,
+            stationName: startPoint.stationName,
+            lat: +startPoint.lat,
+            lng: +startPoint.lng,
           });
         }
 
