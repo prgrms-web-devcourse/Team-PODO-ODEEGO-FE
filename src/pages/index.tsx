@@ -26,7 +26,7 @@ import {
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import { accessTokenState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
-import { COLORS, COUNT, ERROR_TEXT, ROUTES, STATUS_CODE } from "@/constants";
+import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -38,9 +38,7 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const { ERROR_ALREADY_EXIST_GROUP, ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
-
-const { ERROR_400 } = STATUS_CODE;
+const { ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
 
 const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
 
@@ -73,29 +71,26 @@ export default function Home() {
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      const count = getLocalStorage(COUNT, "");
-      if (count === "") {
-        toast.error(ERROR_UNSELECT_PEOPLE_COUNT);
-        return;
-      }
-
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
-      const data = await GroupsApi.postCreateGroup(
-        parseInt(token),
-        parseInt(count, 10)
-      );
-      setLocalStorage(COUNT, "");
+      try {
+        const count = getLocalStorage(COUNT, "");
+        if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
-      if (data.status === ERROR_400) {
-        toast.error(ERROR_ALREADY_EXIST_GROUP);
-        return;
+        const data = await GroupsApi.postCreateGroup(
+          parseInt(token),
+          parseInt(count, 10)
+        );
+        setLocalStorage(COUNT, "");
+
+        const { groupId } = data;
+        console.log(`go to the group page : /group/${groupId}`);
+        router.push(`${GROUP}/${groupId}`);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
       }
-
-      const { groupId } = data;
-      console.log(`go to the group page : /group/${groupId}`);
-      router.push(`${GROUP}/${groupId}`);
     },
   };
 
