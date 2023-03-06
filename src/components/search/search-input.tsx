@@ -1,4 +1,5 @@
 import { SearchAPI } from "@/pages/api/search";
+import { SearchAPI22 } from "@/axios/send-start-point";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,9 +18,10 @@ const SearchInput = () => {
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
-  const id = useSearchParams().get("id") || ""; // input Id(주소입력창)
-  const groupId = useSearchParams().get("groupId") || null; // 방 Id
-  const host = useSearchParams().get("host") || null;
+  const id = useSearchParams().get("id") || null; // input Id(주소입력창)
+  const groupId =
+    useSearchParams().get("groupId") || "b6deb966-8179-43db-9f08-ec5271cbaccc"; // 방 Id
+  const host = useSearchParams().get("host") || true;
   const memberId = testToken;
 
   const { openModal, closeModal } = useModal();
@@ -153,7 +155,7 @@ const SearchInput = () => {
           if (host) {
             console.log("방장임!");
 
-            SearchAPI.HostSendStartPoint({
+            SearchAPI22.HostSendStartPoint({
               groupId,
               memberId,
               stationName: startPoint.stationName,
@@ -166,7 +168,7 @@ const SearchInput = () => {
           } else {
             console.log("방장아님!");
 
-            SearchAPI.NonHostSendStartPoint({
+            SearchAPI22.NonHostSendStartPoint({
               groupId,
               memberId,
               stationName: startPoint.stationName,
