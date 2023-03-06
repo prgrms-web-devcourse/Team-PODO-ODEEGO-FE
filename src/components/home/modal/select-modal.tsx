@@ -26,7 +26,10 @@ const SelectModal = ({ isValid }: SelectProps) => {
       {isValid ? (
         <P>몇 명이 모이나요?</P>
       ) : (
-        <p>방이 만료되었습니다. 새로 만드시겠습니까?</p>
+        <PContainer>
+          <P>방이 만료되었습니다.</P>
+          <P>새로 만드시겠습니까?</P>
+        </PContainer>
       )}
       <FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
         <Select
@@ -65,4 +68,20 @@ export default SelectModal;
 const P = styled.p`
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+`;
+
+const PContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  & p:nth-of-type(1) {
+    margin-bottom: 0;
+    color: red;
+  }
+  & p:nth-of-type(2) {
+    margin-top: 1rem;
+    font-size: 1.4rem;
+  }
 `;

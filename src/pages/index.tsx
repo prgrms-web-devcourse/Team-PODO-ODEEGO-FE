@@ -54,6 +54,7 @@ export default function Home() {
   const router = useRouter();
   const { openModal } = useModal();
 
+  //methods & modal config
   const loginModalConfig = {
     children: <LoginConfirmModal />,
     btnText: {
@@ -79,7 +80,7 @@ export default function Home() {
         const count = getLocalStorage(COUNT, "");
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
-        //만료된 방이 있다면,
+        //만료된 방이 있다면, 방 삭제 후, 방 만들기
         if (!isValid) {
           const { groups } = await GroupsApi.getAll(token);
           const { groupId } = groups[0];
@@ -101,6 +102,41 @@ export default function Home() {
       }
     },
   });
+
+  const getValidGroupModalConfig = (minutes: number, seconds: number) => ({
+    children: <ValidGroupModal remainingTime={`${minutes}분 ${seconds}초`} />,
+    btnText: {
+      confirm: "모임방 가기",
+    },
+    handleConfirm: async () => {
+      try {
+        const { groupId, minutes, seconds } =
+          await getNumberTypeTimeAndGroupIdFromGroupAPI(token);
+
+        minutes === 0 && seconds === 0
+          ? router.push(`/`)
+          : router.push(`${GROUP}/${groupId}`);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
+      }
+    },
+  });
+
+  const getNumberTypeTimeAndGroupIdFromGroupAPI = async (token: string) => {
+    const { groups } = await GroupsApi.getAll(token);
+    const { groupId, remainingTime } = groups[0];
+
+    const times = remainingTime.split(":");
+    const minutes = Number(times[1]);
+    const seconds = Math.floor(Number(times[2]));
+
+    return {
+      groupId,
+      minutes,
+      seconds,
+    };
+  };
 
   useEffect(() => {
     const initGroupId = async () => {
@@ -135,6 +171,7 @@ export default function Home() {
     }
   };
 
+  //event handler
   const handleInputClickRoute = (index: number) => {
     router.push(`${SEARCH}?id=${index}`);
   };
@@ -146,10 +183,7 @@ export default function Home() {
       return;
     }
     if (!groupId) {
-      setIsLoading(true);
       openModal(getSelectModalConfig(true));
-      setIsLoading(false);
-
       return;
     }
     //TODO
@@ -157,51 +191,18 @@ export default function Home() {
     //2. 괜찮으면 유효시간 모달 띄워주기 -> go
     //3. 만료되었으면 방을 만들겠냐고 모달 띄워주기 -> go
     try {
-      //capacity, createdAt, groupId, remainingTime
+      const { minutes, seconds } =
+        await getNumberTypeTimeAndGroupIdFromGroupAPI(token);
 
-      const { groups } = await GroupsApi.getAll(token);
-      const { remainingTime } = groups[0];
-
-      const times = remainingTime.split(":");
-      let minutes = Number(times[1]);
-      let seconds = Math.floor(Number(times[2]));
-
-      minutes = 0;
-      seconds = 0;
       if (minutes === 0 || seconds === 0) {
         openModal(getSelectModalConfig(false));
       } else {
-        openModal({
-          children: (
-            <ValidGroupModal remainingTime={`${minutes}분 ${seconds}초`} />
-          ),
-          btnText: {
-            confirm: "모임방 가기",
-          },
-          handleConfirm: async () => {
-            const { groups } = await GroupsApi.getAll(token);
-            const { groupId, remainingTime } = groups[0];
-
-            const times = remainingTime.split(":");
-            const minutes = Number(times[1]);
-            const seconds = Math.floor(Number(times[2]));
-
-            minutes === 0 && seconds === 0
-              ? router.push(`/`)
-              : router.push(`${GROUP}/${groupId}`);
-          },
-        });
+        openModal(getValidGroupModalConfig(minutes, seconds));
       }
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : String(e);
       toast.error(errorMessage);
     }
-
-    // if (groupId) {
-    //   console.log(`go to the group page : /group/${groupId}`);
-    //   router.push(`${GROUP}/${groupId}`);
-    //   return;
-    // }
   };
 
   const handleButtonClickMiddlePointSubmit = async () => {

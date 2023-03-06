@@ -15,6 +15,6 @@ const ValidGroupModal = ({ remainingTime }: ValidGroupProps) => {
 export default ValidGroupModal;
 
 const P = styled.p`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin: 3rem 0 2.5rem 0;
 `;
