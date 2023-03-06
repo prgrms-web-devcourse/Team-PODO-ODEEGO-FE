@@ -7,6 +7,7 @@ import Image from "next/image";
 import kakao_image from "public/kakao_login_medium_wide.png";
 import Header from "@/components/layout/header";
 
+// test env
 const LoginPage = () => {
   function kakaoLogin() {
     window.Kakao.Auth.authorize({
