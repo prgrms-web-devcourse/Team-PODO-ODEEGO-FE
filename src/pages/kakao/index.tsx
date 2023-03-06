@@ -71,8 +71,6 @@ const Kakao = () => {
     }
   }, [router]);
 
-  // console.log(userImage);
-
   return (
     <SignUpContainer>
       <Header token={token} />
