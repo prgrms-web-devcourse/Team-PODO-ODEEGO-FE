@@ -1,17 +1,19 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
 import axios from "axios";
 import { setLocalStorage } from "@/utils/storage";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "@/recoil/acess-token-state";
 
 const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const [token, setToken] = useState("");
+  const [token, setToken] = useRecoilState(accessTokenState);
 
   useEffect(() => {
     try {
