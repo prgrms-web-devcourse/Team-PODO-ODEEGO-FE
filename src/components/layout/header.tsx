@@ -21,8 +21,10 @@ const Header = ({ token }: TokenProps) => {
 
   const [tokenData, setToken] = useState<string>("");
 
+  // const [recoilToken, setRecoilToken] = useState(accessTokenState);
+
   useEffect(() => {
-    const getToken = getLocalStorage("token");
+    const getToken = getLocalStorage("logoutToken");
     // const getToken = localStorage.getItem("logoutToken");
     if (!getToken) return;
     setToken(getToken);
@@ -96,77 +98,34 @@ const Header = ({ token }: TokenProps) => {
 
   return (
     <HeaderContainer>
-      {tokenData ? (
-        <>
-          <HeaderIconWrap>
-            <KeyboardBackspaceIcon
-              style={{
-                marginTop: "0.9rem",
-                fontSize: "2rem",
-              }}
-              onClick={handleBackClick}
-            />
+      {tokenData && (
+        <HeaderIconWrap>
+          <KeyboardBackspaceIcon
+            style={{
+              marginTop: "0.6rem",
+            }}
+            onClick={handleBackClick}
+          />
 
-            <HeaderLogout>
-              <ExitToAppIcon
-                style={{
-                  fontSize: "2rem",
-                }}
-                onClick={handleLogout}
-              />
-            </HeaderLogout>
-          </HeaderIconWrap>
-
-          {/*로그인시 margin이 너무 내려가고 있다.*/}
-          <TextLoginContainer>
-            <TextP>{HEADER_TEXT}</TextP>
-            <Image
-              src='/logo1.svg'
-              alt='Odeego Logo'
-              width={137}
-              height={46}
-              priority
-            />
-          </TextLoginContainer>
-        </>
-      ) : (
-        <>
-          <TextNotLoginContainer>
-            <TextP>{HEADER_TEXT}</TextP>
-            <Image
-              src='/logo1.svg'
-              alt='Odeego Logo'
-              width={137}
-              height={46}
-              priority
-            />
-          </TextNotLoginContainer>
-        </>
+          <HeaderLogout>
+            <ExitToAppIcon onClick={handleLogout} />
+          </HeaderLogout>
+        </HeaderIconWrap>
       )}
+
+      <TextP>{HEADER_TEXT}</TextP>
+      <Image
+        src='/logo1.svg'
+        alt='Odeego Logo'
+        width={137}
+        height={46}
+        priority
+      />
     </HeaderContainer>
   );
 };
 
 export default Header;
-
-const TextLoginContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const TextNotLoginContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 3.2rem;
-
-  svg {
-    margin-bottom: 1rem;
-  }
-`;
 
 const HeaderLogout = styled.h2`
   font-size: 1.2rem;
@@ -201,4 +160,7 @@ const HeaderIconWrap = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-left: 2rem;
+  svg {
+    font-size: 3rem;
+  }
 `;

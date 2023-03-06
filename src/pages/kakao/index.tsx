@@ -1,19 +1,19 @@
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
 import axios from "axios";
 import { setLocalStorage } from "@/utils/storage";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "@/recoil/acess-token-state";
 
 const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const [token, setToken] = useRecoilState(accessTokenState);
+  const [token, setToken] = useState("");
+
+  // const [token, setToken] = useRecoilState(accessTokenState);
 
   useEffect(() => {
     try {
@@ -32,8 +32,11 @@ const Kakao = () => {
 
           const resultKakao = await responseKakao.json();
 
+          console.log(responseKakao);
+
           const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
+          console.log(loginBackendUrl);
           // 새로고침 임시 방편 코드
           if (window.performance) {
             if (performance.navigation.type == 1) {
@@ -48,6 +51,7 @@ const Kakao = () => {
                   },
                 }
               );
+              console.log(data);
               setToken(data.accessToken);
 
               setLocalStorage("token", data.accessToken);
@@ -66,8 +70,6 @@ const Kakao = () => {
       throw new Error((err as Error).message);
     }
   }, [router]);
-
-  // console.log(userImage);
 
   return (
     <SignUpContainer>
