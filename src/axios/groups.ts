@@ -44,4 +44,18 @@ export const GroupsApi = {
       }
     }
   },
+  deleteGroup: async (groupId: string, token: string) => {
+    try {
+      const { data } = await HTTP.delete({
+        url: `/v1/groups/delete?groupId=${groupId}`,
+        headers: {
+          Authorization: token,
+        },
+      });
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
 };

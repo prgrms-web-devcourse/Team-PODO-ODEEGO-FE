@@ -9,7 +9,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-const SelectModal = () => {
+interface SelectProps {
+  isValid: boolean;
+}
+
+const SelectModal = ({ isValid }: SelectProps) => {
   const [count, setCount] = useState("");
 
   const handleChange = (e: SelectChangeEvent) => {
@@ -19,7 +23,11 @@ const SelectModal = () => {
 
   return (
     <>
-      <P>몇 명이 모이나요?</P>
+      {isValid ? (
+        <P>몇 명이 모이나요?</P>
+      ) : (
+        <p>방이 만료되었습니다. 새로 만드시겠습니까?</p>
+      )}
       <FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
         <Select
           id='count-select-standard'
