@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { Button, InputAdornment, TextField } from "@mui/material";
@@ -40,7 +40,7 @@ const SearchInput = () => {
     );
   };
 
-  const handleConfirmEnterSearchPage = () => {
+  const handleConfirmEnterSearchPage = useCallback(() => {
     openModal({
       children: ConfirmEnterSearchPageModal(),
       btnText: {
@@ -52,7 +52,7 @@ const SearchInput = () => {
         // router.push("/");
       },
     });
-  };
+  }, [openModal]);
 
   // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
@@ -63,7 +63,7 @@ const SearchInput = () => {
     if (groupId !== null) {
       if (!host) handleConfirmEnterSearchPage();
     }
-  }, []);
+  }, [closeModal, groupId, handleConfirmEnterSearchPage, host]);
 
   // 링크를 공유 받았을 때.
   if (groupId && !testToken) {
@@ -124,8 +124,8 @@ const SearchInput = () => {
     const obj = {
       groupId: groupId,
       stationName: val.place_name, //stationName
-      lat: val.y,
-      lng: val.x,
+      lat: +val.y,
+      lng: +val.x,
       address: val.address_name, // 필요없는듯?
     };
 

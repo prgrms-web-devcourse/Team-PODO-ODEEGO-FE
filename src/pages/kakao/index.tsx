@@ -63,7 +63,7 @@ const Kakao = () => {
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }, [router]);
+  }, [authCode, router]);
 
   return (
     <SignUpContainer>
