@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-export const tokenRecoilState = atom<unknown>({
+export const tokenRecoilState = atom<string>({
   key: "test",
   default: "testToken",
 });
