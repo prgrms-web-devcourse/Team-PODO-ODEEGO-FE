@@ -75,7 +75,7 @@ export default function Home() {
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
       try {
-        const count = getLocalStorage(COUNT, "");
+        const count = getLocalStorage(COUNT);
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
         const data = await GroupsApi.postCreateGroup(
@@ -135,6 +135,7 @@ export default function Home() {
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
+
       return;
     }
     if (groupId) {

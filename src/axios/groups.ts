@@ -9,7 +9,7 @@ export const GroupsApi = {
         // - axios instance에 accessToken 추가 : refreshToken이 있어서... 잠시 보류
         url: `/v1/groups?memberId=${memberId}`,
       });
-
+      console.log(data);
       return data;
     } catch (e) {
       console.error(e);
