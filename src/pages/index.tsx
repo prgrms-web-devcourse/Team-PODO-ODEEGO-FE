@@ -9,29 +9,24 @@ import {
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
-import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { searchState } from "@/recoil/search-state";
 import { MidPointApi } from "@/axios/mid-point";
-import { COLORS } from "@/constants/css";
-import FormInput from "@/components/home/form-input";
-import useTimeoutFn from "@/hooks/use-timeout-fn";
-import { accessTokenState } from "@/recoil/acess-token-state";
 import { GroupsApi } from "@/axios/groups";
-import HomeButton from "@/components/home/home-button";
-import useModal from "@/hooks/use-modal";
-import { MidPointState } from "@/recoil/midpoint-state";
-import SelectModal from "@/components/home/modal/select-modal";
-import LoginConfirmModal from "@/components/home/modal/login-modal";
-import { ERROR_TEXT } from "@/constants/error";
-import { STATUS_CODE } from "@/constants/status";
-import { ROUTES } from "@/constants/routes";
-import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
-import { getLocalStorage, setLocalStorage } from "@/utils/storage";
-import { COUNT } from "@/constants/local-storage";
-import Header from "@/components/layout/header";
 import { TestApi } from "@/axios/test";
+import { getLocalStorage, setLocalStorage } from "@/utils/storage";
+import { validateAddressListUnderTwoLength } from "@/utils/error";
+import Header from "@/components/layout/header";
+import {
+  FormInput,
+  HomeButton,
+  LoginConfirmModal,
+  SelectModal,
+} from "@/components/home";
+import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
+import { accessTokenState, MidPointState, searchState } from "@/recoil";
+import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
+import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -43,15 +38,7 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const {
-  ERROR_DUPLICATE_START_POINT,
-  ERROR_MISSING_START_POINT,
-  ERROR_OUT_OF_BOUND,
-  ERROR_ALREADY_EXIST_GROUP,
-  ERROR_UNSELECT_PEOPLE_COUNT,
-} = ERROR_TEXT;
-
-const { ERROR_400 } = STATUS_CODE;
+const { ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
 
 const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
 
@@ -84,29 +71,26 @@ export default function Home() {
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      const count = getLocalStorage(COUNT);
-      if (count === "") {
-        toast.error(ERROR_UNSELECT_PEOPLE_COUNT);
-        return;
-      }
-
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
-      const data = await GroupsApi.postCreateGroup(
-        parseInt(token),
-        parseInt(count, 10)
-      );
-      setLocalStorage(COUNT, "");
+      try {
+        const count = getLocalStorage(COUNT);
+        if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
-      if (data.status === ERROR_400) {
-        toast.error(ERROR_ALREADY_EXIST_GROUP);
-        return;
+        const data = await GroupsApi.postCreateGroup(
+          parseInt(token),
+          parseInt(count, 10)
+        );
+        setLocalStorage(COUNT, "");
+
+        const { groupId } = data;
+        console.log(`go to the group page : /group/${groupId}`);
+        router.push(`${GROUP}/${groupId}`);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
       }
-
-      const { groupId } = data;
-      console.log(`go to the group page : /group/${groupId}`);
-      router.push(`${GROUP}/${groupId}`);
     },
   };
 
@@ -115,15 +99,16 @@ export default function Home() {
       if (!hasAccessToken) return "";
 
       //TODO 실제 모임조회 api로 바꾸기
-      // const data = await GroupsApi.getAll(token);
-      const data = "실제 모임 조회 api";
-      console.log(data);
-      //TODO Axios 인스턴스 토큰 구현안되서 계속 터지고 있음 (주석처리)
-      // const groupId = data?.groups?.[0]?.groupId || "";
-      const groupId = "0";
-      setGroupId(groupId);
-      // setGroupId("");
-      setLocalStorage(COUNT, "");
+      try {
+        const data = await GroupsApi.getAll(token);
+        const groupId = data?.groups?.[0]?.groupId || "";
+
+        setGroupId(groupId);
+        setLocalStorage(COUNT, "");
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
+      }
     };
 
     initGroupId();
@@ -168,32 +153,25 @@ export default function Home() {
     if (isLoading) return;
 
     const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
-    if (notEmptyAddressList.length < 2) {
-      toast.error(ERROR_MISSING_START_POINT);
-      setIsLoading(false);
-      return;
-    }
 
     setIsLoading(true);
+    try {
+      const errorMessage =
+        validateAddressListUnderTwoLength(notEmptyAddressList);
+      if (errorMessage) throw new Error(errorMessage);
 
-    const data = await MidPointApi.postMidPoint(notEmptyAddressList);
-    await (() => new Promise((r) => setTimeout(r, 3000)))();
+      const data = await MidPointApi.postMidPoint(notEmptyAddressList);
+      setIsLoading(false);
 
-    setIsLoading(false);
-
-    if (data.status === ERROR_400) {
-      toast.error(ERROR_OUT_OF_BOUND);
-    } else if (data.start.length < 2) {
-      toast.error(ERROR_DUPLICATE_START_POINT);
-    } else {
-      //TODO
-      // - 지우기
-      console.log(data);
+      setAddressList(notEmptyAddressList);
       setMidPointResponse(data);
       router.push(`${MAP}`);
-    }
+    } catch (e) {
+      setIsLoading(false);
 
-    setAddressList(notEmptyAddressList);
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      toast.error(errorMessage);
+    }
   };
 
   const { run: debounceMidPoint } = useTimeoutFn({
