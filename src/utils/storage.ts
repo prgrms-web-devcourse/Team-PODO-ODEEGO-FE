@@ -1,35 +1,37 @@
-export const getLocalStorage = (key: string, defaultValue = "") => {
-  if (typeof window === undefined) return defaultValue;
+type LocalStorage = typeof window.localStorage;
 
-  const storage = localStorage;
+export const getLocalStorage = (key: string) => {
+  if (key === undefined || key === null) return;
+
+  const storage: LocalStorage = localStorage;
   try {
-    const storedValue = JSON.parse(storage.getItem(key) || '""');
+    const getItemValue = storage.getItem(key);
+    const storedValue = JSON.parse(getItemValue as string);
 
-    return storedValue ? storedValue : defaultValue;
-  } catch (error) {
-    console.error(error);
-    return defaultValue;
+    return storedValue;
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
 };
 
-export const setLocalStorage = <T>(key: string, value: T) => {
-  if (typeof window === undefined) return "";
+export const setLocalStorage = (key: string, value: string) => {
+  if (value === undefined || value === null) return;
 
-  const storage = localStorage;
+  const storage: LocalStorage = localStorage;
   try {
     storage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
 };
 
 export const removeLocalStorage = (key: string) => {
-  if (typeof window === undefined) return "";
+  if (key === "") return;
 
-  const storage = localStorage;
+  const storage: LocalStorage = localStorage;
   try {
     storage.removeItem(key);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    throw new Error((err as Error).message);
   }
 };

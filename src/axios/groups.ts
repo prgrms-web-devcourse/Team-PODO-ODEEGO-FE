@@ -9,14 +9,14 @@ export const GroupsApi = {
         // - axios instance에 accessToken 추가 : refreshToken이 있어서... 잠시 보류
         url: `/v1/groups?memberId=${memberId}`,
       });
-
       console.log(data);
-
       return data;
     } catch (e) {
       console.error(e);
-      if (axios.isAxiosError(e) && e.response?.status === 400) {
-        return { error: "Error", status: 400 };
+      if (axios.isAxiosError(e)) {
+        const { response } = e;
+        const errorMessage = response?.data?.message;
+        throw new Error(errorMessage);
       }
     }
   },
@@ -36,8 +36,11 @@ export const GroupsApi = {
 
       return data;
     } catch (e) {
-      if (axios.isAxiosError(e) && e.response?.status === 400) {
-        return { error: "Error", status: 400 };
+      console.error(e);
+      if (axios.isAxiosError(e)) {
+        const { response } = e;
+        const errorMessage = response?.data?.message;
+        throw new Error(errorMessage);
       }
     }
   },
