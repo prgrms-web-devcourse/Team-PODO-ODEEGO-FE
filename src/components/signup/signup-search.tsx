@@ -13,6 +13,7 @@ import SignupInput from "@/components/signup/signup-input";
 const SignUpSearchInput = () => {
   const router = useRouter();
 
+  // test
   console.log(router);
   const {
     errorMessage,
