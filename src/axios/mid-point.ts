@@ -24,8 +24,11 @@ export const MidPointApi = {
 
       return data;
     } catch (e) {
-      if (axios.isAxiosError(e) && e.response?.status === 400) {
-        return { error: "Error: Out of Bound", status: 400 };
+      console.error(e);
+      if (axios.isAxiosError(e)) {
+        const { response } = e;
+        const errorMessage = response?.data?.message;
+        throw new Error(errorMessage);
       }
     }
   },
