@@ -8,8 +8,8 @@ import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import axios from "axios";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
+import axiosInstance from "@/axios/instance";
 interface TokenProps {
   token?: string;
 }
@@ -21,11 +21,8 @@ const Header = ({ token }: TokenProps) => {
 
   const [tokenData, setToken] = useState<string>("");
 
-  // const [recoilToken, setRecoilToken] = useState(accessTokenState);
-
   useEffect(() => {
     const getToken = getLocalStorage("logoutToken");
-    // const getToken = localStorage.getItem("logoutToken");
     if (!getToken) return;
     setToken(getToken);
   }, [router, token]);
@@ -58,7 +55,7 @@ const Header = ({ token }: TokenProps) => {
   };
 
   const handleLogout = async () => {
-    const token = getLocalStorage("token");
+    // const token = getLocalStorage("token");
     const logoutToken = getLocalStorage("logoutToken");
 
     try {
@@ -73,16 +70,27 @@ const Header = ({ token }: TokenProps) => {
         }),
       });
 
+      const odeegoLogoutUrl = `/odeego-leave`;
+      const response = await axiosInstance.delete(odeegoLogoutUrl);
+
       // 회원탈퇴
-      const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
+      // const odeegoLogoutUrl = `/api/odeego-leave`;
+      // const response = await axios.delete(odeegoLogoutUrl, {
+      //   headers: {
+      //     Authorization: `${token}`,
+      //   },
+      // });
+      //
+      // console.log(response);
 
-      const response = await axios.delete(odeegoLogoutUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      // const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
 
+      // const response = await axios.delete(odeegoLogoutUrl, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     "Content-Type": "application/json",
+      //   },
+      // });
       setToken("");
 
       removeLocalStorage("token");
@@ -90,6 +98,7 @@ const Header = ({ token }: TokenProps) => {
       router.push(`${ROUTES.HOME}`);
 
       return response;
+      // return response;
     } catch (err) {
       throw new Error((err as Error).message);
     }
@@ -157,7 +166,7 @@ const TextP = styled.p`
 const HeaderIconWrap = styled.div`
   display: flex;
   justify-content: space-between;
-  border: 1px solid red;
+  width: 90%;
   margin-left: 2rem;
   svg {
     font-size: 3rem;

@@ -8,7 +8,7 @@ import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import useModal from "../../hooks/use-modal";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
-import axios from "axios";
+import axiosInstance from "@/axios/instance";
 
 const LoginPage = () => {
   const { openModal } = useModal();
@@ -25,7 +25,6 @@ const LoginPage = () => {
           close: "취소",
         },
         handleConfirm: async () => {
-          const token = getLocalStorage("token");
           const logoutToken = getLocalStorage("logoutToken");
           const kakaoLogoutUrl = `/api/kakao-logout`;
           await fetch(kakaoLogoutUrl, {
@@ -39,15 +38,8 @@ const LoginPage = () => {
           });
 
           // 회원탈퇴
-          const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
-          // const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
-
-          const response = await axios.delete(odeegoLogoutUrl, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
+          const odeegoLogoutUrl = `/odeego-leave`;
+          const response = await axiosInstance.delete(odeegoLogoutUrl);
 
           removeLocalStorage("token");
           removeLocalStorage("logoutToken");
