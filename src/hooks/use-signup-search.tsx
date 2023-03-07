@@ -6,9 +6,18 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { getLocalStorage } from "@/utils/storage";
 
+interface isErrorProps {
+  nickname?: boolean;
+  defaultStationName?: boolean;
+}
+
 const useSignupSearch = () => {
   const [values, setValue] = useState<Partial<valueType>>({});
   const [errorMessage, setErrorMessage] = useState<Partial<errorType>>({});
+  const [isError, setIsError] = useState<isErrorProps>({
+    nickname: false,
+    defaultStationName: false,
+  });
 
   const [isToggleBoxLoading, setToggleBoxIsLoading] = useState(true);
 
@@ -20,7 +29,13 @@ const useSignupSearch = () => {
   const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    checkSignup.StationAndNickName(name, value, errorMessage, setErrorMessage);
+    checkSignup.StationAndNickName(
+      name,
+      value,
+      errorMessage,
+      setErrorMessage,
+      setIsError
+    );
     setValue({
       ...values,
       [name]: value,
@@ -80,6 +95,7 @@ const useSignupSearch = () => {
     handleLocationClick,
     handleStationKeyDown,
     handleValue,
+    isError,
   };
 };
 export default useSignupSearch;

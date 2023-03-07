@@ -17,6 +17,7 @@ const SignUpSearchInput = () => {
   console.log(router);
   const {
     errorMessage,
+    isError,
     isToggleBoxLoading,
     handleSignUpSubmit,
     handleStationKeyDown,
@@ -35,6 +36,8 @@ const SignUpSearchInput = () => {
     }
   );
 
+  console.log(isError);
+
   return (
     <SignUpSearchContainer>
       <SignUpSearchInputWrapper>
@@ -52,7 +55,8 @@ const SignUpSearchInput = () => {
               sxNumber={50}
             />
           )}
-          <SignUpButton onClick={handleSignUpSubmit}>
+
+          <SignUpButton disabled={isError} onClick={handleSignUpSubmit}>
             내 주소 저장하기
           </SignUpButton>
         </form>
