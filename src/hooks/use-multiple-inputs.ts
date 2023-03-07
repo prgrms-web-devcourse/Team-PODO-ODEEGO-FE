@@ -31,6 +31,7 @@ const useMultipleInputs = () => {
   const addInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setInputs((prev) => [...prev, { stationName: "" }]);
+    setAddressList((prev) => [...prev, { stationName: "", lat: "", lng: "" }]);
   };
 
   const removeInput = (e: MouseEvent<HTMLButtonElement>, index: number) => {

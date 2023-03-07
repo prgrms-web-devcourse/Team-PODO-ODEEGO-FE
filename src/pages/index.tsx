@@ -221,7 +221,6 @@ export default function Home() {
       setAddressList(notEmptyAddressList);
       setMidPointResponse(data);
       router.push(`${MAP}`);
-      setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
 
