@@ -78,7 +78,7 @@ export default function Home() {
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
       const gId = groupId;
       try {
-        const count = getLocalStorage(COUNT, "");
+        const count = getLocalStorage(COUNT);
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
         //만료된 방이 있다면, 방 삭제 후, 방 만들기
@@ -179,6 +179,7 @@ export default function Home() {
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
+
       return;
     }
     if (!groupId) {

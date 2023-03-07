@@ -1,5 +1,5 @@
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
+import axios from "axios";
 
 const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
 

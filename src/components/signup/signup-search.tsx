@@ -25,18 +25,14 @@ const SignUpSearchInput = () => {
   } = useSignupSearch();
 
   const { data: resultSubway, isLoading } = useQuery(
-    ["search", values.station],
-    () => SearchAPI.getSubway(values.station),
+    ["search", values.defaultStationName],
+    () => SearchAPI.getSubway(values.defaultStationName),
     {
-      enabled: values.station?.includes("역") && values.station.length > 0,
+      enabled:
+        values.defaultStationName?.includes("역") &&
+        values.defaultStationName.length > 0,
     }
   );
-
-  console.log(isToggleBoxLoading);
-
-  console.log("isLoading", isLoading);
-
-  console.log(resultSubway);
 
   return (
     <SignUpSearchContainer>
@@ -48,7 +44,7 @@ const SignUpSearchInput = () => {
             errorMessage={errorMessage}
             handleStationKeyDown={handleStationKeyDown}
           />
-          {errorMessage?.station?.length && (
+          {errorMessage?.defaultStationName?.length && (
             <NotFound
               title={"역만 입력해주세요"}
               icon={"지하철역"}
@@ -61,22 +57,19 @@ const SignUpSearchInput = () => {
         </form>
       </SignUpSearchInputWrapper>
 
-      {isLoading === isToggleBoxLoading ||
-      resultSubway?.data.documents.length <= 0 ? null : (
+      {isLoading === isToggleBoxLoading || resultSubway?.length <= 0 ? null : (
         <SignUpSearchToggleBox>
-          {resultSubway?.data?.documents?.map(
-            (val: searchOriginProps, index: number) => {
-              return (
-                <SignUpSearchToggleWrapper key={index}>
-                  <SignUpSearchToggleData
-                    onClick={() => handleLocationClick(val)}
-                    key={index}>
-                    {val.place_name}
-                  </SignUpSearchToggleData>
-                </SignUpSearchToggleWrapper>
-              );
-            }
-          )}
+          {resultSubway?.map((val: searchOriginProps, index: number) => {
+            return (
+              <SignUpSearchToggleWrapper key={index}>
+                <SignUpSearchToggleData
+                  onClick={() => handleLocationClick(val)}
+                  key={index}>
+                  {val.place_name}
+                </SignUpSearchToggleData>
+              </SignUpSearchToggleWrapper>
+            );
+          })}
         </SignUpSearchToggleBox>
       )}
     </SignUpSearchContainer>
