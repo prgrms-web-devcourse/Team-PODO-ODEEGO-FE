@@ -7,7 +7,7 @@ import { COLORS } from "@/constants/css";
 interface AddressFormInputProps {
   index: number;
   address: string;
-  placeholder: string;
+  placeholder?: string;
   onClick: () => void;
   onRemove?: (e: MouseEvent<HTMLButtonElement>, index: number) => void;
 }
@@ -22,8 +22,7 @@ const FormInput = ({
   return (
     <Box
       key={index}
-      sx={{ width: "100%", position: "relative" }}
-      onClick={onClick}>
+      sx={{ width: "100%", position: "relative", cursor: "pointer" }}>
       <CustomTextField
         id='index'
         placeholder={placeholder}
@@ -36,6 +35,16 @@ const FormInput = ({
         }}
         disabled
         value={address}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+        }}
+        onClick={onClick}
       />
       {onRemove && (
         <IconButton

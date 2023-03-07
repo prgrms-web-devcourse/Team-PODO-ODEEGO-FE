@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import useModal from "@/hooks/use-modal";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const SearchConfirm = () => {
   const { openModal } = useModal();
@@ -21,7 +21,7 @@ const SearchConfirm = () => {
   };
 
   // 여기서 id 값을 알 필요가 있을까?
-  const handleOpenModal = () => {
+  const handleOpenModal = useCallback(() => {
     openModal({
       children: modalContent(),
       btnText: {
@@ -35,13 +35,13 @@ const SearchConfirm = () => {
         // router.push(`/search?id=${id}`);
       },
     });
-  };
+  }, [openModal, router]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const id = params.get("id"); // 방 ID
     if (id !== null) handleOpenModal();
-  }, []);
+  }, [handleOpenModal]);
 
   return <></>;
 };

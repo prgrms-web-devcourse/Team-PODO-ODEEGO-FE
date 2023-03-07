@@ -1,14 +1,28 @@
+import { GroupsApi } from "@/axios/groups";
+import { MidPointApi } from "@/axios/mid-point";
 import FormInput from "@/components/common/form-input";
 import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
+import { COLORS } from "@/constants";
+import { useModal } from "@/hooks";
+import { GroupState, isFirstVisitState, MidPointState } from "@/recoil";
 import { tokenRecoilState } from "@/recoil/token-recoil";
+import { searchProps } from "@/types/search-props";
 import styled from "@emotion/styled";
-import { Box, Button, CircularProgress, Container, Stack } from "@mui/material";
+import { InsertLink, Refresh } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
-import { useRecoilValue } from "recoil";
-import { useGroup } from "../api/group";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import { useGroup } from "@/axios/groups";
 
 interface InputState {
   memberId: string;
@@ -22,12 +36,12 @@ const GroupPage = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [inputs, setInputs] = useState<InputState[]>();
+  const [isFirstVisit, setIsFirstVisit] = useRecoilState(isFirstVisitState);
+  const setMidpointResponse = useSetRecoilState(MidPointState);
+  const { openModal } = useModal();
   const token = useRecoilValue(tokenRecoilState);
-  const { groupId } = router.query;
-  const { data, isLoading, isError } = useGroup(
-    groupId as string,
-    token as string
-  );
+  const [groupId, setGroupId] = useRecoilState(GroupState);
+  const { data, isLoading, isError, isFetching } = useGroup(groupId, token);
 
   const getInputsByParticipant = useCallback(() => {
     if (!data) return;
@@ -62,21 +76,74 @@ const GroupPage = () => {
   }, [getInputsByParticipant]);
 
   const handleInputClick = (memberId: string) => {
+    if (isFetching || isSubmitting) return;
     if (!data) return;
 
     const { hostId } = data;
     router.push({
       pathname: "/search",
       query: {
-        groupId: router.query.groupId,
+        groupId: groupId,
         host: memberId === hostId,
       },
     });
   };
 
+  const linkModalContent = useCallback(() => {
+    const handleCopy = async () => {
+      await navigator.clipboard.writeText(`/search?groupdId=${groupId}`);
+    };
+
+    return (
+      <div>
+        <p>링크를 공유해서 주소를 입력받으세요</p>
+        <FormInput
+          index={0}
+          address={`/search?groupId=${groupId}`}
+          onClick={handleCopy}
+        />
+      </div>
+    );
+  }, [groupId]);
+
+  const openLinkModal = useCallback(() => {
+    openModal({
+      children: linkModalContent(),
+      handleClose: () => {
+        setIsFirstVisit(false);
+      },
+    });
+  }, [linkModalContent, openModal, setIsFirstVisit]);
+
+  useEffect(() => {
+    if (!isLoading && !isError && isFirstVisit) openLinkModal();
+  }, [isFirstVisit, openLinkModal, isError, isLoading]);
+
+  const handleLink = () => {
+    openLinkModal();
+  };
+
+  const handleRefresh = async () => {
+    setIsSubmitting(true);
+    await GroupsApi.getGroup(groupId, token);
+    getInputsByParticipant();
+    setIsSubmitting(false);
+  };
+
   const handleCancel = () => {
-    // **TODO: 모임 삭제 api 호출
-    router.push("/");
+    openModal({
+      children: <p>정말로 삭제하시겠습니까?</p>,
+      btnText: {
+        confirm: "계속",
+        close: "취소",
+      },
+      handleConfirm: async () => {
+        await GroupsApi.deleteGroup(groupId, token);
+        setIsFirstVisit(null);
+        setGroupId("");
+        router.push("/");
+      },
+    });
   };
 
   const handleSearch = async (e: MouseEvent<HTMLButtonElement>) => {
@@ -90,15 +157,19 @@ const GroupPage = () => {
     }
 
     setIsSubmitting(true);
-    // **TODO: 중간지점 찾기 api 호출
-    // **TODO: 모임 삭제 api 호출
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-    await sleep(1000);
+    if (!inputs) return;
+    const filteredInputs: searchProps[] = inputs.map((input) => {
+      return { stationName: input.stationName, lat: input.lat, lng: input.lng };
+    });
+    const midpoints = await MidPointApi.postMidPoint(filteredInputs);
+    setMidpointResponse(midpoints);
+    await GroupsApi.deleteGroup(groupId, token);
     setIsSubmitting(false);
   };
 
   if (isError) {
-    return <p>There was an Error</p>;
+    toast.error("페이지 호출하는데 문제가 생겼어요...");
+    router.push("/");
   }
 
   return (
@@ -111,9 +182,31 @@ const GroupPage = () => {
             overflow: "auto",
             paddingBottom: "2rem",
           }}>
-          {isLoading && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "1rem",
+            }}>
+            <CustomIconButton onClick={handleLink}>
+              <InsertLink />
+            </CustomIconButton>
+            <CustomIconButton onClick={handleRefresh}>
+              <Refresh />
+            </CustomIconButton>
+          </Box>
+          {(isSubmitting || isLoading) && (
             <Box
-              sx={{ display: "flex", width: "100%", justifyContent: "center" }}>
+              sx={{
+                display: "flex",
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "100%",
+                justifyContent: "center",
+                zIndex: "1000",
+              }}>
               <CircularProgress />
             </Box>
           )}
@@ -148,11 +241,7 @@ const GroupPage = () => {
                 size='large'
                 type='submit'
                 onClick={handleSearch}>
-                {isSubmitting ? (
-                  <CircularProgress size='2rem' />
-                ) : (
-                  "중간지점 찾기"
-                )}
+                중간지점 찾기
               </CustomButton>
             </Stack>
           </form>
@@ -174,4 +263,11 @@ const InputLabel = styled.span`
 
 const CustomButton = styled(Button)`
   font-size: 1.3rem;
+`;
+
+const CustomIconButton = styled(IconButton)`
+  color: ${COLORS.altGreen};
+  > svg {
+    font-size: 2rem;
+  }
 `;
