@@ -5,7 +5,7 @@ import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
 import { COLORS } from "@/constants";
 import { useModal } from "@/hooks";
-import { isFirstVisitState, MidPointState } from "@/recoil";
+import { GroupState, isFirstVisitState, MidPointState } from "@/recoil";
 import { tokenRecoilState } from "@/recoil/token-recoil";
 import { searchProps } from "@/types/search-props";
 import styled from "@emotion/styled";
@@ -40,7 +40,7 @@ const GroupPage = () => {
   const setMidpointResponse = useSetRecoilState(MidPointState);
   const { openModal } = useModal();
   const token = useRecoilValue(tokenRecoilState);
-  const groupId = router.query.groupId as string;
+  const [groupId, setGroupId] = useRecoilState(GroupState);
   const { data, isLoading, isError, isFetching } = useGroup(groupId, token);
 
   const getInputsByParticipant = useCallback(() => {
@@ -83,7 +83,7 @@ const GroupPage = () => {
     router.push({
       pathname: "/search",
       query: {
-        groupId: router.query.groupId,
+        groupId: groupId,
         host: memberId === hostId,
       },
     });
@@ -91,9 +91,7 @@ const GroupPage = () => {
 
   const linkModalContent = useCallback(() => {
     const handleCopy = async () => {
-      await navigator.clipboard.writeText(
-        `/search?groupdId=${router.query.groupId}`
-      );
+      await navigator.clipboard.writeText(`/search?groupdId=${groupId}`);
     };
 
     return (
@@ -101,12 +99,12 @@ const GroupPage = () => {
         <p>링크를 공유해서 주소를 입력받으세요</p>
         <FormInput
           index={0}
-          address={`/search?groupId=${router.query.groupId}`}
+          address={`/search?groupId=${groupId}`}
           onClick={handleCopy}
         />
       </div>
     );
-  }, [router.query.groupId]);
+  }, [groupId]);
 
   const openLinkModal = useCallback(() => {
     openModal({
@@ -142,6 +140,7 @@ const GroupPage = () => {
       handleConfirm: async () => {
         await GroupsApi.deleteGroup(groupId, token);
         setIsFirstVisit(null);
+        setGroupId("");
         router.push("/");
       },
     });
@@ -169,8 +168,8 @@ const GroupPage = () => {
   };
 
   if (isError) {
-    router.push("/");
     toast.error("페이지 호출하는데 문제가 생겼어요...");
+    router.push("/");
   }
 
   return (

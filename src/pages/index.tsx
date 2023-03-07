@@ -26,6 +26,7 @@ import {
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import {
   accessTokenState,
+  GroupState,
   isFirstVisitState,
   MidPointState,
   searchState,
@@ -49,7 +50,7 @@ const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
-  const [groupId, setGroupId] = useState("");
+  // const [groupId, setGroupId] = useState("");
   const setMidPointResponse = useSetRecoilState(MidPointState);
   const [token, setToken] = useRecoilState(accessTokenState);
   const hasAccessToken = token ? true : false;
@@ -58,6 +59,8 @@ export default function Home() {
   const router = useRouter();
   const { openModal } = useModal();
   const setIsFirstVisit = useSetRecoilState(isFirstVisitState);
+  const [groupId, setGroupId] = useRecoilState(GroupState);
+  console.log(groupId);
 
   const loginModalConfig = {
     children: <LoginConfirmModal />,
@@ -92,6 +95,7 @@ export default function Home() {
 
         const { groupId } = data;
         setIsFirstVisit(true);
+        setGroupId(groupId);
         router.push(`${GROUP}/${groupId}`);
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -109,6 +113,7 @@ export default function Home() {
         const data = await GroupsApi.getAll(token);
         const groupId = data?.groups?.[0]?.groupId || "";
 
+        // setGroupId(groupId);
         setGroupId(groupId);
         setLocalStorage(COUNT, "");
       } catch (e) {
