@@ -20,8 +20,7 @@ const FormInput = ({
   return (
     <Box
       key={index}
-      sx={{ width: "80%", position: "relative", marginBottom: "1.8rem" }}
-      onClick={onClick}>
+      sx={{ width: "80%", position: "relative", marginBottom: "1.8rem" }}>
       <CustomTextField
         id='index'
         label={`Address ${index + 1}`}
@@ -35,6 +34,16 @@ const FormInput = ({
         disabled
         value={stationName}
       />
+      <Box
+        sx={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          bottom: 0,
+        }}
+        onClick={onClick}
+      />
       <IconButton
         aria-label='delete'
         sx={{
@@ -42,6 +51,7 @@ const FormInput = ({
           right: "0.5rem",
           top: "1.3rem",
           opacity: 0.3,
+          zIndex: 999,
         }}
         onClick={(e) => onRemove(e, index)}>
         <ClearIcon />
