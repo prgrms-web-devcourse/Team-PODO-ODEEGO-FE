@@ -52,8 +52,7 @@ const Header = ({ token }: TokenProps) => {
         } catch (err) {
           throw new Error((err as Error).message);
         }
-        removeLocalStorage("logoutToken");
-        router.push(`${ROUTES.LOGIN}`);
+        router.push(`${ROUTES.HOME}`);
         break;
     }
   };

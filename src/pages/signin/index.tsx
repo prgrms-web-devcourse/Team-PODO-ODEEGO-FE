@@ -1,25 +1,72 @@
 import React from "react";
 import styled from "@emotion/styled";
-// import Header from "@/components/home/home-header";
 import { COLORS } from "@/constants/css";
 import Image from "next/image";
-
 import kakao_image from "public/kakao_login_medium_wide.png";
 import Header from "@/components/layout/header";
+import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
+import useModal from "../../hooks/use-modal";
+import { useRouter } from "next/router";
+import { ROUTES } from "@/constants";
+import axios from "axios";
 
-// test env
 const LoginPage = () => {
-  function kakaoLogin() {
-    window.Kakao.Auth.authorize({
-      //개인 테스트용 리다이랙션 주소
-      redirectUri: "http://localhost:3000/kakao",
-      // 배포 리다이랙션 주소 Production
-      // redirectUri: "https://odeego.vercel.app/kakao",
-      // 배포 리다이랙션 주소 Preview
-      // redirectUri:
-      // "https://team-podo-odeego-fe-git-feature-signin-seung-hwan285.vercel.app/kakao",
-    });
-  }
+  const { openModal } = useModal();
+  const token = getLocalStorage("logoutToken");
+
+  const router = useRouter();
+
+  const handleKakaoLogin = () => {
+    if (token) {
+      openModal({
+        children: "이미 로그인 되어있습니다.",
+        btnText: {
+          confirm: "로그아웃",
+          close: "취소",
+        },
+        handleConfirm: async () => {
+          const token = getLocalStorage("token");
+          const logoutToken = getLocalStorage("logoutToken");
+          const kakaoLogoutUrl = `/api/kakao-logout`;
+          await fetch(kakaoLogoutUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              logoutToken,
+            }),
+          });
+
+          // 회원탈퇴
+          const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
+
+          const response = await axios.delete(odeegoLogoutUrl, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          removeLocalStorage("token");
+          removeLocalStorage("logoutToken");
+          router.push(`${ROUTES.HOME}`);
+
+          return response;
+        },
+      });
+    } else {
+      window.Kakao.Auth.authorize({
+        //개인 테스트용 리다이랙션 주소
+        redirectUri: "http://localhost:3000/kakao",
+        // 배포 리다이랙션 주소 Production
+        // redirectUri: "https://odeego.vercel.app/kakao",
+        // 배포 리다이랙션 주소 Preview
+        // redirectUri:
+        // "https://team-podo-odeego-fe-git-feature-signin-seung-hwan285.vercel.app/kakao",
+      });
+    }
+  };
 
   // 임시 로그인 토큰
   // const token = "";
@@ -28,7 +75,7 @@ const LoginPage = () => {
       <Header />
       <BorderContainer />
       <LoginWrapper>
-        <Image src={kakao_image} alt={"dsa"} onClick={kakaoLogin} />
+        <Image src={kakao_image} alt={"dsa"} onClick={handleKakaoLogin} />
       </LoginWrapper>
     </LoginContainer>
   );

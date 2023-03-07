@@ -31,8 +31,6 @@ const SignUpSearchInput = () => {
     }
   );
 
-  console.log(isError);
-
   return (
     <SignUpSearchContainer>
       <SignUpSearchInputWrapper>
