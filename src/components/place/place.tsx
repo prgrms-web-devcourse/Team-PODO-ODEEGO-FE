@@ -1,7 +1,6 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import Image from "next/image";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
 
 interface PlaceProps {
@@ -10,7 +9,6 @@ interface PlaceProps {
 }
 
 const SHARE_TEXT = "공유";
-const BOOKMARK_TEXT = "저장";
 
 const Place = ({ businessName, address }: PlaceProps) => {
   const tmpImageList = [1, 2, 3, 4];
@@ -31,16 +29,6 @@ const Place = ({ businessName, address }: PlaceProps) => {
               }}
             />
             <p>{SHARE_TEXT}</p>
-          </div>
-          <div>
-            <BookmarkBorderIcon
-              sx={{
-                display: "block",
-                height: "2.3rem",
-                width: "2.3rem",
-              }}
-            />
-            <p>{BOOKMARK_TEXT}</p>
           </div>
         </IconsContainer>
       </TitleIconContainer>

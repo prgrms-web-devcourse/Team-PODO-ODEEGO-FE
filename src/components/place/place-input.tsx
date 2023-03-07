@@ -9,19 +9,26 @@ const PlaceInput = () => {
     <>
       <TextField
         sx={{
+          marginTop: "2rem",
           width: "100%",
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "7px",
-            height: 50,
-            border: "0",
-            borderBottom: "1px solid #909090",
+          "& .MuiInputBase-root:before": {
+            // borderRadius: "7px",
+            // height: 50,
+            // border: "0",
+            borderBottom: "1px solid rgba(90, 178, 125, .5)",
           },
           "& .MuiOutlinedInput-notchedOutline": {
             border: "none",
           },
         }}
+        variant='standard'
         inputProps={{
-          style: { fontSize: 15, border: 0 },
+          style: {
+            fontSize: "1.7rem",
+            border: 0,
+            color: "black",
+            padding: "1.5rem .5rem",
+          },
         }}
         InputProps={{
           startAdornment: (

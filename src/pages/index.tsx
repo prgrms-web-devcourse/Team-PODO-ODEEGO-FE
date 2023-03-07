@@ -162,15 +162,7 @@ export default function Home() {
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
 
-    const notEmptyAddressList = addressList
-      .filter((a) => a.stationName !== "")
-      .map((a) => {
-        return {
-          stationName: a.stationName.split(" ")[0],
-          lat: a.lat,
-          lng: a.lng,
-        };
-      });
+    const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
 
     setIsLoading(true);
     try {
