@@ -24,12 +24,12 @@ const SelectModal = ({ isValid }: SelectProps) => {
   return (
     <>
       {isValid ? (
-        <P>몇 명이 모이나요?</P>
+        <TextP>몇 명이 모이나요?</TextP>
       ) : (
-        <PContainer>
-          <P>방이 만료되었습니다.</P>
-          <P>새로 만드시겠습니까?</P>
-        </PContainer>
+        <TextPContainer>
+          <TextP>방이 만료되었습니다.</TextP>
+          <TextP>새로 만드시겠습니까?</TextP>
+        </TextPContainer>
       )}
       <FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
         <Select
@@ -65,12 +65,12 @@ const SelectModal = ({ isValid }: SelectProps) => {
 
 export default SelectModal;
 
-const P = styled.p`
+const TextP = styled.p`
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
 `;
 
-const PContainer = styled.div`
+const TextPContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
