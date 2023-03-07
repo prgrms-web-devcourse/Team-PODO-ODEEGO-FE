@@ -24,7 +24,6 @@ const HomeButton = ({
   defaultText,
   altText,
 }: HomeButtonProps) => {
-  console.log(hasCondition);
   return (
     <>
       <Button

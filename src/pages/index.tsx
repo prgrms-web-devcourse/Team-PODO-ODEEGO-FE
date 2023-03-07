@@ -50,7 +50,7 @@ const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
-  // const [groupId, setGroupId] = useState("");
+  const [groupId, setGroupId] = useState("");
   const setMidPointResponse = useSetRecoilState(MidPointState);
   const [token, setToken] = useRecoilState(accessTokenState);
   const hasAccessToken = token ? true : false;
@@ -59,8 +59,7 @@ export default function Home() {
   const router = useRouter();
   const { openModal } = useModal();
   const setIsFirstVisit = useSetRecoilState(isFirstVisitState);
-  const [groupId, setGroupId] = useRecoilState(GroupState);
-  console.log(groupId);
+  const setGroupIdState = useSetRecoilState(GroupState);
 
   const loginModalConfig = {
     children: <LoginConfirmModal />,
@@ -95,7 +94,7 @@ export default function Home() {
 
         const { groupId } = data;
         setIsFirstVisit(true);
-        setGroupId(groupId);
+        setGroupIdState(groupId);
         router.push(`${GROUP}/${groupId}`);
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -113,8 +112,8 @@ export default function Home() {
         const data = await GroupsApi.getAll(token);
         const groupId = data?.groups?.[0]?.groupId || "";
 
-        // setGroupId(groupId);
         setGroupId(groupId);
+        setGroupIdState(groupId);
         setLocalStorage(COUNT, "");
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -123,7 +122,7 @@ export default function Home() {
     };
 
     initGroupId();
-  }, [hasAccessToken, setGroupId, token]);
+  }, [hasAccessToken, setGroupId, setGroupIdState, token]);
 
   //tmp 더미 회원 생성 메서드
   const createTmpDummyUser = async () => {
