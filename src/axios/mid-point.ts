@@ -1,3 +1,4 @@
+import { EndpointResponse } from "@/types/api/midpoint";
 import { searchProps } from "@/types/search-props";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
@@ -34,7 +35,18 @@ export const MidPointApi = {
         address: s.address,
       }));
 
-      console.log(data);
+      result.midPointResponses = data.midPointResponses.map(
+        (m: EndpointResponse) => ({
+          id: m.id,
+          address: m.address,
+          lat: m.lat,
+          lng: m.lng,
+          line: m.line,
+          path: m.path,
+          stationName: m.stationName,
+        })
+      );
+
       return data;
     } catch (e) {
       console.error(e);
