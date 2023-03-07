@@ -2,6 +2,6 @@ export const ROUTES = {
   HOME: "/",
   SEARCH: "/search",
   MAP: "/map",
-  LOGIN: "/kakao",
+  LOGIN: "/",
   GROUP: "/group",
 };
