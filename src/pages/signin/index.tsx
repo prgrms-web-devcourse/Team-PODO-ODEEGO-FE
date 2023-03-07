@@ -1,5 +1,3 @@
-import { useRouter } from "next/navigation";
-
 import React from "react";
 import styled from "@emotion/styled";
 // import Header from "@/components/home/home-header";
@@ -9,24 +7,27 @@ import Image from "next/image";
 import kakao_image from "public/kakao_login_medium_wide.png";
 import Header from "@/components/layout/header";
 
+// test env
 const LoginPage = () => {
-  const router = useRouter();
   function kakaoLogin() {
     window.Kakao.Auth.authorize({
-      redirectUri: "http://localhost:3000/kakao",
+      //개인 테스트용 리다이랙션 주소
+      // redirectUri: "http://localhost:3000/kakao",
+      // 배포 리다이랙션 주소 Production
+      redirectUri: "https://odeego.vercel.app/kakao",
+      // 배포 리다이랙션 주소 Preview
+      // redirectUri:
+      // "https://team-podo-odeego-fe-git-feature-signin-seung-hwan285.vercel.app/kakao",
     });
   }
-  console.log(router);
+
   // 임시 로그인 토큰
   // const token = "";
   return (
     <LoginContainer>
       <Header />
-
       <BorderContainer />
-
       <LoginWrapper>
-        <h3>로그인</h3>
         <Image src={kakao_image} alt={"dsa"} onClick={kakaoLogin} />
       </LoginWrapper>
     </LoginContainer>
@@ -53,7 +54,7 @@ const LoginWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   width: 100%;
-  height: 30vh;
+  height: 50vh;
   h3 {
     margin-bottom: 60px;
   }

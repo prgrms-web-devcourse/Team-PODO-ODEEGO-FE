@@ -20,7 +20,6 @@ export default function App({ Component, pageProps }: AppProps) {
   function kakaoInit() {
     // 페이지가 로드되면 실행
     window.Kakao.init(process.env.NEXT_PUBLIC_LOGIN);
-    console.log(window.Kakao.isInitialized());
   }
 
   return (
