@@ -3,31 +3,28 @@ import PlaceInput from "@/components/place/place-input";
 import PlaceTabList from "@/components/place/place-tab-list";
 import PlaceList from "@/components/place/place-list";
 import { COLORS } from "@/constants";
-// import { useRecoilValue } from "recoil";
-// import { tabState } from "@/recoil/search-state";
-// import { useQuery } from "@tanstack/react-query";
-// import { PlaceAPI } from "@/pages/api/place";
+import { useRecoilValue } from "recoil";
+import { tabState } from "@/recoil/search-state";
+import { useQuery } from "@tanstack/react-query";
+import { PlaceApi } from "@/axios/place";
 
 const PlacePage = () => {
-  // const getTabData = useRecoilValue(tabState);
+  const getTabData = useRecoilValue(tabState);
 
-  // const [cafeData, setCafeData] = useState<Props[]>([]);
-  // PlacePage 복구
-  // const [place] = useState("강남역");
-  // const [address] = useState("강남구 강남대로 396");
-
-  // const { data, isLoading } = useQuery(
-  //   ["place", getTabData],
-  //   () => PlaceAPI.getPlace("강남역", "강남구 강남대로 396", getTabData),
-  //   {
-  //     keepPreviousData: true,
-  //   }
-  // );
+  const { data } = useQuery(
+    ["place", getTabData],
+    () => PlaceApi.getPlaces("강남역", getTabData),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   //임시 코드 -> 페이지 변경되면 로딩스피너 넣어야할듯
   // if (isLoading) {
   //   return <div>Loading...</div>;
   // }
+
+  console.log(data);
 
   return (
     <PlaceContainer>
@@ -36,7 +33,7 @@ const PlacePage = () => {
         <PlaceTabList />
       </Header>
       <BorderContainer />
-      <PlaceList />
+      <PlaceList placeList={data?.places} />
     </PlaceContainer>
   );
 };

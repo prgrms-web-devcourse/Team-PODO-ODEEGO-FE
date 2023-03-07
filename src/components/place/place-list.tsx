@@ -1,7 +1,5 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
-import { dummy } from "./data/dummy";
 import Place from "./place";
 
 interface PlaceProps {
@@ -9,15 +7,11 @@ interface PlaceProps {
   address: string;
 }
 
-const PlaceList = () => {
-  const [placeList, setPlaceList] = useState<PlaceProps[]>([]);
+interface PlaceListProps {
+  placeList: PlaceProps[];
+}
 
-  useEffect(() => {
-    const data = dummy.places;
-
-    setPlaceList(data);
-  }, []);
-
+const PlaceList = ({ placeList = [] }: PlaceListProps) => {
   return (
     <MainContainer>
       <UnOrderedList>
