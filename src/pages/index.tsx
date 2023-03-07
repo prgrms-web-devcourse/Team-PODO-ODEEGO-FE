@@ -24,7 +24,12 @@ import {
   SelectModal,
 } from "@/components/home";
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
-import { accessTokenState, MidPointState, searchState } from "@/recoil";
+import {
+  accessTokenState,
+  isFirstVisitState,
+  MidPointState,
+  searchState,
+} from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 
@@ -52,6 +57,7 @@ export default function Home() {
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
   const { openModal } = useModal();
+  const setIsFirstVisit = useSetRecoilState(isFirstVisitState);
 
   const loginModalConfig = {
     children: <LoginConfirmModal />,
@@ -85,7 +91,7 @@ export default function Home() {
         setLocalStorage(COUNT, "");
 
         const { groupId } = data;
-        console.log(`go to the group page : /group/${groupId}`);
+        setIsFirstVisit(true);
         router.push(`${GROUP}/${groupId}`);
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -152,7 +158,15 @@ export default function Home() {
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
 
-    const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
+    const notEmptyAddressList = addressList
+      .filter((a) => a.stationName !== "")
+      .map((a) => {
+        return {
+          stationName: a.stationName.split(" ")[0],
+          lat: a.lat,
+          lng: a.lng,
+        };
+      });
 
     setIsLoading(true);
     try {

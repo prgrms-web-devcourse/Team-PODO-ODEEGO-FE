@@ -1,16 +1,20 @@
 import { ModalProps, modalState } from "@/recoil/modal-state";
+import { useCallback } from "react";
 import { useRecoilState } from "recoil";
 
 const useModal = () => {
   const [modalProps, setModalProps] = useRecoilState(modalState);
 
-  const openModal = (modalProps: ModalProps) => {
-    setModalProps(modalProps);
-  };
+  const openModal = useCallback(
+    (modalProps: ModalProps) => {
+      setModalProps(modalProps);
+    },
+    [setModalProps]
+  );
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setModalProps(null);
-  };
+  }, [setModalProps]);
 
   return { modalProps, openModal, closeModal };
 };
