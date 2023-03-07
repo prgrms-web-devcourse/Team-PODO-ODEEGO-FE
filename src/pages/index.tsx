@@ -103,14 +103,14 @@ export default function Home() {
   });
 
   const getValidGroupModalConfig = (minutes: number, seconds: number) => ({
-    children: <ValidGroupModal remainingTime={`${minutes}분 ${seconds}초`} />,
+    children: <ValidGroupModal minutes={minutes} seconds={seconds} />,
     btnText: {
       confirm: "모임방 가기",
     },
     handleConfirm: async () => {
       try {
         const { groupId, minutes, seconds } =
-          await getNumberTypeTimeAndGroupIdFromGroupAPI(token);
+          await getMinutesSecondsAndGroupIdFromGroupAPI(token);
 
         minutes === 0 && seconds === 0
           ? router.push(`/`)
@@ -122,7 +122,7 @@ export default function Home() {
     },
   });
 
-  const getNumberTypeTimeAndGroupIdFromGroupAPI = async (token: string) => {
+  const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
     const { groups } = await GroupsApi.getAll(token);
     const { groupId, remainingTime } = groups[0];
 
@@ -192,7 +192,7 @@ export default function Home() {
     //3. 만료되었으면 방을 만들겠냐고 모달 띄워주기 -> go
     try {
       const { minutes, seconds } =
-        await getNumberTypeTimeAndGroupIdFromGroupAPI(token);
+        await getMinutesSecondsAndGroupIdFromGroupAPI(token);
 
       if (minutes === 0 || seconds === 0) {
         openModal(getSelectModalConfig(false, groupId));
@@ -217,11 +217,11 @@ export default function Home() {
       if (errorMessage) throw new Error(errorMessage);
 
       const data = await MidPointApi.postMidPoint(notEmptyAddressList);
-      setIsLoading(false);
 
       setAddressList(notEmptyAddressList);
       setMidPointResponse(data);
       router.push(`${MAP}`);
+      setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
 

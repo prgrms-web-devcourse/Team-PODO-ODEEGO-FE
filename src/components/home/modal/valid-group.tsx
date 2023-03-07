@@ -1,13 +1,14 @@
 import styled from "@emotion/styled";
 
 interface ValidGroupProps {
-  remainingTime: string;
+  minutes: number;
+  seconds: number;
 }
 
-const ValidGroupModal = ({ remainingTime }: ValidGroupProps) => {
+const ValidGroupModal = ({ minutes, seconds }: ValidGroupProps) => {
   return (
     <>
-      <P>남은 시간: {remainingTime}</P>
+      <P>남은 시간: {`${minutes}분 ${seconds}초`}</P>
     </>
   );
 };
