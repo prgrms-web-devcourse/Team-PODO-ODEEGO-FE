@@ -39,6 +39,7 @@ const Kakao = () => {
             if (performance.navigation.type == 1) {
               console.error("The page is reloaded");
             } else {
+              // test
               const { data } = await axios.post(
                 loginBackendUrl,
                 {},
