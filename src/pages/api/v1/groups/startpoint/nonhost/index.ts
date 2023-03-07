@@ -10,18 +10,16 @@ export default async function handler(
   const { memberId } = req.body.value;
   const { groupId } = req.body.value;
   const { stationName } = req.body.value;
-  console.log(stationName);
   const { lat } = req.body.value;
   const { lng } = req.body.value;
 
   const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}/group-members?memberId=${memberId}`;
 
   try {
-    console.log(`api/v1/groups/startpoint/nonhost: in TRY`);
     const { data } = await axios.post(
       requestUrl,
       {
-        stationName: "마두역",
+        stationName: stationName,
         lat: lat,
         lng: lng,
       },

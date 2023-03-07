@@ -12,6 +12,7 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
 import { tokenRecoilState } from "@/recoil/token-recoil";
+import { StartPointPros } from "@/types/startpoint-props";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
@@ -19,13 +20,10 @@ const SearchInput = () => {
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
-  const groupId =
-    useSearchParams().get("groupId") || "b6deb966-8179-43db-9f08-ec5271cbaccc"; // 방 Id
-  const host = useSearchParams().get("host") || true;
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id. 임시로 사용할 수 있는 ID b6deb966-8179-43db-9f08-ec5271cbaccc
+  const host = useSearchParams().get("host") || null;
   const memberId = testToken;
-
   const { openModal, closeModal } = useModal();
-
   const router = useRouter();
 
   const setLoginModalContent = () => {
@@ -86,7 +84,30 @@ const SearchInput = () => {
 
   const handleLocationClick = (val: searchOriginProps) => {
     if (id === undefined || id === null) return;
-    handleStartPointModal(val);
+    const startPoint = {
+      groupId: groupId,
+      memberId: memberId,
+      stationName: val.place_name,
+      lat: +val.y,
+      lng: +val.x,
+    };
+
+    // 한 명이 모든 출발지를 입력할 때.
+    if (!groupId) {
+      setRecoilData((prev: searchProps[]) => [
+        ...prev.slice(0, +id),
+        {
+          groupId: groupId,
+          stationName: val.place_name,
+          lat: val.y,
+          lng: val.x,
+        },
+        ...prev.slice(+id + 1),
+      ]);
+
+      return router.push("/");
+    }
+    handleStartPointModal(startPoint);
   };
 
   const { data: resultSubway } = useQuery(
@@ -123,14 +144,7 @@ const SearchInput = () => {
     );
   };
 
-  const handleStartPointModal = (val: searchOriginProps) => {
-    const startPoint = {
-      groupId: groupId,
-      stationName: val.place_name,
-      lat: val.y,
-      lng: val.x,
-    };
-
+  const handleStartPointModal = (startPoint: StartPointPros) => {
     openModal({
       children: setStartPointModalContent(startPoint.stationName),
       btnText: {
@@ -139,42 +153,17 @@ const SearchInput = () => {
       },
       // 출발지 확정시
       handleConfirm: () => {
-        // 한 명이 모든 출발지를 입력할 때.
-        if (id !== null) {
-          setRecoilData((prev: searchProps[]) => [
-            ...prev.slice(0, +id),
-            startPoint,
-            ...prev.slice(+id + 1),
-          ]);
-
-          return router.push("/");
-        }
-
         // 약속'방'을 만들어서 출발지를 입력할 때
         if (groupId !== null) {
           if (host) {
             console.log("방장임!");
-
-            SearchAPI22.HostSendStartPoint({
-              groupId,
-              memberId,
-              stationName: startPoint.stationName,
-              lat: +startPoint.lat,
-              lng: +startPoint.lng,
-            });
+            SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
             router.push("/");
           } else {
             console.log("방장아님!");
-
-            SearchAPI22.NonHostSendStartPoint({
-              groupId,
-              memberId,
-              stationName: startPoint.stationName,
-              lat: +startPoint.lat,
-              lng: +startPoint.lng,
-            });
+            SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
             router.push("/");

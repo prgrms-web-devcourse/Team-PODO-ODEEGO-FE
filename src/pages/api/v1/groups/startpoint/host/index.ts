@@ -9,7 +9,6 @@ export default async function handler(
   const { memberId } = req.body.value;
   const { groupId } = req.body.value;
   const { stationName } = req.body.value;
-  console.log(stationName);
   const { lat } = req.body.value;
   const { lng } = req.body.value;
   const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}/host?memberId=${memberId}`;
@@ -20,7 +19,7 @@ export default async function handler(
       method: "patch",
       url: requestUrl,
       data: {
-        stationName: "마두역",
+        stationName: stationName,
         lat: lat,
         lng: lng,
       },
@@ -29,10 +28,34 @@ export default async function handler(
     res.status(200).json(data);
   } catch (e) {
     if (axios.isAxiosError(e)) {
-      res.status(400).json({
-        error: "NEXT API CALL ERROR",
-        status: e.response?.data.errorCode,
-      });
+      const errorCode = e.response?.data.errorCode;
+
+      if (errorCode === "M001") {
+        res.status(400).json({
+          error: "Member Not Found.",
+          status: 404,
+        });
+      } else if (errorCode === "G001") {
+        res.status(404).json({
+          error: "Group Not Found.",
+          status: 404,
+        });
+      } else if (errorCode === "G004") {
+        res.status(400).json({
+          error: "Group host is absent.",
+          status: 400,
+        });
+      } else if (errorCode === "G006") {
+        res.status(400).json({
+          error: "Group Member's station is already defined.",
+          status: 400,
+        });
+      } else if (errorCode === "S001") {
+        res.status(404).json({
+          error: "Station Not Found.",
+          status: 404,
+        });
+      }
     } else {
       res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }
