@@ -7,8 +7,8 @@ import axios from "axios";
 import { getLocalStorage } from "@/utils/storage";
 
 interface isErrorProps {
-  nickname?: boolean;
-  defaultStationName?: boolean;
+  nickname: boolean;
+  defaultStationName: boolean;
 }
 
 const useSignupSearch = () => {
