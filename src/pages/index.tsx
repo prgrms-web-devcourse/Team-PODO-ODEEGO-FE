@@ -22,6 +22,7 @@ import {
   HomeButton,
   LoginConfirmModal,
   SelectModal,
+  ValidGroupModal,
 } from "@/components/home";
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import { accessTokenState, MidPointState, searchState } from "@/recoil";
@@ -53,6 +54,7 @@ export default function Home() {
   const router = useRouter();
   const { openModal } = useModal();
 
+  //methods & modal config
   const loginModalConfig = {
     children: <LoginConfirmModal />,
     btnText: {
@@ -64,8 +66,8 @@ export default function Home() {
     },
   };
 
-  const selectModalConfig = {
-    children: <SelectModal />,
+  const getSelectModalConfig = (isValid: boolean, groupId = "") => ({
+    children: <SelectModal isValid={isValid} />,
     btnText: {
       confirm: MAKE_A_GROUP_TEXT,
       close: CLOSE_TEXT,
@@ -74,9 +76,15 @@ export default function Home() {
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
+      const gId = groupId;
       try {
         const count = getLocalStorage(COUNT);
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
+
+        //만료된 방이 있다면, 방 삭제 후, 방 만들기
+        if (!isValid && gId) {
+          await GroupsApi.deleteGroup(gId, token);
+        }
 
         const data = await GroupsApi.postCreateGroup(
           parseInt(token),
@@ -92,6 +100,41 @@ export default function Home() {
         toast.error(errorMessage);
       }
     },
+  });
+
+  const getValidGroupModalConfig = (minutes: number, seconds: number) => ({
+    children: <ValidGroupModal minutes={minutes} seconds={seconds} />,
+    btnText: {
+      confirm: "모임방 가기",
+    },
+    handleConfirm: async () => {
+      try {
+        const { groupId, minutes, seconds } =
+          await getMinutesSecondsAndGroupIdFromGroupAPI(token);
+
+        minutes === 0 && seconds === 0
+          ? router.push(`/`)
+          : router.push(`${GROUP}/${groupId}`);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
+      }
+    },
+  });
+
+  const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
+    const { groups } = await GroupsApi.getAll(token);
+    const { groupId, remainingTime } = groups[0];
+
+    const times = remainingTime.split(":");
+    const minutes = Number(times[1]);
+    const seconds = Math.floor(Number(times[2]));
+
+    return {
+      groupId,
+      minutes,
+      seconds,
+    };
   };
 
   useEffect(() => {
@@ -127,6 +170,7 @@ export default function Home() {
     }
   };
 
+  //event handler
   const handleInputClickRoute = (index: number) => {
     router.push(`${SEARCH}?id=${index}`);
   };
@@ -138,15 +182,27 @@ export default function Home() {
 
       return;
     }
-    if (groupId) {
-      console.log(`go to the group page : /group/${groupId}`);
-      router.push(`${GROUP}/${groupId}`);
+    if (!groupId) {
+      openModal(getSelectModalConfig(true));
       return;
     }
+    //TODO
+    //1. remainingTime 체크
+    //2. 괜찮으면 유효시간 모달 띄워주기 -> go
+    //3. 만료되었으면 방을 만들겠냐고 모달 띄워주기 -> go
+    try {
+      const { minutes, seconds } =
+        await getMinutesSecondsAndGroupIdFromGroupAPI(token);
 
-    setIsLoading(true);
-    openModal(selectModalConfig);
-    setIsLoading(false);
+      if (minutes === 0 || seconds === 0) {
+        openModal(getSelectModalConfig(false, groupId));
+      } else {
+        openModal(getValidGroupModalConfig(minutes, seconds));
+      }
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      toast.error(errorMessage);
+    }
   };
 
   const handleButtonClickMiddlePointSubmit = async () => {
@@ -161,7 +217,6 @@ export default function Home() {
       if (errorMessage) throw new Error(errorMessage);
 
       const data = await MidPointApi.postMidPoint(notEmptyAddressList);
-      setIsLoading(false);
 
       setAddressList(notEmptyAddressList);
       setMidPointResponse(data);

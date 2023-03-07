@@ -22,6 +22,19 @@ export const MidPointApi = {
         },
       });
 
+      const result = {
+        start: [],
+        midPointResponses: [],
+      };
+
+      result.start = data.start.map((s: searchProps) => ({
+        stationName: s.stationName,
+        lat: s.lat,
+        lng: s.lng,
+        address: s.address,
+      }));
+
+      console.log(data);
       return data;
     } catch (e) {
       console.error(e);
