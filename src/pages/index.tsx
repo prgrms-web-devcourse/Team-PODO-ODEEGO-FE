@@ -86,10 +86,7 @@ export default function Home() {
           await GroupsApi.deleteGroup(gId, token);
         }
 
-        const data = await GroupsApi.postCreateGroup(
-          parseInt(token),
-          parseInt(count, 10)
-        );
+        const data = await GroupsApi.postCreateGroup(token, count);
         setLocalStorage(COUNT, "");
 
         const { groupId } = data;
