@@ -11,6 +11,7 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
 import { tokenRecoilState } from "@/recoil/token-recoil";
+import { getSubway } from "@/axios/get-subway";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
@@ -89,8 +90,8 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", value], // key가 충분히 unique 한가?
     () => {
-      console.log("change");
-      return SearchAPI.getSubway(value);
+      console.log(`search input is changed`);
+      return getSubway(value);
     },
     {
       enabled: value.length > 0,
