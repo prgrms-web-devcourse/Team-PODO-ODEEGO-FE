@@ -50,10 +50,8 @@ export const GroupsApi = {
     try {
       const { data } = await HTTP.get<GroupDetailResponse>({
         url: `/v1/groups/${groupId}`,
-        headers: {
-          Authorization: token,
-        },
       });
+      console.log(token);
 
       return data;
     } catch (error) {

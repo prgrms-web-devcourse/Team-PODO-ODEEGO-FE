@@ -22,7 +22,7 @@ import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { useGroup } from "../api/group";
+import { useGroup } from "@/axios/groups";
 
 interface InputState {
   memberId: string;
