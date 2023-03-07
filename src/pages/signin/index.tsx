@@ -39,7 +39,8 @@ const LoginPage = () => {
           });
 
           // 회원탈퇴
-          const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
+          const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
+          // const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
 
           const response = await axios.delete(odeegoLogoutUrl, {
             headers: {
@@ -84,7 +85,6 @@ export default LoginPage;
 
 const BorderContainer = styled.div`
   height: 25px;
-  width: 100%;
   background-color: ${COLORS.backgroundPrimary};
   margin-top: -15px;
   border-radius: 20px 20px 0 0;

@@ -157,7 +157,7 @@ const TextP = styled.p`
 const HeaderIconWrap = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  border: 1px solid red;
   margin-left: 2rem;
   svg {
     font-size: 3rem;

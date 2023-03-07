@@ -102,6 +102,6 @@ const BorderContainer = styled.div`
 `;
 
 const SignUpContainer = styled.div`
-  width: 100%;
+  width: 43rem;
   margin: 0 auto;
 `;
