@@ -47,7 +47,7 @@ const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
 const { ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
 
-const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
+const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -119,7 +119,7 @@ export default function Home() {
           await getMinutesSecondsAndGroupIdFromGroupAPI(token);
 
         minutes === 0 && seconds === 0
-          ? router.push(`/`)
+          ? router.push(`${HOME}`)
           : router.push(`${GROUP}/${groupId}`);
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -183,6 +183,8 @@ export default function Home() {
   };
 
   const handleButtonClickGroups = async () => {
+    // * 유효시간 모달 체크 코드
+    // openModal(getValidGroupModalConfig(1, 0));
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
@@ -193,10 +195,7 @@ export default function Home() {
       openModal(getSelectModalConfig(true));
       return;
     }
-    //TODO
-    //1. remainingTime 체크
-    //2. 괜찮으면 유효시간 모달 띄워주기 -> go
-    //3. 만료되었으면 방을 만들겠냐고 모달 띄워주기 -> go
+
     try {
       const { minutes, seconds } =
         await getMinutesSecondsAndGroupIdFromGroupAPI(token);

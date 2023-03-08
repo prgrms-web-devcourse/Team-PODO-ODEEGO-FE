@@ -6,30 +6,46 @@ interface ValidGroupProps {
   seconds: number;
 }
 
+const INTERVAL_IN_MILLISECONDS = 1000; //1s
+
 const ValidGroupModal = ({ minutes, seconds }: ValidGroupProps) => {
   const [min, setMinutes] = useState(minutes);
-  const [sec, setSeconds] = useState(seconds);
+  const [sec, setSeconds] = useState(seconds * 1000);
+  const [referenceTime, setReferenceTime] = useState(Date.now());
 
   useEffect(() => {
-    const i = setInterval(() => {
-      if (sec > 0) {
-        setSeconds(sec - 1);
-      }
+    const countDownUntilZero = () => {
+      console.log(min, sec);
+      setSeconds((prev) => {
+        if (prev <= 0) return 0;
+
+        const now = Date.now();
+        const realInterval = now - referenceTime;
+        setReferenceTime(now);
+
+        return prev - realInterval;
+      });
+
       if (sec === 0) {
-        if (min === 0) {
-          clearInterval(i);
-        } else {
-          setMinutes(min - 1);
-          setSeconds(59);
-        }
+        if (min === 0) return;
+
+        setMinutes((prev) => {
+          if (prev <= 0) return 0;
+          return prev - 1;
+        });
+        setSeconds(60 * 1000);
       }
-    }, 1000);
-    return () => clearInterval(i);
+    };
+
+    setTimeout(countDownUntilZero, INTERVAL_IN_MILLISECONDS);
   }, [min, sec]);
 
   return (
     <>
-      <TextP>남은 시간: {`${min}분 ${sec}초`}</TextP>
+      <TextP>
+        남은 시간:{" "}
+        {`${min}분 ${sec === 60 * 1000 ? 59 : Math.ceil(sec / 1000)}초`}
+      </TextP>
     </>
   );
 };
