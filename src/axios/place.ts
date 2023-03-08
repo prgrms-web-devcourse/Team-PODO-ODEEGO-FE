@@ -8,6 +8,8 @@ export const PlaceApi = {
         url: `/v1/places?stationName=${stationName}&category=${category}`,
       });
 
+      await (() => new Promise((r) => setTimeout(r, 3000)))();
+
       return data;
     } catch (e) {
       console.error(e);

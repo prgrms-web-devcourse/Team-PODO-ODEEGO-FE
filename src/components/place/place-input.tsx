@@ -1,10 +1,13 @@
 import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import React from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import { COLORS } from "@/constants/css";
+import { useRouter } from "next/router";
+import { ROUTES } from "@/constants";
 
 const PlaceInput = () => {
+  const router = useRouter();
+
   return (
     <>
       <TextField
@@ -12,10 +15,7 @@ const PlaceInput = () => {
           marginTop: "2rem",
           width: "100%",
           "& .MuiInputBase-root:before": {
-            // borderRadius: "7px",
-            // height: 50,
-            // border: "0",
-            borderBottom: "1px solid rgba(90, 178, 125, .5)",
+            borderBottom: "2px solid rgba(90, 178, 125, .5)",
           },
           "& .MuiOutlinedInput-notchedOutline": {
             border: "none",
@@ -30,6 +30,7 @@ const PlaceInput = () => {
             padding: "1.5rem .5rem",
           },
         }}
+        disabled
         InputProps={{
           startAdornment: (
             <InputAdornment position='start'>
@@ -37,17 +38,9 @@ const PlaceInput = () => {
                 sx={{
                   color: `${COLORS.mainGreen}`,
                   fontSize: "20px",
+                  cursor: "pointer",
                 }}
-              />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position='end'>
-              <CloseIcon
-                sx={{
-                  color: `${COLORS.mainGreen}`,
-                  fontSize: "20px",
-                }}
+                onClick={() => router.push(`${ROUTES.MAP}`)}
               />
             </InputAdornment>
           ),

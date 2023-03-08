@@ -7,24 +7,18 @@ import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
 import { useQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
+import { CircularProgress } from "@mui/material";
 
 const PlacePage = () => {
   const getTabData = useRecoilValue(tabState);
 
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     ["place", getTabData],
     () => PlaceApi.getPlaces("강남역", getTabData),
     {
       keepPreviousData: true,
     }
   );
-
-  //임시 코드 -> 페이지 변경되면 로딩스피너 넣어야할듯
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  console.log(data);
 
   return (
     <PlaceContainer>
@@ -33,7 +27,20 @@ const PlacePage = () => {
         <PlaceTabList />
       </Header>
       <BorderContainer />
-      <PlaceList placeList={data?.places} />
+      {isLoading ? (
+        <CircularProgress
+          color='warning'
+          size={48}
+          sx={{
+            position: "absolute",
+            top: "150%",
+            right: "45%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      ) : (
+        <PlaceList placeList={data?.places} />
+      )}
     </PlaceContainer>
   );
 };
