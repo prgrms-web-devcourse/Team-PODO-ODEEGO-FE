@@ -22,9 +22,10 @@ axiosInstanceWitToken.interceptors.request.use(
     const kakaoToken = getLocalStorage("logoutToken");
 
     if (odeegoToken) {
-      config.headers["Authorization"] = odeegoToken;
-    } else if (kakaoToken) {
-      config.headers["Authorization"] = kakaoToken;
+      config.headers["Authorization"] = "Bearer " + odeegoToken;
+      config.headers["Content-Type"] = "application/json";
+    } else if (kakaoToken && !odeegoToken) {
+      config.headers["Authorization"] = "Bearer " + kakaoToken;
     }
     return config;
   },

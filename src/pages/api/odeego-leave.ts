@@ -7,11 +7,10 @@ export default async function handler(
 ) {
   const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
 
-  console.log(req.headers.authorization);
   try {
     const response = await axios.delete(odeegoLogoutUrl, {
       headers: {
-        Authorization: `Bearer ${req.headers.authorization}`,
+        Authorization: `${req.headers.authorization}`,
         "Content-Type": "application/json",
       },
     });

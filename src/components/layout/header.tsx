@@ -74,24 +74,6 @@ const Header = ({ token }: TokenProps) => {
       const odeegoLogoutUrl = `/api/odeego-leave`;
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
 
-      // 회원탈퇴
-      // const odeegoLogoutUrl = `/api/odeego-leave`;
-      // const response = await axios.delete(odeegoLogoutUrl, {
-      //   headers: {
-      //     Authorization: `${token}`,
-      //   },
-      // });
-      //
-      // console.log(response);
-
-      // const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
-
-      // const response = await axios.delete(odeegoLogoutUrl, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     "Content-Type": "application/json",
-      //   },
-      // });
       setToken("");
 
       removeLocalStorage("token");

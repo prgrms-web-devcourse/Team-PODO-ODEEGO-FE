@@ -3,8 +3,8 @@ import { searchOriginProps } from "@/types/search-props";
 import checkSignup from "@/utils/check-signup";
 import { errorType, valueType } from "@/types/register-props";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { getLocalStorage } from "@/utils/storage";
+import { axiosInstanceWitToken } from "@/axios/instance";
 
 interface isErrorProps {
   nickname: boolean;
@@ -69,19 +69,11 @@ const useSignupSearch = () => {
       defaultStationName: values.defaultStationName,
     };
 
-    const response = await axios.patch(registerUrl, data, {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("token") || ""
-        )}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await axiosInstanceWitToken.patch(registerUrl, data);
 
     if (response.status === 200) {
       router.push("/");
     }
-    console.log(response);
   };
 
   return {
