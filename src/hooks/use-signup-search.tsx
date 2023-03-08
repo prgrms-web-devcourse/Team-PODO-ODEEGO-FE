@@ -60,13 +60,10 @@ const useSignupSearch = () => {
     });
   };
 
-  // const [str, setString] = useState("");
-
   const handleSignUpSubmit = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const registerUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/sign-up`;
 
-    console.log(registerUrl);
     const data = {
       nickname: values.nickname,
       defaultStationName: values.defaultStationName,

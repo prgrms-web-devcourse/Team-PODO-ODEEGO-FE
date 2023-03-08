@@ -1,27 +1,12 @@
 import axios from "axios";
 import { getLocalStorage } from "@/utils/storage";
 
-const API_URL = process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO;
+// const API_URL = process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO;
 
 const axiosInstanceWitToken = axios.create({
-  baseURL: "/api",
+  baseURL: "",
   timeout: 2000, // request timeout
 });
-
-const axiosInstance = axios.create({
-  baseURL: `${API_URL}`,
-  timeout: 2000, // request timeout
-});
-
-axiosInstance.interceptors.request.use(
-  (config) => {
-    config.headers["Authorization"] = getLocalStorage("token");
-    return config;
-  },
-  (error) => {
-    Promise.reject(error);
-  }
-);
 
 const APIError = (message: string, status: number) => {
   return {
@@ -33,7 +18,14 @@ const APIError = (message: string, status: number) => {
 // request interceptor with token
 axiosInstanceWitToken.interceptors.request.use(
   (config) => {
-    config.headers["Authorization"] = getLocalStorage("token");
+    const odeegoToken = getLocalStorage("token");
+    const kakaoToken = getLocalStorage("logoutToken");
+
+    if (odeegoToken) {
+      config.headers["Authorization"] = odeegoToken;
+    } else if (kakaoToken) {
+      config.headers["Authorization"] = kakaoToken;
+    }
     return config;
   },
   (error) => {
@@ -46,7 +38,6 @@ axiosInstanceWitToken.interceptors.request.use(
       case 403: {
         return Promise.reject(APIError(error.message, 409));
       }
-
       // bad request
       case 400: {
         return Promise.reject(APIError(error.message, 400));
@@ -75,4 +66,4 @@ axiosInstanceWitToken.interceptors.request.use(
   }
 );
 
-export { axiosInstanceWitToken, axiosInstance };
+export { axiosInstanceWitToken };

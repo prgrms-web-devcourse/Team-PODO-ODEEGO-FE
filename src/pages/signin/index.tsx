@@ -38,7 +38,7 @@ const LoginPage = () => {
           });
 
           // 회원탈퇴
-          const odeegoLogoutUrl = `/odeego-leave`;
+          const odeegoLogoutUrl = `/api/odeego-leave`;
           const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
 
           removeLocalStorage("token");

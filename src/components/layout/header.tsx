@@ -71,7 +71,7 @@ const Header = ({ token }: TokenProps) => {
         }),
       });
 
-      const odeegoLogoutUrl = `/odeego-leave`;
+      const odeegoLogoutUrl = `/api/odeego-leave`;
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
 
       // 회원탈퇴

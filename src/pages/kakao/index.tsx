@@ -42,6 +42,10 @@ const Kakao = () => {
               // test
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
               const resultKakaoToken = resultKakao.tokenResponse.access_token;
+              setLocalStorage(
+                "logoutToken",
+                resultKakao.tokenResponse.access_token
+              );
 
               const { data } = await axios.post(
                 loginBackendUrl,
@@ -57,10 +61,6 @@ const Kakao = () => {
               setLocalStorage("token", data.accessToken);
             }
           }
-          setLocalStorage(
-            "logoutToken",
-            resultKakao.tokenResponse.access_token
-          );
         }
       };
 
