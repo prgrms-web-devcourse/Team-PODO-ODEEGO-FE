@@ -7,6 +7,7 @@ import PlaceImage from "./place-image";
 const SHARE_TEXT = "공유";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
+  console.log(images);
   return (
     <Container>
       <TitleIconContainer>
@@ -119,17 +120,5 @@ const ImageContainer = styled.div`
   &::-webkit-scrollbar-thumb {
     background-color: ${COLORS.mainOrange};
     border-radius: 1rem;
-  }
-
-  > div {
-    flex: 0 0 auto;
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    border-radius: 1rem;
-    margin-right: 0.6rem;
-
-    &.disabled {
-      display: none;
-    }
   }
 `;

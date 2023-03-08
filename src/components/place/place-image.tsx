@@ -22,14 +22,17 @@ const PlaceImage = ({
     e.currentTarget.remove();
   };
   return (
-    <Container onError={handleImageError}>
-      <Image
-        ref={imgRef}
-        referrerPolicy='no-referrer'
-        src={loaded ? (src ? src : placeholder) : placeholder}
-        alt={alt}
-      />
-    </Container>
+    <>
+      <Container>
+        <Image
+          ref={imgRef}
+          referrerPolicy='no-referrer'
+          src={loaded ? (src ? src : placeholder) : placeholder}
+          alt={alt}
+          onError={handleImageError}
+        />
+      </Container>
+    </>
   );
 };
 
@@ -40,12 +43,14 @@ const Container = styled.div`
   aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 1rem;
-  margin-right: 0.6rem;
+  /* margin-right: 0.6rem; */
 `;
 
 const Image = styled.img`
   width: 12.5rem;
   height: 12.5rem;
+  border-radius: 1rem;
+  margin-right: 0.6rem;
 
   &.disabled {
     display: none;

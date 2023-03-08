@@ -5,7 +5,11 @@ import { COLORS } from "@/constants/css";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
 
-const PlaceInput = () => {
+interface PlaceInputProps {
+  value: string;
+}
+
+const PlaceInput = ({ value }: PlaceInputProps) => {
   const router = useRouter();
 
   return (
@@ -41,12 +45,12 @@ const PlaceInput = () => {
                   fontSize: "20px",
                   cursor: "pointer",
                 }}
-                onClick={() => router.push(`${ROUTES.MAP}`)}
+                onClick={() => router.replace(`${ROUTES.MAP}`)}
               />
             </InputAdornment>
           ),
         }}
-        value='강남역'
+        value={value}
         type='text'
       />
     </>

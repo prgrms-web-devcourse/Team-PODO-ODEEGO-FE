@@ -21,6 +21,7 @@ export const getServerSideProps = async ({
     );
     return {
       props: {
+        stationName,
         places: data,
       },
     };
@@ -31,15 +32,16 @@ export const getServerSideProps = async ({
 };
 
 interface PageProps {
+  stationName: string;
   places: { places: PlaceResponse[] };
 }
 
-const PlacePage = ({ places }: PageProps) => {
+const PlacePage = ({ stationName, places }: PageProps) => {
   const getTabData = useRecoilValue(tabState);
 
   const { data } = useQuery(
     ["place", getTabData],
-    () => PlaceApi.getPlaces("강남역", getTabData),
+    () => PlaceApi.getPlaces(stationName, getTabData),
     {
       keepPreviousData: true,
     }
@@ -48,7 +50,7 @@ const PlacePage = ({ places }: PageProps) => {
   return (
     <PlaceContainer>
       <Header>
-        <PlaceInput />
+        <PlaceInput value={stationName} />
         <PlaceTabList />
       </Header>
       <BorderContainer />
