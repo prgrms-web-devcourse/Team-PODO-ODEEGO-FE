@@ -11,6 +11,9 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
 import { tokenRecoilState } from "@/recoil/token-recoil";
+import EnterSearchPageModal from "./enter-searchpage-modal";
+import SetStartPointModalContent from "./set-startpoint-modal";
+import SetLoginModalContent from "./login-modal";
 
 const SearchInput = () => {
   const [value, setValue] = useState("");
@@ -20,29 +23,12 @@ const SearchInput = () => {
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
   const groupId = useSearchParams().get("groupId") || null; // 방 Id
   const host = useSearchParams().get("host") || null;
-
   const { openModal, closeModal } = useModal();
-
   const router = useRouter();
-
-  const setLoginModalContent = () => {
-    return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
-  };
-
-  const ConfirmEnterSearchPageModal = () => {
-    return (
-      <>
-        {/* 닉네임을 받아올 수 있는가? */}
-        <h1>000님이 주소를 요청했습니다.</h1>
-        <p>약속 장소를 찾기 위해 주소가 필요합니다.</p>
-        <p>계속 하시겠습니까?</p>
-      </>
-    );
-  };
 
   const handleConfirmEnterSearchPage = useCallback(() => {
     openModal({
-      children: ConfirmEnterSearchPageModal(),
+      children: <EnterSearchPageModal />,
       btnText: {
         confirm: "예",
         close: "아니오",
@@ -68,7 +54,7 @@ const SearchInput = () => {
   // 링크를 공유 받았을 때.
   if (groupId && !testToken) {
     openModal({
-      children: setLoginModalContent(),
+      children: <SetLoginModalContent />,
       btnText: {
         confirm: "로그인하기!",
         close: "취소",
@@ -124,15 +110,6 @@ const SearchInput = () => {
     // setValue(value);
   };
 
-  const setStartPointModalContent = (startPoint: string) => {
-    return (
-      <>
-        <p>{startPoint}</p>
-        <p>출발역은 수정할 수 없습니다.</p>
-      </>
-    );
-  };
-
   const handleStartPointModal = (val: searchOriginProps) => {
     const obj = {
       groupId: groupId,
@@ -143,7 +120,7 @@ const SearchInput = () => {
     };
 
     openModal({
-      children: setStartPointModalContent(obj.stationName),
+      children: <SetStartPointModalContent startingPoint={obj.stationName} />,
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
