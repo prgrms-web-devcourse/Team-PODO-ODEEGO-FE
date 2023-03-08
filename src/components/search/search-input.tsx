@@ -16,15 +16,16 @@ import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 
 const SearchInput = () => {
-  const [value, setValue] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
-  const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
+  const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
   const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
+  const router = useRouter();
+
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
   const groupId = useSearchParams().get("groupId") || null; // 방 Id
   const host = useSearchParams().get("host") || null;
   const { openModal, closeModal } = useModal();
-  const router = useRouter();
 
   const handleConfirmEnterSearchPage = useCallback(() => {
     openModal({
@@ -40,12 +41,14 @@ const SearchInput = () => {
     });
   }, [openModal]);
 
-  // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
     window.addEventListener("popstate", () => {
       closeModal();
     });
+  });
 
+  // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
+  useEffect(() => {
     if (groupId !== null) {
       if (!host) handleConfirmEnterSearchPage();
     }
@@ -73,13 +76,13 @@ const SearchInput = () => {
   };
 
   const { data: resultSubway } = useQuery(
-    ["search", value], // key가 충분히 unique 한가?
+    ["search", searchInput], // key가 충분히 unique 한가?
     () => {
       console.log("change");
-      return SearchAPI.getSubway(value);
+      return SearchAPI.getSubway(searchInput);
     },
     {
-      enabled: value.length > 0,
+      enabled: searchInput.length > 0,
       refetchOnMount: true,
       staleTime: 10000,
     }
@@ -93,11 +96,11 @@ const SearchInput = () => {
     if (timer !== null) {
       window.clearTimeout(timer);
       timer = window.setTimeout(() => {
-        setValue(value);
+        setSearchInput(value);
       }, 500);
     } else {
       timer = window.setTimeout(() => {
-        setValue(value);
+        setSearchInput(value);
       }, 500);
     }
 
