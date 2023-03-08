@@ -9,7 +9,8 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
-import axiosInstance from "@/axios/instance";
+import { axiosInstanceWitToken } from "@/axios/instance";
+
 interface TokenProps {
   token?: string;
 }
@@ -71,7 +72,7 @@ const Header = ({ token }: TokenProps) => {
       });
 
       const odeegoLogoutUrl = `/odeego-leave`;
-      const response = await axiosInstance.delete(odeegoLogoutUrl);
+      const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
 
       // 회원탈퇴
       // const odeegoLogoutUrl = `/api/odeego-leave`;

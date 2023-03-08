@@ -8,7 +8,7 @@ import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import useModal from "../../hooks/use-modal";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
-import axiosInstance from "@/axios/instance";
+import { axiosInstanceWitToken } from "@/axios/instance";
 
 const LoginPage = () => {
   const { openModal } = useModal();
@@ -39,7 +39,7 @@ const LoginPage = () => {
 
           // 회원탈퇴
           const odeegoLogoutUrl = `/odeego-leave`;
-          const response = await axiosInstance.delete(odeegoLogoutUrl);
+          const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
 
           removeLocalStorage("token");
           removeLocalStorage("logoutToken");

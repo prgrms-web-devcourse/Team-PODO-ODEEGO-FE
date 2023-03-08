@@ -4,8 +4,8 @@ import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
-import axios from "axios";
 import { setLocalStorage } from "@/utils/storage";
+import axios from "axios";
 
 const Kakao = () => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const Kakao = () => {
 
           const resultKakao = await responseKakao.json();
 
-          const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
+          // const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
           // 새로고침 임시 방편 코드
           if (window.performance) {
@@ -40,15 +40,19 @@ const Kakao = () => {
               console.error("The page is reloaded");
             } else {
               // test
+              const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
+              const resultKakaoToken = resultKakao.tokenResponse.access_token;
+
               const { data } = await axios.post(
                 loginBackendUrl,
                 {},
                 {
                   headers: {
-                    Authorization: `Bearer ${resultKakao.tokenResponse.access_token}`,
+                    Authorization: `Bearer ${resultKakaoToken}`,
                   },
                 }
               );
+
               setToken(data.accessToken);
               setLocalStorage("token", data.accessToken);
             }
