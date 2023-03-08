@@ -22,7 +22,7 @@ export const GroupsApi = {
       }
     }
   },
-  postCreateGroup: async (id: number, count: number) => {
+  postCreateGroup: async (id: string, count: string) => {
     try {
       const { data } = await HTTP.post({
         //TODO
