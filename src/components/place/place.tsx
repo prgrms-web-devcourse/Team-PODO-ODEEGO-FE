@@ -1,17 +1,12 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
-import Image from "next/image";
 import IosShareIcon from "@mui/icons-material/IosShare";
-
-interface PlaceProps {
-  businessName: string;
-  address: string;
-}
+import { PlaceResponse } from "@/types/api/place";
 
 const SHARE_TEXT = "공유";
 
-const Place = ({ businessName, address }: PlaceProps) => {
-  const tmpImageList = [1, 2, 3, 4];
+const Place = ({ businessName, address, images }: PlaceResponse) => {
+  console.log(businessName, address, images);
   return (
     <Container>
       <TitleIconContainer>
@@ -33,15 +28,15 @@ const Place = ({ businessName, address }: PlaceProps) => {
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {tmpImageList.map((i, index) => (
+        {images.map((i, index) => (
           <div key={index}>
-            <Image
-              src={`/cafe${(i % 3) + 1}.png`}
-              alt='cafe image'
+            {/* <Image
+              src={i.url}
+              alt='place image'
               width={125}
               height={125}
               priority
-            />
+            /> */}
           </div>
         ))}
       </ImageContainer>

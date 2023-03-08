@@ -1,22 +1,23 @@
 import { COLORS } from "@/constants/css";
+import { PlaceResponse } from "@/types/api/place";
 import styled from "@emotion/styled";
 import Place from "./place";
 
-interface PlaceProps {
-  businessName: string;
-  address: string;
-}
-
 interface PlaceListProps {
-  placeList: PlaceProps[];
+  placeList: PlaceResponse[];
 }
 
-const PlaceList = ({ placeList = [] }: PlaceListProps) => {
+const PlaceList = ({ placeList }: PlaceListProps) => {
   return (
     <MainContainer>
       <UnOrderedList>
-        {(placeList || []).map((p: PlaceProps, i: number) => (
-          <Place key={i} businessName={p.businessName} address={p.address} />
+        {(placeList || []).map((p: PlaceResponse, i: number) => (
+          <Place
+            key={i}
+            businessName={p.businessName}
+            address={p.address}
+            images={p.images}
+          />
         ))}
       </UnOrderedList>
     </MainContainer>
