@@ -1,3 +1,5 @@
+import { GroupDetailResponse } from "@/types/api/group";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
 
@@ -44,6 +46,18 @@ export const GroupsApi = {
       }
     }
   },
+  getGroup: async (groupId: string, token: string) => {
+    try {
+      const { data } = await HTTP.get<GroupDetailResponse>({
+        url: `/v1/groups/${groupId}`,
+      });
+      console.log(token);
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
   deleteGroup: async (groupId: string, token: string) => {
     try {
       const { data } = await HTTP.delete({
@@ -59,3 +73,12 @@ export const GroupsApi = {
     }
   },
 };
+
+const useGroup = (groupId: string, token: string) => {
+  return useQuery(["group"], () => GroupsApi.getGroup(groupId, token), {
+    refetchOnMount: true,
+    staleTime: 10000,
+  });
+};
+
+export { useGroup };

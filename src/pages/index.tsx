@@ -25,7 +25,13 @@ import {
   ValidGroupModal,
 } from "@/components/home";
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
-import { accessTokenState, MidPointState, searchState } from "@/recoil";
+import {
+  accessTokenState,
+  GroupState,
+  isFirstVisitState,
+  MidPointState,
+  searchState,
+} from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 
@@ -53,6 +59,8 @@ export default function Home() {
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
   const { openModal } = useModal();
+  const setIsFirstVisit = useSetRecoilState(isFirstVisitState);
+  const setGroupIdState = useSetRecoilState(GroupState);
 
   //methods & modal config
   const loginModalConfig = {
@@ -90,7 +98,8 @@ export default function Home() {
         setLocalStorage(COUNT, "");
 
         const { groupId } = data;
-        console.log(`go to the group page : /group/${groupId}`);
+        setIsFirstVisit(true);
+        setGroupIdState(groupId);
         router.push(`${GROUP}/${groupId}`);
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -144,6 +153,7 @@ export default function Home() {
         const groupId = data?.groups?.[0]?.groupId || "";
 
         setGroupId(groupId);
+        setGroupIdState(groupId);
         setLocalStorage(COUNT, "");
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
@@ -152,7 +162,7 @@ export default function Home() {
     };
 
     initGroupId();
-  }, [hasAccessToken, setGroupId, token]);
+  }, [hasAccessToken, setGroupId, setGroupIdState, token]);
 
   //tmp 더미 회원 생성 메서드
   const createTmpDummyUser = async () => {
@@ -205,7 +215,15 @@ export default function Home() {
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
 
-    const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
+    const notEmptyAddressList = addressList
+      .filter((a) => a.stationName !== "")
+      .map((a) => {
+        return {
+          stationName: a.stationName.split(" ")[0],
+          lat: a.lat,
+          lng: a.lng,
+        };
+      });
 
     setIsLoading(true);
     try {
