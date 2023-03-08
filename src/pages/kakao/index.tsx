@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
 import { setLocalStorage } from "@/utils/storage";
-import axios from "axios";
+import { axiosInstanceWitToken } from "@/axios/instance";
 
 const Kakao = () => {
   const router = useRouter();
@@ -29,28 +29,20 @@ const Kakao = () => {
           });
 
           const resultKakao = await responseKakao.json();
+          setLocalStorage(
+            "logoutToken",
+            resultKakao.tokenResponse.access_token
+          );
 
           // 새로고침 임시 방편 코드
           if (window.performance) {
             if (performance.navigation.type == 1) {
               console.error("The page is reloaded");
             } else {
-              // test
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
-              const resultKakaoToken = resultKakao.tokenResponse.access_token;
-              setLocalStorage(
-                "logoutToken",
-                resultKakao.tokenResponse.access_token
-              );
 
-              const { data } = await axios.post(
-                loginBackendUrl,
-                {},
-                {
-                  headers: {
-                    Authorization: `Bearer ${resultKakaoToken}`,
-                  },
-                }
+              const { data } = await axiosInstanceWitToken.post(
+                loginBackendUrl
               );
 
               setToken(data.accessToken);

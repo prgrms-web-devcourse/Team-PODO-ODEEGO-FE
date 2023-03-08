@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 async function getTokenFromKakao(logoutToken: string) {
-  const tokenUrl = `https://kapi.kakao.com/v1/user/unlink`;
-
   try {
+    const tokenUrl = `https://kapi.kakao.com/v1/user/unlink`;
+
     const response: NextApiResponse = await fetch(tokenUrl, {
       method: "POST",
       headers: {
@@ -24,6 +24,10 @@ export default async function handler(
 ) {
   const { logoutToken } = req.body;
 
-  const tokenResponse = await getTokenFromKakao(logoutToken);
-  res.status(200).json({ tokenResponse });
+  try {
+    const tokenResponse = await getTokenFromKakao(logoutToken);
+    res.status(200).json({ tokenResponse });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 }

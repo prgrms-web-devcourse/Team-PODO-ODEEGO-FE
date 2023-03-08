@@ -74,9 +74,7 @@ const Header = ({ token }: TokenProps) => {
       const odeegoLogoutUrl = `/api/odeego-leave`;
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
 
-      console.log(response);
       setToken("");
-
       removeLocalStorage("token");
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);

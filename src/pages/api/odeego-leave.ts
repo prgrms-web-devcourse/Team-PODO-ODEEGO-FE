@@ -5,9 +5,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
-
   try {
+    const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
+
     const response = await axios.delete(odeegoLogoutUrl, {
       headers: {
         Authorization: `${req.headers.authorization}`,

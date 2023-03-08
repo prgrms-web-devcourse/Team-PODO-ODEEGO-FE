@@ -8,7 +8,6 @@ import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import useModal from "../../hooks/use-modal";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
-import { axiosInstanceWitToken } from "@/axios/instance";
 
 const LoginPage = () => {
   const { openModal } = useModal();
@@ -37,23 +36,19 @@ const LoginPage = () => {
             }),
           });
 
-          // 회원탈퇴
-          const odeegoLogoutUrl = `/api/odeego-leave`;
-          const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
-
           removeLocalStorage("token");
           removeLocalStorage("logoutToken");
           router.push(`${ROUTES.HOME}`);
 
-          return response;
+          // return response;
         },
       });
     } else {
       window.Kakao.Auth.authorize({
         //개인 테스트용 리다이랙션 주소
-        // redirectUri: "http://localhost:3000/kakao",
+        redirectUri: "http://localhost:3000/kakao",
         // 배포 리다이랙션 주소 Production
-        redirectUri: "https://odeego.vercel.app/kakao",
+        // redirectUri: "https://odeego.vercel.app/kakao",
         // 배포 리다이랙션 주소 Preview
         // redirectUri:
         // "https://team-podo-odeego-fe-git-feature-signin-seung-hwan285.vercel.app/kakao",
