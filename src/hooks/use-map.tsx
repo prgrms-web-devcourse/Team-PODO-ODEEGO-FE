@@ -1,3 +1,4 @@
+import { Avatar, Station } from "@/components/map/map-markers";
 import { useState, useEffect, useCallback } from "react";
 
 const useMap = ({
@@ -9,13 +10,14 @@ const useMap = ({
   const [script, setScript] = useState<HTMLScriptElement>();
   const [markerPositions, setMarkerPositions] = useState<TMarker[]>(() => {
     const starts = startPoints.map((v) => ({
+      stationName: v.stationName,
       lat: v.lat,
       lng: v.lng,
       isMidpoint: false,
     }));
-    return [{ ...initialCenter, isMidpoint: true }, ...starts];
+    return [...starts, { ...initialCenter, isMidpoint: true }];
   });
-  const [, setMarkers] = useState<kakao.maps.Marker[]>();
+  const [, setMarkers] = useState<kakao.maps.CustomOverlay[]>();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -55,10 +57,11 @@ const useMap = ({
     map.setBounds(bounds);
   }, [map, markerPositions]);
 
-  const setMidpoint = (coord: Coord) => {
+  const setMidpoint = (coord: Coord, stationName: string) => {
     const nextMarkerPositions = markerPositions.map((pos) => {
       if (pos.isMidpoint) {
         return {
+          stationName,
           lat: coord.lat,
           lng: coord.lng,
           isMidpoint: true,
@@ -73,13 +76,21 @@ const useMap = ({
     if (!map) return;
 
     // markerPositions가 바뀌면 새로운 카카오 마커 생성
-    const nextMarkers = markerPositions.map(
-      (pos) =>
-        new kakao.maps.Marker({
+    const nextMarkers = markerPositions.map((pos) => {
+      if (pos.isMidpoint) {
+        return new kakao.maps.CustomOverlay({
           map: map,
           position: new kakao.maps.LatLng(pos.lat, pos.lng),
-        })
-    );
+          content: Station(pos.stationName),
+        });
+      }
+
+      return new kakao.maps.CustomOverlay({
+        map: map,
+        position: new kakao.maps.LatLng(pos.lat, pos.lng),
+        content: Avatar(),
+      });
+    });
 
     setMarkers((markers) => {
       markers?.forEach((marker) => marker.setMap(null)); // 기존에 있던 마커 모두 제거
