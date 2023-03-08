@@ -8,7 +8,8 @@ export const PlaceApi = {
         url: `/v1/places?stationName=${stationName}&category=${category}`,
       });
 
-      await (() => new Promise((r) => setTimeout(r, 3000)))();
+      //TODO: 지우기 (Loading component확인을 위한 코드)
+      // await (() => new Promise((r) => setTimeout(r, 3000)))();
 
       return data;
     } catch (e) {

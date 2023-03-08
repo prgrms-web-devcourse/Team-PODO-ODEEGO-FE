@@ -16,6 +16,7 @@ const PlaceInput = () => {
           width: "100%",
           "& .MuiInputBase-root:before": {
             borderBottom: "2px solid rgba(90, 178, 125, .5)",
+            borderBottomStyle: "solid",
           },
           "& .MuiOutlinedInput-notchedOutline": {
             border: "none",
