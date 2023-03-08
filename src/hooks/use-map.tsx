@@ -1,22 +1,21 @@
-/*global kakao*/
-
-import { BaseResponse } from "@/types/api/midpoint";
-import { useState, useEffect, RefObject, useCallback } from "react";
-
-interface useMapProps {
-  mapContainerRef: RefObject<HTMLElement>;
-  initialCenter: { lat: number; lng: number };
-  startPoints: BaseResponse[];
-}
+import { useState, useEffect, useCallback } from "react";
 
 const useMap = ({
-  // test
   mapContainerRef,
   initialCenter,
   startPoints,
 }: useMapProps) => {
   const [map, setMap] = useState<kakao.maps.Map>();
   const [script, setScript] = useState<HTMLScriptElement>();
+  const [markerPositions, setMarkerPositions] = useState<TMarker[]>(() => {
+    const starts = startPoints.map((v) => ({
+      lat: v.lat,
+      lng: v.lng,
+      isMidpoint: false,
+    }));
+    return [{ ...initialCenter, isMidpoint: true }, ...starts];
+  });
+  const [, setMarkers] = useState<kakao.maps.Marker[]>();
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -25,47 +24,6 @@ const useMap = ({
     setScript(script);
     document.head.appendChild(script);
   }, []);
-
-  const setMarker = useCallback(
-    (position: { lat: number; lng: number }) => {
-      if (map) {
-        const { lat, lng } = position;
-        const marker = new kakao.maps.Marker({
-          position: new kakao.maps.LatLng(lat, lng),
-        });
-        marker.setMap(map);
-      }
-    },
-    [map]
-  );
-
-  const setCenter = (position: { lat: number; lng: number }) => {
-    if (!map) return;
-
-    const { lat, lng } = position;
-    const coords = new window.kakao.maps.LatLng(lat, lng);
-    map.setCenter(coords);
-  };
-
-  const setBoundToMidpoint = useCallback(
-    (midpoint: { lat: number; lng: number }, map: kakao.maps.Map) => {
-      if (!map) return;
-
-      const bounds = new kakao.maps.LatLngBounds();
-      startPoints.forEach(({ lat, lng }) => {
-        const marker = new kakao.maps.Marker({
-          position: new kakao.maps.LatLng(lat, lng),
-        });
-        marker.setMap(map);
-        bounds.extend(new kakao.maps.LatLng(lat, lng));
-      });
-      // 중간지점 마커 추가
-      bounds.extend(new kakao.maps.LatLng(midpoint.lat, midpoint.lng));
-      setMarker(midpoint);
-      map.setBounds(bounds);
-    },
-    [setMarker, startPoints]
-  );
 
   useEffect(() => {
     if (!script) return;
@@ -80,16 +38,58 @@ const useMap = ({
               center: new kakao.maps.LatLng(lat, lng),
               level: 4,
             });
-            // 시작점 기반 지도 범위 재설정
-            setBoundToMidpoint(initialCenter, map);
             return map;
           }
         });
       });
     };
-  }, [script, initialCenter, mapContainerRef, setBoundToMidpoint]);
+  }, [script, initialCenter, mapContainerRef]);
 
-  return { map, setCenter, setBoundToMidpoint, setMarker };
+  const setBounds = useCallback(() => {
+    if (!map) return;
+
+    const bounds = new kakao.maps.LatLngBounds();
+    markerPositions.forEach(({ lat, lng }) =>
+      bounds.extend(new kakao.maps.LatLng(lat, lng))
+    );
+    map.setBounds(bounds);
+  }, [map, markerPositions]);
+
+  const setMidpoint = (coord: Coord) => {
+    const nextMarkerPositions = markerPositions.map((pos) => {
+      if (pos.isMidpoint) {
+        return {
+          lat: coord.lat,
+          lng: coord.lng,
+          isMidpoint: true,
+        };
+      }
+      return pos;
+    });
+    setMarkerPositions(nextMarkerPositions);
+  };
+
+  useEffect(() => {
+    if (!map) return;
+
+    // markerPositions가 바뀌면 새로운 카카오 마커 생성
+    const nextMarkers = markerPositions.map(
+      (pos) =>
+        new kakao.maps.Marker({
+          map: map,
+          position: new kakao.maps.LatLng(pos.lat, pos.lng),
+        })
+    );
+
+    setMarkers((markers) => {
+      markers?.forEach((marker) => marker.setMap(null)); // 기존에 있던 마커 모두 제거
+      return nextMarkers;
+    });
+
+    setBounds(); // 지도 범위 재설정
+  }, [map, markerPositions, setBounds]);
+
+  return { map, setBounds, setMidpoint };
 };
 
 export default useMap;
