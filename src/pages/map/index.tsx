@@ -51,7 +51,7 @@ const MapPage = () => {
       </Container>
       <Map ref={mapContainerRef} id='mapContainerRef' />
       <PlacesButton
-        stationName={midPointResponses[currentMidway].stationName}
+        stationName={midPointResponses[currentMidway]?.stationName}
       />
     </Wrapper>
   );
