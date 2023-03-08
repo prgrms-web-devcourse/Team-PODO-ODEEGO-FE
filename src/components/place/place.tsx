@@ -36,13 +36,7 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
       <ImageContainer>
         {images.map((i, index) => (
           <div key={index} onError={handleImageError}>
-            <Image
-              referrerPolicy='no-referrer'
-              src={i.url}
-              alt='place image'
-              width={125}
-              height={125}
-            />
+            <Image referrerPolicy='no-referrer' src={i.url} alt='place image' />
           </div>
         ))}
       </ImageContainer>
@@ -135,6 +129,9 @@ const ImageContainer = styled.div`
 `;
 
 const Image = styled.img`
+  width: 12.5rem;
+  height: 12.5rem;
+
   &.disabled {
     display: none;
   }
