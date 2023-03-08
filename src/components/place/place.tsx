@@ -2,16 +2,11 @@ import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { PlaceResponse } from "@/types/api/place";
-import { SyntheticEvent } from "react";
+import PlaceImage from "./place-image";
 
 const SHARE_TEXT = "공유";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
-  const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
-    e.currentTarget.onerror = null;
-    e.currentTarget.remove();
-  };
-
   return (
     <Container>
       <TitleIconContainer>
@@ -35,23 +30,20 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
       <ImageContainer>
         {images.length ? (
           images.map((i, index) => (
-            <div key={index} onError={handleImageError}>
-              <Image
-                referrerPolicy='no-referrer'
-                src={i.url}
-                alt='place image'
-              />
-            </div>
+            <PlaceImage
+              lazy
+              key={index}
+              src={i.url}
+              alt='place image'
+              placeholder='https://via.placeholder.com/200'
+            />
           ))
         ) : (
           //TODO : 이미지가 존재하지 않는 경우의 default Image 하나만 보여주기
-          <div onError={handleImageError}>
-            <Image
-              referrerPolicy='no-referrer'
-              src='https://via.placeholder.com/200'
-              alt='place image'
-            />
-          </div>
+          <PlaceImage
+            alt='place image'
+            placeholder='https://via.placeholder.com/200'
+          />
         )}
       </ImageContainer>
     </Container>
@@ -139,14 +131,5 @@ const ImageContainer = styled.div`
     &.disabled {
       display: none;
     }
-  }
-`;
-
-const Image = styled.img`
-  width: 12.5rem;
-  height: 12.5rem;
-
-  &.disabled {
-    display: none;
   }
 `;
