@@ -7,7 +7,6 @@ import { SyntheticEvent } from "react";
 const SHARE_TEXT = "공유";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
-  console.log(images);
   const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.onerror = null;
     e.currentTarget.remove();
@@ -34,11 +33,26 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {images.map((i, index) => (
-          <div key={index} onError={handleImageError}>
-            <Image referrerPolicy='no-referrer' src={i.url} alt='place image' />
+        {images.length ? (
+          images.map((i, index) => (
+            <div key={index} onError={handleImageError}>
+              <Image
+                referrerPolicy='no-referrer'
+                src={i.url}
+                alt='place image'
+              />
+            </div>
+          ))
+        ) : (
+          //TODO : 이미지가 존재하지 않는 경우의 default Image 하나만 보여주기
+          <div onError={handleImageError}>
+            <Image
+              referrerPolicy='no-referrer'
+              src='https://via.placeholder.com/200'
+              alt='place image'
+            />
           </div>
-        ))}
+        )}
       </ImageContainer>
     </Container>
   );
