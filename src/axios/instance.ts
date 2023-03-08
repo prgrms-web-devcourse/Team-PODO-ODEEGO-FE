@@ -33,7 +33,7 @@ const getRefreshToken = async () => {
       `REFRESH_URL`
     );
 
-    localStorage.setItem("token", accessToken);
+    setLocalStorage("token", accessToken);
 
     if (refreshToken !== null) {
       setLocalStorage("refreshToken", refreshToken);
