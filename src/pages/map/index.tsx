@@ -50,7 +50,9 @@ const MapPage = () => {
         </Stack>
       </Container>
       <Map ref={mapContainerRef} id='mapContainerRef' />
-      <PlacesButton />
+      <PlacesButton
+        stationName={midPointResponses[currentMidway].stationName}
+      />
     </Wrapper>
   );
 };

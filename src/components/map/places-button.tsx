@@ -4,9 +4,17 @@ import styled from "@emotion/styled";
 import { Menu } from "@mui/icons-material";
 import Link from "next/link";
 
-const PlacesButton = () => {
+interface PlacesButtonProps {
+  stationName: string;
+}
+
+const PlacesButton = ({ stationName }: PlacesButtonProps) => {
   return (
-    <StyledLink href='/place'>
+    <StyledLink
+      href={{
+        pathname: "/place",
+        query: { stationName },
+      }}>
       <Menu sx={{ color: COLORS.mainGreen, fontSize: "2.2rem" }} />
       주변 장소 목록
     </StyledLink>
