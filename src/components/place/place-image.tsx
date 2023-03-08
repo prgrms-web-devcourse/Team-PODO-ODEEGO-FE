@@ -1,4 +1,4 @@
-import useLazyLoadImage from "@/hooks/use-lazyload-image";
+import { useLazyLoadImage } from "@/hooks";
 import styled from "@emotion/styled";
 import { SyntheticEvent } from "react";
 
