@@ -54,7 +54,7 @@ const SignupInput = ({
       {/*  태스트용*/}
       {/*  pull error*/}
       <TextField
-        value={values.station || ""}
+        value={values.defaultStationName || ""}
         // value={station}
         style={{
           width: "100%",
@@ -69,8 +69,10 @@ const SignupInput = ({
             </InputAdornment>
           ),
         }}
-        name='station'
-        // name='address'
+        // defaultStationName
+        // name='station'
+        name='defaultStationName'
+        // '
         type='text'
         onChange={handleValue}
         onKeyDown={handleStationKeyDown}

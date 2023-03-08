@@ -8,7 +8,7 @@ export const PlaceAPI = {
     category: string | undefined
   ) => {
     const response = await axios.get(
-      `http://52.78.224.123:8080/api/v1/places?station-name=${stationName}&address=${address}&category=${category}`
+      `https://52.78.224.123:8080/api/v1/places?station-name=${stationName}&address=${address}&category=${category}`
     );
 
     return response.data.places;

@@ -5,7 +5,7 @@ export const tokenRecoilState = atom<string>({
   default: "9994",
 });
 
-export const testState2 = atom<unknown>({
-  key: "test2",
+export const tokenState = atom<unknown>({
+  key: "tokenState",
   default: "",
 });

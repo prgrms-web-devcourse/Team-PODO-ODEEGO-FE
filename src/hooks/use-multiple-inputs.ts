@@ -31,25 +31,14 @@ const useMultipleInputs = () => {
   const addInput = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setInputs((prev) => [...prev, { stationName: "" }]);
+    setAddressList((prev) => [...prev, { stationName: "", lat: 0, lng: 0 }]);
   };
 
   const removeInput = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     e.stopPropagation();
 
-    if (index === 0 || index === 1) {
-      if (!inputs[index] || inputs[index].stationName === "") return;
-      setAddressList((prev) =>
-        prev.map((address, i) =>
-          i === index ? { ...address, stationName: "" } : address
-        )
-      );
-      setInputs((prev) =>
-        prev.map((input, i) => (i === index ? { stationName: "" } : input))
-      );
-    } else {
-      setAddressList((prev) => prev.filter((_, i) => i != index));
-      setInputs((prev) => prev.filter((_, i) => i !== index));
-    }
+    setAddressList((prev) => prev.filter((_, i) => i != index));
+    setInputs((prev) => prev.filter((_, i) => i !== index));
   };
 
   return { inputs, addInput, removeInput };

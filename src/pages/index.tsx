@@ -9,29 +9,31 @@ import {
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
-import useMultipleInputs from "@/hooks/use-multiple-inputs";
 import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { searchState } from "@/recoil/search-state";
 import { MidPointApi } from "@/axios/mid-point";
-import { COLORS } from "@/constants/css";
-import FormInput from "@/components/home/form-input";
-import useTimeoutFn from "@/hooks/use-timeout-fn";
-import { accessTokenState } from "@/recoil/acess-token-state";
 import { GroupsApi } from "@/axios/groups";
-import HomeButton from "@/components/home/home-button";
-import useModal from "@/hooks/use-modal";
-import { MidPointState } from "@/recoil/midpoint-state";
-import SelectModal from "@/components/home/modal/select-modal";
-import LoginConfirmModal from "@/components/home/modal/login-modal";
-import { ERROR_TEXT } from "@/constants/error";
-import { STATUS_CODE } from "@/constants/status";
-import { ROUTES } from "@/constants/routes";
-import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
-import { getLocalStorage, setLocalStorage } from "@/utils/storage";
-import { COUNT } from "@/constants/local-storage";
-import Header from "@/components/layout/header";
 import { TestApi } from "@/axios/test";
+import { getLocalStorage, setLocalStorage } from "@/utils/storage";
+import { validateAddressListUnderTwoLength } from "@/utils/error";
+import Header from "@/components/layout/header";
+import {
+  FormInput,
+  HomeButton,
+  LoginConfirmModal,
+  SelectModal,
+  ValidGroupModal,
+} from "@/components/home";
+import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
+import {
+  accessTokenState,
+  GroupState,
+  isFirstVisitState,
+  MidPointState,
+  searchState,
+} from "@/recoil";
+import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
+import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -43,17 +45,9 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const {
-  ERROR_DUPLICATE_START_POINT,
-  ERROR_MISSING_START_POINT,
-  ERROR_OUT_OF_BOUND,
-  ERROR_ALREADY_EXIST_GROUP,
-  ERROR_UNSELECT_PEOPLE_COUNT,
-} = ERROR_TEXT;
+const { ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
 
-const { ERROR_400 } = STATUS_CODE;
-
-const { SEARCH, LOGIN, MAP, GROUP } = ROUTES;
+const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +59,10 @@ export default function Home() {
   const { inputs, addInput, removeInput } = useMultipleInputs();
   const router = useRouter();
   const { openModal } = useModal();
+  const setIsFirstVisit = useSetRecoilState(isFirstVisitState);
+  const setGroupIdState = useSetRecoilState(GroupState);
 
+  //methods & modal config
   const loginModalConfig = {
     children: <LoginConfirmModal />,
     btnText: {
@@ -77,37 +74,73 @@ export default function Home() {
     },
   };
 
-  const selectModalConfig = {
-    children: <SelectModal />,
+  const getSelectModalConfig = (isValid: boolean, groupId = "") => ({
+    children: <SelectModal isValid={isValid} />,
     btnText: {
       confirm: MAKE_A_GROUP_TEXT,
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      const count = getLocalStorage(COUNT, "");
-      if (count === "") {
-        toast.error(ERROR_UNSELECT_PEOPLE_COUNT);
-        return;
-      }
-
       //모임 생성 Test API
       // - 현재 약속방을 삭제하는 기능이 없음
       // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
-      const data = await GroupsApi.postCreateGroup(
-        parseInt(token),
-        parseInt(count, 10)
-      );
-      setLocalStorage(COUNT, "");
+      const gId = groupId;
+      try {
+        const count = getLocalStorage(COUNT);
+        if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
-      if (data.status === ERROR_400) {
-        toast.error(ERROR_ALREADY_EXIST_GROUP);
-        return;
+        //만료된 방이 있다면, 방 삭제 후, 방 만들기
+        if (!isValid && gId) {
+          await GroupsApi.deleteGroup(gId, token);
+        }
+
+        const data = await GroupsApi.postCreateGroup(token, count);
+        setLocalStorage(COUNT, "");
+
+        const { groupId } = data;
+        setIsFirstVisit(true);
+        setGroupIdState(groupId);
+        router.push(`${GROUP}/${groupId}`);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
       }
-
-      const { groupId } = data;
-      console.log(`go to the group page : /group/${groupId}`);
-      router.push(`${GROUP}/${groupId}`);
     },
+  });
+
+  const getValidGroupModalConfig = (minutes: number, seconds: number) => ({
+    children: <ValidGroupModal minutes={minutes} seconds={seconds} />,
+    btnText: {
+      confirm: "모임방 가기",
+    },
+    handleConfirm: async () => {
+      try {
+        const { groupId, minutes, seconds } =
+          await getMinutesSecondsAndGroupIdFromGroupAPI(token);
+
+        minutes === 0 && seconds === 0
+          ? router.push(`${HOME}`)
+          : router.push(`${GROUP}/${groupId}`);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
+      }
+    },
+  });
+
+  const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
+    const { groups } = await GroupsApi.getAll(token);
+    const { groupId, remainingTime } = groups[0];
+
+    const times = remainingTime.split(":");
+    const minutes = Number(times[1]);
+    const seconds = Math.floor(Number(times[2]));
+
+    return {
+      groupId,
+      minutes,
+      seconds,
+    };
   };
 
   useEffect(() => {
@@ -115,16 +148,21 @@ export default function Home() {
       if (!hasAccessToken) return "";
 
       //TODO 실제 모임조회 api로 바꾸기
-      const data = await GroupsApi.getAll(token);
-      const groupId = data?.groups?.[0]?.groupId || "";
+      try {
+        const data = await GroupsApi.getAll(token);
+        const groupId = data?.groups?.[0]?.groupId || "";
 
-      setGroupId(groupId);
-      // setGroupId("");
-      setLocalStorage(COUNT, "");
+        setGroupId(groupId);
+        setGroupIdState(groupId);
+        setLocalStorage(COUNT, "");
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        toast.error(errorMessage);
+      }
     };
 
     initGroupId();
-  }, [hasAccessToken, setGroupId, token]);
+  }, [hasAccessToken, setGroupId, setGroupIdState, token]);
 
   //tmp 더미 회원 생성 메서드
   const createTmpDummyUser = async () => {
@@ -139,57 +177,62 @@ export default function Home() {
     }
   };
 
+  //event handler
   const handleInputClickRoute = (index: number) => {
     router.push(`${SEARCH}?id=${index}`);
   };
 
   const handleButtonClickGroups = async () => {
+    // * 유효시간 모달 체크 코드
+    // openModal(getValidGroupModalConfig(1, 0));
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
+
       return;
     }
-    if (groupId) {
-      console.log(`go to the group page : /group/${groupId}`);
-      router.push(`${GROUP}/${groupId}`);
+    if (!groupId) {
+      openModal(getSelectModalConfig(true));
       return;
     }
 
-    setIsLoading(true);
-    openModal(selectModalConfig);
-    setIsLoading(false);
+    try {
+      const { minutes, seconds } =
+        await getMinutesSecondsAndGroupIdFromGroupAPI(token);
+
+      if (minutes === 0 || seconds === 0) {
+        openModal(getSelectModalConfig(false, groupId));
+      } else {
+        openModal(getValidGroupModalConfig(minutes, seconds));
+      }
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      toast.error(errorMessage);
+    }
   };
 
   const handleButtonClickMiddlePointSubmit = async () => {
     if (isLoading) return;
 
     const notEmptyAddressList = addressList.filter((a) => a.stationName !== "");
-    if (notEmptyAddressList.length < 2) {
-      toast.error(ERROR_MISSING_START_POINT);
-      setIsLoading(false);
-      return;
-    }
 
     setIsLoading(true);
+    try {
+      const errorMessage =
+        validateAddressListUnderTwoLength(notEmptyAddressList);
+      if (errorMessage) throw new Error(errorMessage);
 
-    const data = await MidPointApi.postMidPoint(notEmptyAddressList);
-    await (() => new Promise((r) => setTimeout(r, 3000)))();
+      const data = await MidPointApi.postMidPoint(notEmptyAddressList);
 
-    setIsLoading(false);
-
-    if (data.status === ERROR_400) {
-      toast.error(ERROR_OUT_OF_BOUND);
-    } else if (data.start.length < 2) {
-      toast.error(ERROR_DUPLICATE_START_POINT);
-    } else {
-      //TODO
-      // - 지우기
-      console.log(data);
+      setAddressList(notEmptyAddressList);
       setMidPointResponse(data);
       router.push(`${MAP}`);
-    }
+    } catch (e) {
+      setIsLoading(false);
 
-    setAddressList(notEmptyAddressList);
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      toast.error(errorMessage);
+    }
   };
 
   const { run: debounceMidPoint } = useTimeoutFn({

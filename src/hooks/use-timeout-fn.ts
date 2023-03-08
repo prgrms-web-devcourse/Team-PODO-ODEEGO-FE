@@ -5,6 +5,7 @@ interface Props {
   ms: number;
 }
 
+// test
 const useTimeoutFn = ({ fn, ms }: Props) => {
   const timeoutId = useRef(0);
   const callback = useRef(fn);
