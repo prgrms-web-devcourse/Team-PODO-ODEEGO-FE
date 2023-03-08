@@ -22,7 +22,6 @@ export const MidPointApi = {
         stationName: s.stationName,
         lat: s.lat,
         lng: s.lng,
-        address: s.address,
       }));
 
       result.midPointResponses = data.midPointResponses.map(
