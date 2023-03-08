@@ -13,8 +13,6 @@ const Kakao = () => {
 
   const [token, setToken] = useState("");
 
-  // const [token, setToken] = useRecoilState(accessTokenState);
-
   useEffect(() => {
     try {
       // 새로고침시 500에러나옴
@@ -31,8 +29,6 @@ const Kakao = () => {
           });
 
           const resultKakao = await responseKakao.json();
-
-          // const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
           // 새로고침 임시 방편 코드
           if (window.performance) {

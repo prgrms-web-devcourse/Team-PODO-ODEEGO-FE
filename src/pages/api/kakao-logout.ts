@@ -8,7 +8,7 @@ async function getTokenFromKakao(logoutToken: string) {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `${logoutToken}`,
+        Authorization: `Bearer ${logoutToken}`,
       },
     }).then((res) => res.json());
 
