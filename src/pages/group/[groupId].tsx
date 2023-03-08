@@ -91,7 +91,7 @@ const GroupPage = () => {
 
   const linkModalContent = useCallback(() => {
     const handleCopy = async () => {
-      await navigator.clipboard.writeText(`/search?groupdId=${groupId}`);
+      await navigator.clipboard.writeText(`/search?groupId=${groupId}`);
     };
 
     return (
