@@ -83,7 +83,6 @@ const SearchInput = () => {
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
-    if (id === undefined || id === null) return;
     const startPoint = {
       groupId: groupId,
       memberId: memberId,
@@ -94,6 +93,8 @@ const SearchInput = () => {
 
     // 한 명이 모든 출발지를 입력할 때.
     if (!groupId) {
+      if (id === undefined || id === null) return;
+
       setRecoilData((prev: searchProps[]) => [
         ...prev.slice(0, +id),
         {
@@ -113,7 +114,7 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", value], // key가 충분히 unique 한가?
     () => {
-      console.log("serach input is changed");
+      console.log("search input is changed");
       return SearchAPI.getSubway(value);
     },
     {

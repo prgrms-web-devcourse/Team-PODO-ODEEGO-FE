@@ -1,6 +1,7 @@
 // import axios from "axios";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
+import { CustomError } from "@/constants/custom-error";
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,32 +31,10 @@ export default async function handler(
     if (axios.isAxiosError(e)) {
       const errorCode = e.response?.data.errorCode;
 
-      if (errorCode === "M001") {
-        res.status(400).json({
-          error: "Member Not Found.",
-          status: 404,
-        });
-      } else if (errorCode === "G001") {
-        res.status(404).json({
-          error: "Group Not Found.",
-          status: 404,
-        });
-      } else if (errorCode === "G004") {
-        res.status(400).json({
-          error: "Group host is absent.",
-          status: 400,
-        });
-      } else if (errorCode === "G006") {
-        res.status(400).json({
-          error: "Group Member's station is already defined.",
-          status: 400,
-        });
-      } else if (errorCode === "S001") {
-        res.status(404).json({
-          error: "Station Not Found.",
-          status: 404,
-        });
-      }
+      res.status(CustomError[errorCode].status).json({
+        error: CustomError[errorCode].message,
+        status: CustomError[errorCode].status,
+      });
     } else {
       res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }
