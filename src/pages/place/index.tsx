@@ -7,12 +7,37 @@ import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
 import { useQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
-import { CircularProgress } from "@mui/material";
+import axios from "axios";
+import { PlaceResponse } from "@/types/api/place";
 
-const PlacePage = () => {
+export const getServerSideProps = async ({
+  query: { stationName },
+}: {
+  query: { stationName: string };
+}) => {
+  try {
+    const { data } = await axios.get(
+      `http://52.78.224.123:8080/api/v1/places?station-name=${stationName}`
+    );
+    return {
+      props: {
+        places: data,
+      },
+    };
+  } catch (e) {
+    //임시 처리
+    console.error(e);
+  }
+};
+
+interface PageProps {
+  places: { places: PlaceResponse[] };
+}
+
+const PlacePage = ({ places }: PageProps) => {
   const getTabData = useRecoilValue(tabState);
 
-  const { data, isLoading } = useQuery(
+  const { data } = useQuery(
     ["place", getTabData],
     () => PlaceApi.getPlaces("강남역", getTabData),
     {
@@ -27,20 +52,7 @@ const PlacePage = () => {
         <PlaceTabList />
       </Header>
       <BorderContainer />
-      {isLoading ? (
-        <CircularProgress
-          color='warning'
-          size={48}
-          sx={{
-            position: "absolute",
-            top: "150%",
-            right: "45%",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-      ) : (
-        <PlaceList placeList={data?.places} />
-      )}
+      <PlaceList placeList={data?.places || places.places} />
     </PlaceContainer>
   );
 };
