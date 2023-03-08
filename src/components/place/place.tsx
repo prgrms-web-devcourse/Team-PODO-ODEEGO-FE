@@ -2,11 +2,17 @@ import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { PlaceResponse } from "@/types/api/place";
+import { SyntheticEvent } from "react";
 
 const SHARE_TEXT = "공유";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
-  console.log(businessName, address, images);
+  console.log(images);
+  const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
+    e.currentTarget.onerror = null;
+    e.currentTarget.remove();
+  };
+
   return (
     <Container>
       <TitleIconContainer>
@@ -29,14 +35,14 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
       </TitleIconContainer>
       <ImageContainer>
         {images.map((i, index) => (
-          <div key={index}>
-            {/* <Image
+          <div key={index} onError={handleImageError}>
+            <Image
+              referrerPolicy='no-referrer'
               src={i.url}
               alt='place image'
               width={125}
               height={125}
-              priority
-            /> */}
+            />
           </div>
         ))}
       </ImageContainer>
@@ -121,5 +127,15 @@ const ImageContainer = styled.div`
     overflow: hidden;
     border-radius: 1rem;
     margin-right: 0.6rem;
+
+    &.disabled {
+      display: none;
+    }
+  }
+`;
+
+const Image = styled.img`
+  &.disabled {
+    display: none;
   }
 `;

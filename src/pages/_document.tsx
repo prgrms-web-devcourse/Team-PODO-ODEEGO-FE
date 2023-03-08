@@ -7,6 +7,7 @@ export default function Document() {
           http-equiv='Content-Security-Policy'
           content='upgrade-insecure-requests'
         />
+        <meta name='referrer' content='no-referrer' />
       </Head>
       <body>
         <Main />
