@@ -99,8 +99,21 @@ const SearchInput = () => {
     }
   );
 
+  let timer: any = null;
   const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
+
+    // 임시 debounce 적용
+    if (timer !== null) {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        setValue(value);
+      }, 500);
+    } else {
+      timer = window.setTimeout(() => {
+        setValue(value);
+      }, 500);
+    }
 
     if (!resultSubway || resultSubway.length === 0) {
       setErrorMessage("검색 결과가 없습니다");
@@ -108,7 +121,7 @@ const SearchInput = () => {
       setErrorMessage("");
     }
 
-    setValue(value);
+    // setValue(value);
   };
 
   const setStartPointModalContent = (startPoint: string) => {
