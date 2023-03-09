@@ -15,8 +15,8 @@ const PlacesButton = ({ stationName }: PlacesButtonProps) => {
         pathname: "/place",
         query: { stationName },
       }}>
-      <Menu sx={{ color: COLORS.mainGreen, fontSize: "2.2rem" }} />
-      주변 장소 목록
+      <Menu sx={{ color: COLORS.mainGreen, fontSize: "2rem" }} />
+      <span>주변 장소 목록</span>
     </StyledLink>
   );
 };
@@ -25,7 +25,8 @@ export default PlacesButton;
 
 const StyledLink = styled(Link)`
   display: flex;
-  align-items: flex-end;
+  gap: 0.3rem;
+  align-items: center;
   position: fixed;
   left: 50%;
   bottom: 10%;
@@ -38,4 +39,10 @@ const StyledLink = styled(Link)`
   box-sizing: border-box;
   background-color: ${COLORS.backgroundSecondary};
   box-shadow: ${SHADOWS.backdropNeutralStrong};
+  font-size: 1.2rem;
+
+  > span {
+    display: inline-block;
+    height: 1.2rem;
+  }
 `;

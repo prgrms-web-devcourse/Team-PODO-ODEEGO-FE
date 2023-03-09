@@ -29,7 +29,7 @@ export default async function handler(
   } catch (e) {
     if (axios.isAxiosError(e)) {
       const { response } = e;
-
+      console.log(e);
       if (response && response.data && response.data.errorCode === "M001") {
         res
           .status(404)

@@ -1,4 +1,4 @@
-import { COLORS, SHADOWS } from "@/constants/css";
+import { COLORS, SHADOWS, SUBWAY } from "@/constants/css";
 import styled from "@emotion/styled";
 import { DirectionsSubwayFilledOutlined } from "@mui/icons-material";
 
@@ -7,6 +7,7 @@ interface MidPointButtonProps {
   isCurrent: boolean;
   onClick(id: string): void;
   id: string;
+  line: keyof typeof SUBWAY;
 }
 
 const MidPointButton = ({
@@ -14,6 +15,7 @@ const MidPointButton = ({
   stationName,
   isCurrent,
   id,
+  line,
 }: MidPointButtonProps) => {
   const handleClick = () => {
     onClick(id);
@@ -21,7 +23,10 @@ const MidPointButton = ({
 
   return (
     <Button onClick={handleClick}>
-      <DirectionsSubwayFilledOutlined fontSize='large' />
+      <DirectionsSubwayFilledOutlined
+        fontSize='large'
+        sx={{ color: SUBWAY[line] }}
+      />
       <span
         style={{
           color: isCurrent ? COLORS.textPrimary : COLORS.textSecondary,
