@@ -4,8 +4,6 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import { PlaceResponse } from "@/types/api/place";
 import PlaceImage from "./place-image";
 
-const SHARE_TEXT = "공유";
-
 const Place = ({ businessName, address, images }: PlaceResponse) => {
   console.log(images);
   return (
@@ -16,36 +14,25 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <div>
-            <IosShareIcon
-              sx={{
-                display: "block",
-                height: "2.1rem",
-                width: "2.1rem",
-              }}
-            />
-            <p>{SHARE_TEXT}</p>
-          </div>
+          <IosShareIcon
+            sx={{
+              display: "block",
+              height: "2.5rem",
+              width: "2.5rem",
+            }}
+          />
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {images.length ? (
-          images.map((i, index) => (
-            <PlaceImage
-              lazy
-              key={index}
-              src={i.url}
-              alt='place image'
-              placeholder='https://via.placeholder.com/200'
-            />
-          ))
-        ) : (
-          //TODO : 이미지가 존재하지 않는 경우의 default Image 하나만 보여주기
+        {images.map((i, index) => (
           <PlaceImage
+            lazy
+            key={index}
+            src={i.url}
             alt='place image'
-            placeholder='https://via.placeholder.com/200'
+            placeholder='https://via.placeholder.com/200x200'
           />
-        )}
+        ))}
       </ImageContainer>
     </Container>
   );
@@ -62,7 +49,7 @@ const Container = styled.li`
 
 const TitleIconContainer = styled.div`
   display: flex;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
   justify-content: space-between;
 `;
 
@@ -86,23 +73,8 @@ const TitleContainer = styled.div`
 const IconsContainer = styled.div`
   display: flex;
   font-size: 0.8rem;
-
-  & div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  & div:not(:last-of-type) {
-    margin-right: 1.5rem;
-  }
-
-  & p {
-    display: inline-block;
-    margin-top: 0.3rem;
-    opacity: 0.7;
-  }
+  justify-content: center;
+  align-items: center;
 `;
 
 const ImageContainer = styled.div`
