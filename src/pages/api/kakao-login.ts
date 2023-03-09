@@ -7,6 +7,8 @@ async function getTokenFromKakao(authCode: string) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     }).then((res) => res.json());
+
+    console.log(response);
     return response;
   } catch (err) {
     throw new Error((err as Error).message);

@@ -1,7 +1,6 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import Image from "next/image";
-
 const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { ROUTES } from "@/constants/routes";
@@ -17,7 +16,6 @@ interface TokenProps {
 
 const Header = ({ token }: TokenProps) => {
   const router = useRouter();
-
   const { pathname } = router;
 
   const [tokenData, setToken] = useState<string>("");
@@ -33,10 +31,8 @@ const Header = ({ token }: TokenProps) => {
       case "/signin":
         router.push(`${ROUTES.HOME}`);
         break;
-
       case "/kakao":
         const token = getLocalStorage("logoutToken");
-
         try {
           await fetch(`/api/kakao-logout`, {
             method: "POST",
@@ -58,7 +54,6 @@ const Header = ({ token }: TokenProps) => {
   const handleLogout = async () => {
     // const token = getLocalStorage("token");
     const logoutToken = getLocalStorage("logoutToken");
-
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
       await fetch(kakaoLogoutUrl, {
@@ -73,12 +68,10 @@ const Header = ({ token }: TokenProps) => {
 
       const odeegoLogoutUrl = `/api/odeego-leave`;
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
-
       setToken("");
       removeLocalStorage("token");
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
-
       // return response;
       return response;
     } catch (err) {

@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
-import Header from "@/components/layout/header";
+
 import { setLocalStorage } from "@/utils/storage";
 import { axiosInstanceWitToken } from "@/axios/instance";
+import Header from "@/components/layout/header";
 
 const Kakao = () => {
   const router = useRouter();
@@ -15,7 +16,6 @@ const Kakao = () => {
 
   useEffect(() => {
     try {
-      // 새로고침시 500에러나옴
       const fetchKaokaoUserData = async () => {
         if (authCode) {
           const loginKakao = `/api/kakao-login`;
@@ -40,18 +40,15 @@ const Kakao = () => {
               console.error("The page is reloaded");
             } else {
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
-
               const { data } = await axiosInstanceWitToken.post(
                 loginBackendUrl
               );
-
               setToken(data.accessToken);
               setLocalStorage("token", data.accessToken);
             }
           }
         }
       };
-
       fetchKaokaoUserData();
     } catch (err) {
       throw new Error((err as Error).message);
