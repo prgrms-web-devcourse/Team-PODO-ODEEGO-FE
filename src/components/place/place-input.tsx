@@ -1,8 +1,9 @@
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import React from "react";
-import { COLORS, ROUTES } from "@/constants/css";
+import { COLORS } from "@/constants/css";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
+import { ROUTES } from "@/constants";
 
 interface PlaceInputProps {
   value: string;
