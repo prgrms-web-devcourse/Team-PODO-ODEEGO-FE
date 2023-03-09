@@ -6,10 +6,21 @@ import HTTP from "./config/axios-instance";
 export const MidPointApi = {
   postMidPoint: async (addressList: searchProps[]) => {
     try {
+      const modifiedAddressList = addressList.map((a) => {
+        const [stationName, line] = a.stationName.split(" ");
+
+        return {
+          stationName,
+          line,
+          lat: a.lat,
+          lng: a.lng,
+        };
+      });
+
       const { data } = await HTTP.post({
         url: "/v1/mid-point/search",
         data: {
-          stations: addressList,
+          stations: modifiedAddressList,
         },
       });
 
