@@ -57,7 +57,6 @@ const useMap = ({
     map.setBounds(bounds);
   }, [map, markerPositions]);
 
-
   const setMidpoint = (coord: Coord, stationName: string) => {
     const nextMarkerPositions = markerPositions.map((pos) => {
       return pos.isMidpoint
