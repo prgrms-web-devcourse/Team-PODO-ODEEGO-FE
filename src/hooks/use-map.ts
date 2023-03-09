@@ -57,6 +57,7 @@ const useMap = ({
     map.setBounds(bounds);
   }, [map, markerPositions]);
 
+
   const setMidpoint = (coord: Coord, stationName: string) => {
     const nextMarkerPositions = markerPositions.map((pos) => {
       return pos.isMidpoint
@@ -87,6 +88,7 @@ const useMap = ({
 
     setMarkers((markers) => {
       markers?.forEach((marker) => marker.setMap(null)); // 기존에 있던 마커 모두 제거
+
       return nextMarkers;
     });
 

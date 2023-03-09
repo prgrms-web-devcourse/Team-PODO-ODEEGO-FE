@@ -5,7 +5,7 @@ import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
 import { COLORS } from "@/constants";
 import { useModal } from "@/hooks";
-import { GroupState, isFirstVisitState, MidPointState } from "@/recoil";
+import { isFirstVisitState, MidPointState } from "@/recoil";
 import { tokenRecoilState } from "@/recoil/token-recoil";
 import { searchProps } from "@/types/search-props";
 import styled from "@emotion/styled";
@@ -40,8 +40,17 @@ const GroupPage = () => {
   const setMidpointResponse = useSetRecoilState(MidPointState);
   const { openModal } = useModal();
   const token = useRecoilValue(tokenRecoilState);
-  const [groupId, setGroupId] = useRecoilState(GroupState);
-  const { data, isLoading, isError, isFetching } = useGroup(groupId, token);
+  const [groupId, setGroupId] = useState<string>("");
+  const { data, isLoading, isError, isFetching, refetch } = useGroup(
+    groupId,
+    token
+  );
+
+  useEffect(() => {
+    if (router.isReady) {
+      setGroupId(router.query.groupId as string);
+    }
+  }, [router, setGroupId]);
 
   const getInputsByParticipant = useCallback(() => {
     if (!data) return;
@@ -91,7 +100,7 @@ const GroupPage = () => {
 
   const linkModalContent = useCallback(() => {
     const handleCopy = async () => {
-      await navigator.clipboard.writeText(`/search?groupdId=${groupId}`);
+      await navigator.clipboard.writeText(`/search?groupId=${groupId}`);
     };
 
     return (
@@ -125,7 +134,7 @@ const GroupPage = () => {
 
   const handleRefresh = async () => {
     setIsSubmitting(true);
-    await GroupsApi.getGroup(groupId, token);
+    await refetch();
     getInputsByParticipant();
     setIsSubmitting(false);
   };
