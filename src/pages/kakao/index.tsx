@@ -7,6 +7,7 @@ import { COLORS } from "@/constants/css";
 import { setLocalStorage } from "@/utils/storage";
 import { axiosInstanceWitToken } from "@/axios/instance";
 import Header from "@/components/layout/header";
+import axios from "axios";
 
 const Kakao = () => {
   const router = useRouter();
@@ -29,10 +30,18 @@ const Kakao = () => {
           });
 
           const resultKakao = await responseKakao.json();
-          setLocalStorage(
-            "logoutToken",
-            resultKakao.tokenResponse.access_token
-          );
+
+          const { tokenResponse } = resultKakao;
+
+          console.log(tokenResponse);
+          const data = await axios.post(`/api/auth/login`, tokenResponse);
+
+          console.log(data);
+
+          // setLocalStorage(
+          //   "logoutToken",
+          //   resultKakao.tokenResponse.access_token
+          // );
 
           // 새로고침 임시 방편 코드
           if (window.performance) {

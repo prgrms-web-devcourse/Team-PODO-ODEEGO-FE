@@ -70,6 +70,7 @@ const Header = ({ token }: TokenProps) => {
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
       setToken("");
       removeLocalStorage("token");
+
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
       // return response;
