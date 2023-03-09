@@ -23,8 +23,9 @@ const PlaceImage = ({
     e.currentTarget.remove();
   };
 
-  const imageUrlLoader = () => {
-    return loaded ? (src ? src : placeholder) : placeholder;
+  const imageUrlLoader = ({ src }: { src: string }) => {
+    //Warn: Image with src has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead
+    return `${src}`;
   };
 
   return (
@@ -40,8 +41,6 @@ const PlaceImage = ({
           height={125}
           priority
           draggable={false}
-          //Warn: Image with src has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
-          unoptimized={true}
           style={{
             borderRadius: "1rem",
             marginRight: "0.6rem",
