@@ -48,6 +48,8 @@ export const GroupsApi = {
   },
   getGroup: async (groupId: string, token: string) => {
     try {
+      if (!groupId) return null;
+
       const { data } = await HTTP.get<GroupDetailResponse>({
         url: `/v1/groups/${groupId}`,
       });
@@ -75,10 +77,15 @@ export const GroupsApi = {
 };
 
 const useGroup = (groupId: string, token: string) => {
-  return useQuery(["group"], () => GroupsApi.getGroup(groupId, token), {
-    refetchOnMount: true,
-    staleTime: 10000,
-  });
+  return useQuery(
+    ["group", groupId],
+    () => GroupsApi.getGroup(groupId, token),
+    {
+      refetchOnMount: true,
+      staleTime: 10000,
+      keepPreviousData: true,
+    }
+  );
 };
 
 export { useGroup };
