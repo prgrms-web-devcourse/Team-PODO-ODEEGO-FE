@@ -75,23 +75,6 @@ const IconsContainer = styled.div`
   font-size: 0.8rem;
   justify-content: center;
   align-items: center;
-
-  /* & div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  & div:not(:last-of-type) {
-    margin-right: 1.5rem;
-  }
-
-  & p {
-    display: inline-block;
-    margin-top: 0.3rem;
-    opacity: 0.7;
-  } */
 `;
 
 const ImageContainer = styled.div`

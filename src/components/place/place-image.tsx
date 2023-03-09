@@ -39,7 +39,7 @@ const PlaceImage = ({
           width={125}
           height={125}
           priority
-          draggable
+          draggable={false}
           //Warn: Image with src has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
           unoptimized={true}
           style={{

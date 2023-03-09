@@ -1,9 +1,8 @@
-import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import React from "react";
-import { COLORS } from "@/constants/css";
+import { COLORS, ROUTES } from "@/constants/css";
 import { useRouter } from "next/router";
-import { ROUTES } from "@/constants";
+import styled from "@emotion/styled";
 
 interface PlaceInputProps {
   value: string;
@@ -14,46 +13,33 @@ const PlaceInput = ({ value }: PlaceInputProps) => {
 
   return (
     <>
-      <TextField
-        sx={{
-          marginTop: "2rem",
-          width: "100%",
-          "& .MuiInputBase-root:before": {
-            borderBottom: "2px solid rgba(90, 178, 125, .5)",
-            borderBottomStyle: "solid !important",
-          },
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-          },
-        }}
-        variant='standard'
-        inputProps={{
-          style: {
-            fontSize: "1.7rem",
-            border: 0,
-            color: "black",
-            padding: "1.5rem .5rem",
-          },
-        }}
-        disabled
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <KeyboardBackspaceIcon
-                sx={{
-                  color: `${COLORS.mainGreen}`,
-                  fontSize: "20px",
-                  cursor: "pointer",
-                }}
-                onClick={() => router.replace(`${ROUTES.MAP}`)}
-              />
-            </InputAdornment>
-          ),
-        }}
-        value={value}
-        type='text'
-      />
+      <HeaderContainer>
+        <KeyboardBackspaceIcon
+          sx={{
+            color: `${COLORS.mainGreen}`,
+            fontSize: "20px",
+            cursor: "pointer",
+            left: "2rem",
+            top: "1.3rem",
+          }}
+          onClick={() => router.replace(`${ROUTES.MAP}`)}
+        />
+        <span>{value}</span>
+      </HeaderContainer>
     </>
   );
 };
 export default PlaceInput;
+
+const HeaderContainer = styled.div`
+  border-bottom: 2px solid rgba(90, 178, 125, 0.5);
+  border-bottom-style: solid !important;
+  font-size: 1.7rem;
+  color: black;
+  padding: 1.3rem 0.5rem;
+  position: relative;
+
+  & span {
+    margin-left: 1rem;
+  }
+`;
