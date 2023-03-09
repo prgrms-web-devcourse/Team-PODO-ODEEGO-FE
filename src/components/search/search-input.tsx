@@ -80,6 +80,7 @@ const SearchInput = () => {
       lng: +val.x,
     };
 
+    console.log(groupId);
     // 한 명이 모든 출발지를 입력할 때.
     if (!groupId) {
       if (id === undefined || id === null) return;
@@ -92,6 +93,7 @@ const SearchInput = () => {
 
       return router.push("/");
     }
+
     handleStartPointModal(startPoint);
   };
 
