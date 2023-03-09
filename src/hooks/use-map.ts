@@ -59,15 +59,14 @@ const useMap = ({
 
   const setMidpoint = (coord: Coord, stationName: string) => {
     const nextMarkerPositions = markerPositions.map((pos) => {
-      if (pos.isMidpoint) {
-        return {
-          stationName,
-          lat: coord.lat,
-          lng: coord.lng,
-          isMidpoint: true,
-        };
-      }
-      return pos;
+      return pos.isMidpoint
+        ? {
+            stationName,
+            lat: coord.lat,
+            lng: coord.lng,
+            isMidpoint: true,
+          }
+        : pos;
     });
     setMarkerPositions(nextMarkerPositions);
   };
@@ -77,18 +76,12 @@ const useMap = ({
 
     // markerPositions가 바뀌면 새로운 카카오 마커 생성
     const nextMarkers = markerPositions.map((pos) => {
-      if (pos.isMidpoint) {
-        return new kakao.maps.CustomOverlay({
-          map: map,
-          position: new kakao.maps.LatLng(pos.lat, pos.lng),
-          content: Station(pos.stationName),
-        });
-      }
+      const content = pos.isMidpoint ? Station(pos.stationName) : Avatar();
 
       return new kakao.maps.CustomOverlay({
         map: map,
         position: new kakao.maps.LatLng(pos.lat, pos.lng),
-        content: Avatar(),
+        content,
       });
     });
 
