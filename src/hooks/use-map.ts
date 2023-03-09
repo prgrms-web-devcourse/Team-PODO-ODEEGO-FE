@@ -81,8 +81,8 @@ const useMap = ({
         })
     );
 
-    setMarkers((markers) => {
-      markers?.forEach((marker) => marker.setMap(null)); // 기존에 있던 마커 모두 제거
+    setMarkers((prevMarkers) => {
+      prevMarkers?.forEach((marker) => marker.setMap(null)); // 기존에 있던 마커 모두 제거
       return nextMarkers;
     });
 
