@@ -19,7 +19,7 @@ const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
-  const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
+  const [accessToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
   const router = useRouter();
 
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
@@ -55,7 +55,7 @@ const SearchInput = () => {
   }, [closeModal, groupId, handleConfirmEnterSearchPage, host]);
 
   // 링크를 공유 받았을 때.
-  if (groupId && !testToken) {
+  if (groupId && !accessToken) {
     openModal({
       children: <SetLoginModalContent />,
       btnText: {
@@ -71,7 +71,7 @@ const SearchInput = () => {
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
-    if (id === undefined || id === null) return;
+    // if (id === undefined || id === null) return;
     handleStartPointModal(val);
   };
 
