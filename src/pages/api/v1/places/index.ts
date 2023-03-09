@@ -10,10 +10,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { stationName, category } = req.query;
+  const { stationName, category, page, size } = req.query;
   const requestUrl = `${API_END_POINT}/api/v1/places?station-name=${stationName}${
     category ? `&category=${category}` : ""
-  }`;
+  }&page=${page}${size ? `&size=${size}` : ""}`;
   console.log(
     `API routes(/api/v1/places?station-name=&category=): ${requestUrl}`
   );

@@ -17,7 +17,7 @@ export const getServerSideProps = async ({
 }) => {
   try {
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}`
+      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=0&size=4`
     );
 
     return {
@@ -38,15 +38,32 @@ interface PageProps {
 }
 
 const PlacePage = ({ stationName, places }: PageProps) => {
-  const getTabData = useRecoilValue(tabState);
+  const tabValue = useRecoilValue(tabState);
 
   const { data } = useQuery(
-    ["place", getTabData],
-    () => PlaceApi.getPlaces(stationName, getTabData),
+    ["place", tabValue],
+    () => PlaceApi.getPlaces(stationName, tabValue, 0, 4),
     {
       keepPreviousData: true,
     }
   );
+
+  // const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
+  //   useInfiniteQuery(
+  //     ["place", tabValue],
+  //     ({ pageParam = 0 }) =>
+  //       PlaceApi.getPlaces(stationName, tabValue, pageParam, 4),
+  //     {
+  //       // keepPreviousData: true,
+  //       getNextPageParam: (lastPage, allPages) => {
+  //         // console.log('getNextPageParam:', lastPage, allPages);
+  //         const nextPage = allPages.length + 1;
+  //         return lastPage.currentPage < lastPage.totalPage
+  //           ? nextPage
+  //           : undefined;
+  //       },
+  //     }
+  //   );
 
   return (
     <PlaceContainer>
