@@ -4,8 +4,6 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import { PlaceResponse } from "@/types/api/place";
 import PlaceImage from "./place-image";
 
-const SHARE_TEXT = "공유";
-
 const Place = ({ businessName, address, images }: PlaceResponse) => {
   console.log(images);
   return (
@@ -16,16 +14,13 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <div>
-            <IosShareIcon
-              sx={{
-                display: "block",
-                height: "2.1rem",
-                width: "2.1rem",
-              }}
-            />
-            <p>{SHARE_TEXT}</p>
-          </div>
+          <IosShareIcon
+            sx={{
+              display: "block",
+              height: "2.5rem",
+              width: "2.5rem",
+            }}
+          />
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
@@ -54,7 +49,7 @@ const Container = styled.li`
 
 const TitleIconContainer = styled.div`
   display: flex;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
   justify-content: space-between;
 `;
 
@@ -78,8 +73,10 @@ const TitleContainer = styled.div`
 const IconsContainer = styled.div`
   display: flex;
   font-size: 0.8rem;
+  justify-content: center;
+  align-items: center;
 
-  & div {
+  /* & div {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -94,7 +91,7 @@ const IconsContainer = styled.div`
     display: inline-block;
     margin-top: 0.3rem;
     opacity: 0.7;
-  }
+  } */
 `;
 
 const ImageContainer = styled.div`
