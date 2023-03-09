@@ -13,7 +13,7 @@ const MapPage = () => {
   const [currentMidway, setCurrentMidway] = useState(0);
   const mapContainerRef = useRef(null);
   const { start, midPointResponses } = useRecoilValue(MidPointState);
-  const { map, setBoundToMidpoint } = useMap({
+  const { map, setMidpoint } = useMap({
     mapContainerRef,
     initialCenter: {
       lat: midPointResponses[0]?.lat,
@@ -24,9 +24,10 @@ const MapPage = () => {
 
   const handleNavigate = (id: string) => {
     const midpoint = midPointResponses.find((data) => data.id === id);
-    if (!midpoint) return;
-    if (!map) return;
-    setBoundToMidpoint({ lat: midpoint.lat, lng: midpoint.lng }, map);
+    if (!midpoint || !map) return;
+    if (midPointResponses.indexOf(midpoint) === currentMidway) return;
+
+    setMidpoint({ lat: midpoint.lat, lng: midpoint.lng });
     setCurrentMidway(midPointResponses.indexOf(midpoint));
   };
 
