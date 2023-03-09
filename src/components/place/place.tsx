@@ -35,7 +35,7 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
             key={index}
             src={i.url}
             alt='place image'
-            placeholder='https://via.placeholder.com/200'
+            placeholder='https://via.placeholder.com/200x200'
           />
         ))}
       </ImageContainer>
