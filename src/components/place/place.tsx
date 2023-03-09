@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { PlaceResponse } from "@/types/api/place";
 import PlaceImage from "./place-image";
+import { IconButton } from "@mui/material";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
   console.log(images);
@@ -14,13 +15,16 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <IosShareIcon
-            sx={{
-              display: "block",
-              height: "2.5rem",
-              width: "2.5rem",
-            }}
-          />
+          <IconButton>
+            <IosShareIcon
+              sx={{
+                display: "block",
+                height: "2.5rem",
+                width: "2.5rem",
+                color: "#5ab27d",
+              }}
+            />
+          </IconButton>
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
@@ -30,7 +34,7 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
             key={index}
             src={i.url}
             alt='place image'
-            placeholder='https://via.placeholder.com/200x200'
+            placeholder='/default-img02.jpg'
           />
         ))}
       </ImageContainer>
@@ -58,15 +62,17 @@ const TitleContainer = styled.div`
   flex-direction: column;
 
   & h3 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-family: bold;
     margin: 0;
+    letter-spacing: -0.5px;
   }
 
   & p {
     font-size: 1.3rem;
     opacity: 0.7;
     margin: 0.6rem 0 0 0;
+    letter-spacing: -0.5px;
   }
 `;
 
@@ -86,11 +92,12 @@ const ImageContainer = styled.div`
   white-space: nowrap;
 
   &::-webkit-scrollbar {
-    height: 0.25rem;
+    height: 1rem;
+    width: 100px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: ${COLORS.mainOrange};
     border-radius: 1rem;
+    background-color: rgb(90 178 125 / 50%);
   }
 `;

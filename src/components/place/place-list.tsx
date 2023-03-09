@@ -37,18 +37,23 @@ const MainContainer = styled.main`
   box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
   /* box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2); */
   user-select: none;
-  padding: 3rem 0 2rem 0;
+  padding: 3rem 0 0 0;
 `;
 
 const UnOrderedList = styled.ul`
   padding: 0;
   width: 100%;
   margin-top: 0;
+  margin-bottom: 0;
 
   overflow: auto;
   -ms-overflow-style: none;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  > li:last-child {
+    border-bottom: 0;
   }
 `;

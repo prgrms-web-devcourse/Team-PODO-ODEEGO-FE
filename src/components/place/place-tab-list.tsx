@@ -57,10 +57,9 @@ export default PlaceTabList;
 
 const SearchCategory = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 2rem;
-  padding: 0 3rem;
 `;
 
 const TabItem = styled.div`
@@ -69,7 +68,9 @@ const TabItem = styled.div`
   color: rgba(0, 0, 0, 0.6);
   cursor: pointer;
   border-radius: 50px;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1.8rem;
+  flex: 0 1 auto;
+  text-align: center;
 
   &.active {
     color: #fdfdfd;

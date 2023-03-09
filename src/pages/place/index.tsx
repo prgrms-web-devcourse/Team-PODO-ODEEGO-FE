@@ -81,9 +81,11 @@ const BorderContainer = styled.div`
   height: 2rem;
   width: 100%;
   background-color: ${COLORS.backgroundPrimary};
-  box-shadow: 0 5px 6px -5px rgba(3, 3, 3, 0.3);
+  box-shadow: 0 5px 6px -5px rgba(3, 3, 3, 0.1);
   z-index: 999;
   margin-bottom: -16px;
   border-radius: 0 0 40px 40px;
   position: relative;
+  border: 1px solid rgba(90, 178, 125, 0.22);
+  border-width: 0 0 1px 0;
 `;
