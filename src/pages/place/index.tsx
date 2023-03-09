@@ -17,8 +17,9 @@ export const getServerSideProps = async ({
 }) => {
   try {
     const { data } = await axios.get(
-      `http://52.78.224.123:8080/api/v1/places?station-name=${stationName}`
+      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}`
     );
+
     return {
       props: {
         stationName,
@@ -33,7 +34,7 @@ export const getServerSideProps = async ({
 
 interface PageProps {
   stationName: string;
-  places: { places: PlaceResponse[] };
+  places: { content: PlaceResponse[] };
 }
 
 const PlacePage = ({ stationName, places }: PageProps) => {
@@ -54,7 +55,7 @@ const PlacePage = ({ stationName, places }: PageProps) => {
         <PlaceTabList />
       </Header>
       <BorderContainer />
-      <PlaceList placeList={data?.places || places.places} />
+      <PlaceList placeList={data?.content || places?.content} />
     </PlaceContainer>
   );
 };

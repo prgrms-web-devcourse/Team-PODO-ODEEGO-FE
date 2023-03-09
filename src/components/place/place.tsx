@@ -29,23 +29,15 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {images.length ? (
-          images.map((i, index) => (
-            <PlaceImage
-              lazy
-              key={index}
-              src={i.url}
-              alt='place image'
-              placeholder='https://via.placeholder.com/200'
-            />
-          ))
-        ) : (
-          //TODO : 이미지가 존재하지 않는 경우의 default Image 하나만 보여주기
+        {images.map((i, index) => (
           <PlaceImage
+            lazy
+            key={index}
+            src={i.url}
             alt='place image'
             placeholder='https://via.placeholder.com/200'
           />
-        )}
+        ))}
       </ImageContainer>
     </Container>
   );
