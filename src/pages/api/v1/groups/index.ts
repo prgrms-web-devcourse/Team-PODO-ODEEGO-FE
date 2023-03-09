@@ -1,11 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
+import { CustomError } from "@/constants/custom-error";
 
 const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
-
-const ERROR_NOT_FOUND_404 = "ERROR: Not found";
-const ERROR_INTERNAL_SERVER_500 = "네트워크 오류";
-const ERROR_MEMBER_ID_NOT_FOUND_400 = "토큰이 존재하지 않습니다.";
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,20 +24,16 @@ export default async function handler(
 
     res.status(200).json(data);
   } catch (e) {
+    console.error(e);
     if (axios.isAxiosError(e)) {
-      const { response } = e;
-      console.log(e);
-      if (response && response.data && response.data.errorCode === "M001") {
-        res
-          .status(404)
-          .send({ message: ERROR_MEMBER_ID_NOT_FOUND_400, status: 404 });
-      } else if (response && response.status === 404) {
-        res.status(404).send({ message: ERROR_NOT_FOUND_404, status: 404 });
-      } else {
-        res
-          .status(500)
-          .send({ message: ERROR_INTERNAL_SERVER_500, status: 500 });
-      }
+      const errorCode = e.response?.data.errorCode;
+
+      res.status(CustomError[errorCode].status).json({
+        error: CustomError[errorCode].message,
+        status: CustomError[errorCode].status,
+      });
+    } else {
+      res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }
   }
 }

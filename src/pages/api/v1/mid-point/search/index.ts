@@ -1,11 +1,8 @@
+import { CustomError } from "@/constants/custom-error";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
-
-const ERROR_OUT_OF_BOUND_S001 = "수도권 내의 범위로 출발지를 입력해주세요";
-const ERROR_NOT_FOUND_404 = "ERROR: Not found";
-const ERROR_INTERNAL_SERVER_500 = "네트워크 오류";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,19 +26,14 @@ export default async function handler(
   } catch (e) {
     console.error(e);
     if (axios.isAxiosError(e)) {
-      const { response } = e;
+      const errorCode = e.response?.data.errorCode;
 
-      if (response && response.data && response.data.errorCode === "S001") {
-        res
-          .status(404)
-          .send({ message: ERROR_OUT_OF_BOUND_S001, status: "S001" });
-      } else if (response && response.status === 404) {
-        res.status(404).send({ message: ERROR_NOT_FOUND_404, status: 404 });
-      } else {
-        res
-          .status(500)
-          .send({ message: ERROR_INTERNAL_SERVER_500, status: 500 });
-      }
+      res.status(CustomError[errorCode].status).json({
+        error: CustomError[errorCode].message,
+        status: CustomError[errorCode].status,
+      });
+    } else {
+      res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }
   }
 }

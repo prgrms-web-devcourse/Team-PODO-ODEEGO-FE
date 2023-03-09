@@ -142,7 +142,7 @@ export default function Home() {
 
   useEffect(() => {
     const initGroupId = async () => {
-      if (!hasAccessToken) return "";
+      if (!hasAccessToken) return;
 
       //TODO 실제 모임조회 api로 바꾸기
       try {
@@ -154,6 +154,7 @@ export default function Home() {
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
         toast.error(errorMessage);
+        setLocalStorage(COUNT, "");
       }
     };
 

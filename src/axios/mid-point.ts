@@ -3,6 +3,8 @@ import { searchProps } from "@/types/search-props";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
 
+const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
+
 export const MidPointApi = {
   postMidPoint: async (addressList: searchProps[]) => {
     try {
@@ -52,7 +54,7 @@ export const MidPointApi = {
       console.error(e);
       if (axios.isAxiosError(e)) {
         const { response } = e;
-        const errorMessage = response?.data?.message;
+        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
         throw new Error(errorMessage);
       }
     }
