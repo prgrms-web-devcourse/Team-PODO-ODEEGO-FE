@@ -8,9 +8,10 @@ const METHOD: Record<string, Method> = {
   POST: "post",
   DELETE: "delete",
   PUT: "put",
+  PATCH: "patch",
 };
 
-const { GET, POST, DELETE, PUT } = METHOD;
+const { GET, POST, DELETE, PUT, PATCH } = METHOD;
 
 //공통 instance
 //TODO : Authorization이 필요하다면 등록
@@ -28,6 +29,7 @@ const HTTP = {
   post: getDefaultInstance(POST),
   delete: getDefaultInstance(DELETE),
   put: getDefaultInstance(PUT),
+  patch: getDefaultInstance(PATCH),
 };
 
 export default HTTP;

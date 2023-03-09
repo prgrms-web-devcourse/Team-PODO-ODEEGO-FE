@@ -1,4 +1,5 @@
 import { SearchAPI } from "@/pages/api/search";
+import { SearchAPI22 } from "@/axios/send-start-point";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -14,6 +15,7 @@ import { tokenRecoilState } from "@/recoil/token-recoil";
 import EnterSearchPageModal from "./enter-searchpage-modal";
 import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
+import { StartPointPros } from "@/types/startpoint-props";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -23,7 +25,7 @@ const SearchInput = () => {
   const router = useRouter();
 
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
-  const groupId = useSearchParams().get("groupId") || null; // 방 Id
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id. 임시로 사용할 수 있는 ID b6deb966-8179-43db-9f08-ec5271cbaccc
   const host = useSearchParams().get("host") || null;
   const { openModal, closeModal } = useModal();
 
@@ -71,14 +73,32 @@ const SearchInput = () => {
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
-    // if (id === undefined || id === null) return;
-    handleStartPointModal(val);
+    const startPoint = {
+      groupId: groupId,
+      stationName: val.place_name,
+      lat: +val.y,
+      lng: +val.x,
+    };
+
+    // 한 명이 모든 출발지를 입력할 때.
+    if (!groupId) {
+      if (id === undefined || id === null) return;
+
+      setRecoilData((prev: searchProps[]) => [
+        ...prev.slice(0, +id),
+        startPoint,
+        ...prev.slice(+id + 1),
+      ]);
+
+      return router.push("/");
+    }
+    handleStartPointModal(startPoint);
   };
 
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log("change");
+      console.log("search input is changed");
       return SearchAPI.getSubway(searchInput);
     },
     {
@@ -113,52 +133,33 @@ const SearchInput = () => {
     // setValue(value);
   };
 
-  const handleStartPointModal = (val: searchOriginProps) => {
-    const obj = {
-      groupId: groupId,
-      stationName: val.place_name, //stationName
-      lat: +val.y,
-      lng: +val.x,
-      address: val.address_name, // 필요없는듯?
-    };
-
+  const handleStartPointModal = (startPoint: StartPointPros) => {
     openModal({
-      children: <SetStartPointModalContent startingPoint={obj.stationName} />,
+      children: (
+        <SetStartPointModalContent startingPoint={startPoint.stationName} />
+      ),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
       },
       // 출발지 확정시
       handleConfirm: () => {
-        // 공유된 링크로 접속할 때는 안쓰일듯?
-        if (id !== null)
-          setRecoilData((prev: searchProps[]) => [
-            ...prev.slice(0, +id),
-            obj,
-            ...prev.slice(+id + 1),
-          ]);
+        // 약속'방'을 만들어서 출발지를 입력할 때
+        if (groupId !== null) {
+          if (host) {
+            console.log("방장임!");
+            SearchAPI22.HostSendStartPoint(startPoint);
 
-        // 선택한 주소를 BE로 보낸다.
-        if (obj.groupId !== null) {
-          SearchAPI.sendStartPoint({
-            groupId: obj.groupId,
-            stationName: obj.stationName,
-            lat: +obj.lat,
-            lng: +obj.lng,
-          });
+            // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
+            router.push("/");
+          } else {
+            console.log("방장아님!");
+            SearchAPI22.NonHostSendStartPoint(startPoint);
+
+            // redirection 경로 상의 예정
+            router.push("/");
+          }
         }
-
-        if (host) {
-          // 주소 입력하고 모임 화면(홈페이지16)으로 redirection
-          console.log("방장임!");
-        } else {
-          // 주소 입력 후 메인 화면으로 redirection
-          //
-          console.log("방장아님!");
-          router.push("/");
-        }
-
-        // router.push("/");
       },
     });
   };
