@@ -99,7 +99,7 @@ const PlacePage = ({ stationName, places }: PageProps) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                padding: "3rem",
+                padding: "1rem 0 2rem 0",
               }}
               ref={setTarget}>
               {isFetching && isFetchingNextPage && (
