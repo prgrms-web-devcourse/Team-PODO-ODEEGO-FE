@@ -43,6 +43,7 @@ export const getServerSideProps = async ({
 
 const PlacePage = ({ stationName, places }: PageProps) => {
   const tabValue = useRecoilValue(tabState);
+
   const { setTarget } = useIntersectionObserver({
     root: null,
     rootMargin: "0px",
