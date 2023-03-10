@@ -156,13 +156,13 @@ const SearchInput = () => {
             SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
-            router.push("/");
+            router.replace("/");
           } else {
             console.log("방장아님!");
             SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
-            router.push("/");
+            router.replace("/");
           }
         }
       },
