@@ -1,4 +1,4 @@
-import { useLazyLoadImage } from "@/hooks";
+// import { useLazyLoadImage } from "@/hooks";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import { SyntheticEvent } from "react";
@@ -10,13 +10,8 @@ interface PlaceImageProps {
   placeholder: string;
 }
 
-const PlaceImage = ({
-  lazy = false,
-  src,
-  alt,
-  placeholder,
-}: PlaceImageProps) => {
-  const { loaded, imgRef } = useLazyLoadImage(lazy);
+const PlaceImage = ({ src, alt, placeholder }: PlaceImageProps) => {
+  // const { loaded, imgRef } = useLazyLoadImage(lazy);
 
   const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.onerror = null;
@@ -32,9 +27,8 @@ const PlaceImage = ({
     <>
       <Container>
         <Image
-          ref={imgRef}
           referrerPolicy='no-referrer'
-          src={loaded ? (src ? src : placeholder) : placeholder}
+          src={src ? src : placeholder}
           loader={imageUrlLoader}
           alt={alt}
           width={125}

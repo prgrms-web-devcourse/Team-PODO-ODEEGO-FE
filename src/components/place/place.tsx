@@ -6,7 +6,6 @@ import PlaceImage from "./place-image";
 import { IconButton } from "@mui/material";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
-  console.log(images);
   return (
     <Container>
       <TitleIconContainer>
