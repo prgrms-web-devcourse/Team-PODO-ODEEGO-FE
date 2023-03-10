@@ -150,19 +150,6 @@ export default function Home() {
     initGroupId();
   }, [hasAccessToken, setGroupId, token]);
 
-  //tmp 더미 회원 생성 메서드
-  // const createTmpDummyUser = async () => {
-  //   const nickname = "k" + Math.random() + "";
-
-  //   try {
-  //     const { memberId } = await TestApi.postDummyUser(nickname);
-
-  //     setToken(memberId);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
   //event handler
   const handleInputClickRoute = (index: number) => {
     router.push(`${SEARCH}?id=${index}`);
@@ -230,7 +217,6 @@ export default function Home() {
 
   return (
     <>
-      {/* <Button onClick={createTmpDummyUser}>Set Token</Button> */}
       <Header />
       <MainContainer>
         <BorderContainer />
