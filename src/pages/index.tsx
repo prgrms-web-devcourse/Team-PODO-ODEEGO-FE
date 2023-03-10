@@ -117,7 +117,7 @@ export default function Home() {
   const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
     const { groups }: AllGroupsResponse = await GroupsApi.getAll(token);
     const { groupId, remainingTime } = groups[0];
-    console.log(groups);
+
     const times = remainingTime.split(":");
     const minutes = Number(times[1]);
     const seconds = Math.floor(Number(times[2]));
