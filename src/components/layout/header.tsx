@@ -1,29 +1,27 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import Image from "next/image";
-
 const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import axios from "axios";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
+import { axiosInstanceWitToken } from "@/axios/instance";
+
 interface TokenProps {
   token?: string;
 }
 
 const Header = ({ token }: TokenProps) => {
   const router = useRouter();
-
   const { pathname } = router;
 
   const [tokenData, setToken] = useState<string>("");
 
   useEffect(() => {
     const getToken = getLocalStorage("logoutToken");
-    // const getToken = localStorage.getItem("logoutToken");
     if (!getToken) return;
     setToken(getToken);
   }, [router, token]);
@@ -36,7 +34,6 @@ const Header = ({ token }: TokenProps) => {
 
       case "/kakao":
         const token = getLocalStorage("logoutToken");
-
         try {
           await fetch(`/api/kakao-logout`, {
             method: "POST",
@@ -50,16 +47,13 @@ const Header = ({ token }: TokenProps) => {
         } catch (err) {
           throw new Error((err as Error).message);
         }
-        removeLocalStorage("logoutToken");
-        router.push(`${ROUTES.LOGIN}`);
+        router.push(`${ROUTES.HOME}`);
         break;
     }
   };
 
   const handleLogout = async () => {
-    const token = getLocalStorage("token");
     const logoutToken = getLocalStorage("logoutToken");
-
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
       await fetch(kakaoLogoutUrl, {
@@ -72,22 +66,13 @@ const Header = ({ token }: TokenProps) => {
         }),
       });
 
-      // 회원탈퇴
-      const odeegoLogoutUrl = `https://odeego.shop/api/v1/members/leave`;
-
-      const response = await axios.delete(odeegoLogoutUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
+      const odeegoLogoutUrl = `/api/odeego-leave`;
+      const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
       setToken("");
-
       removeLocalStorage("token");
+
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
-
       return response;
     } catch (err) {
       throw new Error((err as Error).message);
@@ -111,19 +96,26 @@ const Header = ({ token }: TokenProps) => {
         </HeaderIconWrap>
       )}
 
-      <TextP>{HEADER_TEXT}</TextP>
-      <Image
-        src='/logo1.svg'
-        alt='Odeego Logo'
-        width={137}
-        height={46}
-        priority
-      />
+      <HeaderImage>
+        <TextP>{HEADER_TEXT}</TextP>
+
+        <Image
+          src='/logo1.svg'
+          alt='Odeego Logo'
+          width={137}
+          height={46}
+          priority
+        />
+      </HeaderImage>
     </HeaderContainer>
   );
 };
 
 export default Header;
+
+const HeaderImage = styled.div`
+  height: 50%;
+`;
 
 const HeaderLogout = styled.h2`
   font-size: 1.2rem;
@@ -156,7 +148,7 @@ const TextP = styled.p`
 const HeaderIconWrap = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 90%;
   margin-left: 2rem;
   svg {
     font-size: 3rem;
