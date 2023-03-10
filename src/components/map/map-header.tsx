@@ -1,8 +1,9 @@
 import { COLORS } from "@/constants";
 import { SHADOWS } from "@/constants/css";
 import { useModal } from "@/hooks";
-import { MidPointState } from "@/recoil";
+import { MidPointState, searchState } from "@/recoil";
 import { DefaultMidpointValue } from "@/recoil/midpoint-state";
+import { defaultSearchState } from "@/recoil/search-state";
 import styled from "@emotion/styled";
 import { ArrowBack, Close } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
@@ -12,6 +13,7 @@ import { useSetRecoilState } from "recoil";
 const MapHeader = () => {
   const router = useRouter();
   const setMidPointState = useSetRecoilState(MidPointState);
+  const setSearchState = useSetRecoilState(searchState);
   const { openModal } = useModal();
 
   const handleGoBack = () => {
@@ -27,6 +29,7 @@ const MapHeader = () => {
       },
       handleConfirm: () => {
         setMidPointState(DefaultMidpointValue);
+        setSearchState(defaultSearchState);
         router.push("/");
       },
     });

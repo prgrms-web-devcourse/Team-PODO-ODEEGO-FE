@@ -5,9 +5,11 @@ import { searchProps } from "@/types/search-props";
 
 const { persistAtom } = recoilPersist();
 
+export const defaultSearchState = [];
+
 export const searchState = atom<searchProps[]>({
   key: "search",
-  default: [],
+  default: defaultSearchState,
   effects_UNSTABLE: [persistAtom],
 });
 
