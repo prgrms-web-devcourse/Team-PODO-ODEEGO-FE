@@ -21,7 +21,6 @@ import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
-import useLocalStorage from "@/hooks/use-localStorage";
 import { AllGroupsResponse } from "@/types/api/group";
 
 const { MAIN } = MAIN_TEXT;
@@ -42,7 +41,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [groupId, setGroupId] = useState("");
   const setMidPointResponse = useSetRecoilState(MidPointState);
-  const [token] = useLocalStorage("token", "");
+  const token = getLocalStorage("token");
   const hasAccessToken = token ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
