@@ -1,7 +1,4 @@
 import styled from "@emotion/styled";
-import PlaceInput from "@/components/place/place-input";
-import PlaceTabList from "@/components/place/place-tab-list";
-import PlaceList from "@/components/place/place-list";
 import { COLORS } from "@/constants";
 import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
@@ -9,9 +6,18 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
 import axios from "axios";
 import { PlaceResponse } from "@/types/api/place";
-import { useEffect } from "react";
 import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
+import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
+
+interface PageProps {
+  stationName: string;
+  places: { content: PlaceResponse[] };
+}
+
+const SIZE = 4;
+const FIRST_PAGE_NUM = 0;
+const useQueryKeyword = "place";
 
 export const getServerSideProps = async ({
   query: { stationName },
@@ -20,7 +26,7 @@ export const getServerSideProps = async ({
 }) => {
   try {
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=0&size=4`
+      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=${FIRST_PAGE_NUM}&size=${SIZE}`
     );
 
     return {
@@ -34,14 +40,6 @@ export const getServerSideProps = async ({
     console.error(e);
   }
 };
-
-interface PageProps {
-  stationName: string;
-  places: { content: PlaceResponse[] };
-}
-
-const SIZE = 4;
-const useQueryKeyword = "place";
 
 const PlacePage = ({ stationName, places }: PageProps) => {
   const tabValue = useRecoilValue(tabState);
@@ -59,7 +57,7 @@ const PlacePage = ({ stationName, places }: PageProps) => {
   const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery(
       [useQueryKeyword, tabValue],
-      ({ pageParam = 0 }) =>
+      ({ pageParam = FIRST_PAGE_NUM }) =>
         PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
       {
         // keepPreviousData: true,
@@ -69,10 +67,6 @@ const PlacePage = ({ stationName, places }: PageProps) => {
         },
       }
     );
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <PlaceContainer>
