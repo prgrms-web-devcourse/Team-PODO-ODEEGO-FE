@@ -17,7 +17,7 @@ const PlaceTabList = () => {
   const tab = [
     {
       id: 1,
-      name: "전체",
+      name: "전체보기",
       category: "",
     },
     {
@@ -42,8 +42,11 @@ const PlaceTabList = () => {
     <SearchCategory>
       {tab.map(({ id, name, category }: TabProps) => {
         return (
-          <TabItem onClick={() => handleClick(category, id)} key={id}>
-            <span className={activeId === id ? "active" : ""}>{name}</span>
+          <TabItem
+            className={activeId === id ? "active" : ""}
+            onClick={() => handleClick(category, id)}
+            key={id}>
+            <span>{name}</span>
           </TabItem>
         );
       })}
@@ -54,22 +57,23 @@ export default PlaceTabList;
 
 const SearchCategory = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   align-items: center;
-  margin-top: 3rem;
-  margin-left: 1rem;
+  margin-top: 2rem;
 `;
 
 const TabItem = styled.div`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
-  color: #000;
+  color: rgba(0, 0, 0, 0.6);
   cursor: pointer;
+  border-radius: 50px;
+  padding: 0.8rem 1.8rem;
+  flex: 0 1 auto;
+  text-align: center;
 
-  .active {
+  &.active {
     color: #fdfdfd;
     background-color: ${COLORS.backgroundAccent};
-    border-radius: 50px;
-    padding: 0.4rem 1rem;
   }
 `;
