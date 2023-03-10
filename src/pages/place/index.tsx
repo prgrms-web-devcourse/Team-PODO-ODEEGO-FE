@@ -118,7 +118,6 @@ const Header = styled.div`
   z-index: 999;
   box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
   padding: 2rem 2rem 0 2rem;
-  /* background-color: rgba(219, 228, 215, 0.3); */
   background-color: ${COLORS.backgroundPrimary};
 `;
 
@@ -144,7 +143,6 @@ const MainContainer = styled.main`
   flex-direction: column;
   align-items: center;
   box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
-  /* box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2); */
   user-select: none;
   padding: 3rem 0 0 0;
 `;
