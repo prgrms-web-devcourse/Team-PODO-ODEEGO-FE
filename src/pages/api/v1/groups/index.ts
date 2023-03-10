@@ -11,19 +11,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  //TODO
-  // - groups api로 바꿀 것
-  const { memberId } = req.query;
-  const requestUrl = `${API_END_POINT}/api/v1/groups?member-id=${memberId}`;
-  console.log(`API routes(/api/v1/group?member-id=): ${requestUrl}`);
+  const { authorization } = req.headers;
+  const requestUrl = `${API_END_POINT}/api/v1/groups`;
 
   try {
     const { data } = await axios({
       url: requestUrl,
       method: "get",
+      headers: {
+        Authorization: `Bearer ${authorization}`,
+      },
     });
-
-    console.log(data);
 
     res.status(200).json(data);
   } catch (e) {
