@@ -1,4 +1,3 @@
-import { SearchAPI } from "@/pages/api/search";
 import { SearchAPI22 } from "@/axios/send-start-point";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +10,7 @@ import { Button, InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
+import { getSubway } from "@/axios/get-subway";
 import EnterSearchPageModal from "./enter-searchpage-modal";
 import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
@@ -100,8 +100,8 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log("search input is changed");
-      return SearchAPI.getSubway(searchInput);
+      console.log(`search input is changed`);
+      return getSubway(searchInput);
     },
     {
       enabled: searchInput.length > 0,
