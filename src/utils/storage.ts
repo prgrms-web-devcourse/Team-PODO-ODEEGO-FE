@@ -1,7 +1,7 @@
 type LocalStorage = typeof window.localStorage;
 
 export const getLocalStorage = (key: string) => {
-  if (key === undefined || key === null) return;
+  // if (key === undefined || key === null) return;
 
   const storage: LocalStorage = localStorage;
   try {

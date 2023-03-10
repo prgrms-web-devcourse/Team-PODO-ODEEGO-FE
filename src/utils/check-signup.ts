@@ -12,7 +12,8 @@ const checkSignup = {
     name: string,
     value: string,
     errorMessage: Partial<errorType>,
-    setErrorMessage: (arg: Pick<StateWithoutStation, never>) => void
+    setErrorMessage: (arg: Pick<StateWithoutStation, never>) => void,
+    setIsError: any
   ) => {
     switch (name) {
       case "defaultStationName":
@@ -33,6 +34,7 @@ const checkSignup = {
             ...errorMessage,
             nickname_len: "닉네임은 3자 이상 20자이하로 입력해주세요",
           });
+          setIsError(true);
         } else if (
           !new RegExp(
             /^[가-힣|ㄱ-ㅎ][^!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?\s]*$/
@@ -46,6 +48,7 @@ const checkSignup = {
         } else {
           const newObj = omit(errorMessage, "nickname", "nickname_len");
           setErrorMessage(newObj);
+          setIsError(false);
         }
         break;
     }
