@@ -15,13 +15,13 @@ import EnterSearchPageModal from "./enter-searchpage-modal";
 import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 import { StartPointPros } from "@/types/startpoint-props";
-import useLocalStorage from "@/hooks/use-localStorage";
+import { getLocalStorage } from "@/utils/storage";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
-  const [token] = useLocalStorage("token", "");
+  const token = getLocalStorage("token");
   const router = useRouter();
 
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
