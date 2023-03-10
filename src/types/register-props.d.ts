@@ -1,7 +1,7 @@
 interface errorType {
-  defaultStationName?: string | undefined;
-  nickname?: string | undefined;
-  nickname_len?: string | undefined;
+  defaultStationName?: string;
+  nickname?: string;
+  nickname_len?: string;
 }
 
 interface valueType {

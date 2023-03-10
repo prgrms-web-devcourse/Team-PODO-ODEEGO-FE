@@ -31,6 +31,7 @@ const Header = ({ token }: TokenProps) => {
       case "/signin":
         router.push(`${ROUTES.HOME}`);
         break;
+
       case "/kakao":
         const token = getLocalStorage("logoutToken");
         try {
@@ -52,7 +53,6 @@ const Header = ({ token }: TokenProps) => {
   };
 
   const handleLogout = async () => {
-    // const token = getLocalStorage("token");
     const logoutToken = getLocalStorage("logoutToken");
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
@@ -73,7 +73,6 @@ const Header = ({ token }: TokenProps) => {
 
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
-      // return response;
       return response;
     } catch (err) {
       throw new Error((err as Error).message);
@@ -97,19 +96,26 @@ const Header = ({ token }: TokenProps) => {
         </HeaderIconWrap>
       )}
 
-      <TextP>{HEADER_TEXT}</TextP>
-      <Image
-        src='/logo1.svg'
-        alt='Odeego Logo'
-        width={137}
-        height={46}
-        priority
-      />
+      <HeaderImage>
+        <TextP>{HEADER_TEXT}</TextP>
+
+        <Image
+          src='/logo1.svg'
+          alt='Odeego Logo'
+          width={137}
+          height={46}
+          priority
+        />
+      </HeaderImage>
     </HeaderContainer>
   );
 };
 
 export default Header;
+
+const HeaderImage = styled.div`
+  height: 50%;
+`;
 
 const HeaderLogout = styled.h2`
   font-size: 1.2rem;

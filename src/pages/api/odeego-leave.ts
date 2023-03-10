@@ -1,12 +1,12 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(
+export default async function Odeegohandler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   try {
-    const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/leave`;
+    const odeegoLogoutUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/members/leave`;
 
     const response = await axios.delete(odeegoLogoutUrl, {
       headers: {
@@ -15,7 +15,9 @@ export default async function handler(
       },
     });
     res.status(200).json(response.data);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({ error: err.message });
+    }
   }
 }
