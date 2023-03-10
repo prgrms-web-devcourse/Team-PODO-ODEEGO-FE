@@ -1,7 +1,7 @@
 import { EndpointResponse } from "@/types/api/midpoint";
 import { searchProps } from "@/types/search-props";
 import axios from "axios";
-import HTTP from "./config/axios-instance";
+import HTTP from "@/axios/config/axios-instance";
 
 const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
 

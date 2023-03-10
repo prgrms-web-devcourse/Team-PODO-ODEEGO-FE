@@ -6,14 +6,15 @@ import HTTP from "./config/axios-instance";
 const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
 
 export const GroupsApi = {
-  getAll: async (memberId: string) => {
+  getAll: async (token: string) => {
     try {
       const { data } = await HTTP.get({
-        //TODO
-        // - axios instance에 accessToken 추가 : refreshToken이 있어서... 잠시 보류
-        url: `/v1/groups?memberId=${memberId}`,
+        url: "/v1/groups",
+        headers: {
+          Authorization: token,
+        },
       });
-      console.log(data);
+
       return data;
     } catch (e) {
       console.error(e);
@@ -24,19 +25,17 @@ export const GroupsApi = {
       }
     }
   },
-  postCreateGroup: async (id: string, count: string) => {
+  postCreateGroup: async (token: string, count: string) => {
     try {
       const { data } = await HTTP.post({
-        //TODO
-        // - 현재는 test용 api
-        // - axios instance에 accessToken 추가 : refreshToken이 있어서... 잠시 보류
-        url: `/v1/groups/post?memberId=${id}`,
+        url: "/v1/groups/post",
         data: {
           capacity: count,
         },
+        headers: {
+          Authorization: token,
+        },
       });
-
-      console.log(data);
 
       return data;
     } catch (e) {
@@ -54,8 +53,10 @@ export const GroupsApi = {
 
       const { data } = await HTTP.get<GroupDetailResponse>({
         url: `/v1/groups/${groupId}`,
+        headers: {
+          Authorization: token,
+        },
       });
-      console.log(token);
 
       return data;
     } catch (error) {
@@ -78,16 +79,14 @@ export const GroupsApi = {
   },
 };
 
-const useGroup = (groupId: string, token: string) => {
+const useGroupDetail = (groupId: string, token: string) => {
   return useQuery(
     ["group", groupId],
     () => GroupsApi.getGroup(groupId, token),
     {
-      refetchOnMount: true,
-      staleTime: 10000,
       keepPreviousData: true,
     }
   );
 };
 
-export { useGroup };
+export { useGroupDetail };

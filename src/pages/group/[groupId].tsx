@@ -6,7 +6,6 @@ import Main from "@/components/layout/main";
 import { COLORS } from "@/constants";
 import { useModal } from "@/hooks";
 import { isFirstVisitState, MidPointState } from "@/recoil";
-import { tokenRecoilState } from "@/recoil/token-recoil";
 import { searchProps } from "@/types/search-props";
 import styled from "@emotion/styled";
 import { InsertLink, Refresh } from "@mui/icons-material";
@@ -21,8 +20,9 @@ import {
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { useGroup } from "@/axios/groups";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { useGroupDetail } from "@/axios/groups";
+import useLocalStorage from "@/hooks/use-localStorage";
 
 interface InputState {
   memberId: string;
@@ -39,9 +39,9 @@ const GroupPage = () => {
   const [isFirstVisit, setIsFirstVisit] = useRecoilState(isFirstVisitState);
   const setMidpointResponse = useSetRecoilState(MidPointState);
   const { openModal } = useModal();
-  const token = useRecoilValue(tokenRecoilState);
+  const [token] = useLocalStorage("token", "");
   const [groupId, setGroupId] = useState<string>("");
-  const { data, isLoading, isError, isFetching, refetch } = useGroup(
+  const { data, isLoading, isError, isFetching, refetch } = useGroupDetail(
     groupId,
     token
   );

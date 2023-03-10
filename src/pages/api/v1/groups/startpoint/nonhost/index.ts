@@ -7,7 +7,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(`api/v1/groups/startpoint/nonhost`);
   const { groupId, stationName, lat, lng } = req.body.value;
   const header = req.headers;
 
