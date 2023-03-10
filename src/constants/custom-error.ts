@@ -3,10 +3,6 @@ interface temp {
 }
 
 export const CustomError: temp = {
-  A001: { message: "Token not found in request header.", status: 401 },
-  A002: { message: "Not granted token type.", status: 401 },
-  A003: { message: "Jwt is expired.", status: 401 },
-  A004: { message: "Invalid Jwt.", status: 401 },
   M001: { message: "Member Not Found.", status: 404 },
   M002: { message: "Member nickname is duplicated.", status: 400 },
   M003: { message: "Member nickname length is out of bounds.", status: 400 },

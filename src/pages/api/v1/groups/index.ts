@@ -27,11 +27,19 @@ export default async function handler(
     console.error(e);
     if (axios.isAxiosError(e)) {
       const errorCode = e.response?.data.errorCode;
+      const error = CustomError[errorCode];
 
-      res.status(CustomError[errorCode].status).json({
-        error: CustomError[errorCode].message,
-        status: CustomError[errorCode].status,
-      });
+      if (error) {
+        res.status(error.status).json({
+          error: error.message,
+          status: error.status,
+        });
+      } else {
+        res.status(e.response?.status || 400).json({
+          error: "get groups All api error",
+          status: e.response?.status || 400,
+        });
+      }
     } else {
       res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }
