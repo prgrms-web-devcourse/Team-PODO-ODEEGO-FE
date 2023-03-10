@@ -4,11 +4,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
 
-// const ERROR_ALREADY_EXIST_MEETING_ROOM_400 = "이미 생성된 모임이 있습니다.";
-// const ERROR_CAPACITY_OUT_OF_BOUND_400 = "모임 생성 인원이 초과되었습니다.";
-// const ERROR_NOT_FOUND_404 = "ERROR: Not found";
-// const ERROR_INTERNAL_SERVER_500 = "네트워크 오류";
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -36,10 +31,19 @@ export default async function handler(
     if (axios.isAxiosError(e)) {
       const errorCode = e.response?.data.errorCode;
 
-      res.status(CustomError[errorCode].status).json({
-        error: CustomError[errorCode].message,
-        status: CustomError[errorCode].status,
-      });
+      const error = CustomError[errorCode];
+
+      if (error) {
+        res.status(error.status).json({
+          error: error.message,
+          status: error.status,
+        });
+      } else {
+        res.status(e.response?.status || 400).json({
+          error: "post create group api error",
+          status: e.response?.status || 400,
+        });
+      }
     } else {
       res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }

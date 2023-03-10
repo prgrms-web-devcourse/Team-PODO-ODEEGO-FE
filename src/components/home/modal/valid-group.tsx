@@ -15,7 +15,6 @@ const ValidGroupModal = ({ minutes, seconds }: ValidGroupProps) => {
 
   useEffect(() => {
     const countDownUntilZero = () => {
-      console.log(min, sec);
       setSeconds((prev) => {
         if (prev <= 0) return 0;
 

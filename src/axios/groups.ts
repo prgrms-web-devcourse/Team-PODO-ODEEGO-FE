@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
 
+const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
+
 export const GroupsApi = {
   getAll: async (token: string) => {
     try {
@@ -18,7 +20,7 @@ export const GroupsApi = {
       console.error(e);
       if (axios.isAxiosError(e)) {
         const { response } = e;
-        const errorMessage = response?.data?.message;
+        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
         throw new Error(errorMessage);
       }
     }
@@ -40,7 +42,7 @@ export const GroupsApi = {
       console.error(e);
       if (axios.isAxiosError(e)) {
         const { response } = e;
-        const errorMessage = response?.data?.message;
+        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
         throw new Error(errorMessage);
       }
     }
