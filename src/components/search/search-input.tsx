@@ -64,6 +64,10 @@ const SearchInput = () => {
         confirm: "로그인하기!",
         close: "취소",
       },
+      handleConfirm: () => {
+        // 로그인
+        router.push("/login");
+      },
       handleClose: () => {
         window.close();
       },
