@@ -65,6 +65,7 @@ const SearchInput = () => {
         close: "취소",
       },
       handleConfirm: () => {
+        // 로그인
         router.push("/login");
       },
       handleClose: () => {
