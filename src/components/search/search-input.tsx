@@ -66,7 +66,7 @@ const SearchInput = () => {
       },
       handleConfirm: () => {
         // 로그인
-        router.push("/login");
+        router.push("/signin");
       },
       handleClose: () => {
         window.close();
