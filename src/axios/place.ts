@@ -10,9 +10,7 @@ export const PlaceApi = {
   ) => {
     try {
       const { data } = await HTTP.get({
-        url: `/v1/places?stationName=${stationName}&category=${category}&page=${page}${
-          size ? `&size=${size}` : ""
-        }`,
+        url: `/v1/places?stationName=${stationName}&category=${category}&page=${page}&size=${size}`,
       });
 
       //TODO: 지우기 (Loading component확인을 위한 코드)

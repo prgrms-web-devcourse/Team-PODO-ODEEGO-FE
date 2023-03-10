@@ -20,7 +20,7 @@ interface PageProps {
 
 const SIZE = 4;
 const FIRST_PAGE_NUM = 0;
-const useQueryKeyword = "place";
+const USE_QUERY_KEYWORD = "place";
 
 export const getServerSideProps = async ({
   query: { stationName },
@@ -66,11 +66,10 @@ const PlacePage = ({ stationName, places }: PageProps) => {
 
   const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
     useInfiniteQuery(
-      [useQueryKeyword, tabValue],
+      [USE_QUERY_KEYWORD, tabValue],
       ({ pageParam = FIRST_PAGE_NUM }) =>
         PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
       {
-        // keepPreviousData: true,
         getNextPageParam: (lastPage, allPages) => {
           const nextPage = allPages.length + 1;
           return !lastPage.last ? nextPage : undefined;
