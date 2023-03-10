@@ -21,8 +21,6 @@ const Header = ({ token }: TokenProps) => {
 
   const [tokenData, setToken] = useState<string>("");
 
-  // const [recoilToken, setRecoilToken] = useState(accessTokenState);
-
   useEffect(() => {
     const getToken = getLocalStorage("logoutToken");
     // const getToken = localStorage.getItem("logoutToken");

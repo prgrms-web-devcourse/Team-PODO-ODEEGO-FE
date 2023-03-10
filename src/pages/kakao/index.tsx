@@ -1,19 +1,19 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
 import axios from "axios";
-import { setLocalStorage } from "@/utils/storage";
+// import { setLocalStorage } from "@/utils/storage";
+import useLocalStorage from "@/hooks/use-localStorage";
 
 const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const [token, setToken] = useState("");
-
-  // const [token, setToken] = useRecoilState(accessTokenState);
+  const [token, setToken] = useLocalStorage("token", "");
+  const [, setLogoutToken] = useLocalStorage("logoutToken", "");
 
   useEffect(() => {
     try {
@@ -56,14 +56,11 @@ const Kakao = () => {
 
               console.log(data);
               setToken(data.accessToken);
-              setLocalStorage("token", data.accessToken);
+              // setLocalStorage("token", data.accessToken);
             }
           }
 
-          setLocalStorage(
-            "logoutToken",
-            resultKakao.tokenResponse.access_token
-          );
+          setLogoutToken(resultKakao.tokenResponse.access_token);
         }
       };
 
@@ -71,7 +68,7 @@ const Kakao = () => {
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }, [authCode, router]);
+  }, [authCode, router, setLogoutToken, setToken]);
 
   return (
     <SignUpContainer>
