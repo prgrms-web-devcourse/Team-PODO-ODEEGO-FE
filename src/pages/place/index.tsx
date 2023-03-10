@@ -1,14 +1,23 @@
 import styled from "@emotion/styled";
-import PlaceInput from "@/components/place/place-input";
-import PlaceTabList from "@/components/place/place-tab-list";
-import PlaceList from "@/components/place/place-list";
 import { COLORS } from "@/constants";
 import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
 import axios from "axios";
 import { PlaceResponse } from "@/types/api/place";
+import { Box, CircularProgress } from "@mui/material";
+import { useIntersectionObserver } from "@/hooks";
+import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
+
+interface PageProps {
+  stationName: string;
+  places: { content: PlaceResponse[] };
+}
+
+const SIZE = 4;
+const FIRST_PAGE_NUM = 0;
+const useQueryKeyword = "place";
 
 export const getServerSideProps = async ({
   query: { stationName },
@@ -17,7 +26,7 @@ export const getServerSideProps = async ({
 }) => {
   try {
     const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}`
+      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=${FIRST_PAGE_NUM}&size=${SIZE}`
     );
 
     return {
@@ -32,21 +41,33 @@ export const getServerSideProps = async ({
   }
 };
 
-interface PageProps {
-  stationName: string;
-  places: { content: PlaceResponse[] };
-}
-
 const PlacePage = ({ stationName, places }: PageProps) => {
-  const getTabData = useRecoilValue(tabState);
+  const tabValue = useRecoilValue(tabState);
 
-  const { data } = useQuery(
-    ["place", getTabData],
-    () => PlaceApi.getPlaces(stationName, getTabData),
-    {
-      keepPreviousData: true,
-    }
-  );
+  const { setTarget } = useIntersectionObserver({
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.5,
+    onIntersect: async ([{ isIntersecting }]) => {
+      if (isIntersecting) {
+        fetchNextPage();
+      }
+    },
+  });
+
+  const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
+    useInfiniteQuery(
+      [useQueryKeyword, tabValue],
+      ({ pageParam = FIRST_PAGE_NUM }) =>
+        PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
+      {
+        // keepPreviousData: true,
+        getNextPageParam: (lastPage, allPages) => {
+          const nextPage = allPages.length + 1;
+          return !lastPage.last ? nextPage : undefined;
+        },
+      }
+    );
 
   return (
     <PlaceContainer>
@@ -55,7 +76,31 @@ const PlacePage = ({ stationName, places }: PageProps) => {
         <PlaceTabList />
       </Header>
       <BorderContainer />
-      <PlaceList placeList={data?.content || places?.content} />
+      <MainContainer>
+        <UnOrderedList>
+          {data ? (
+            data.pages.map((p, i) => (
+              <PlaceList key={i} placeList={p.content} />
+            ))
+          ) : (
+            <PlaceList placeList={places?.content} />
+          )}
+          {hasNextPage && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "3rem",
+              }}
+              ref={setTarget}>
+              {isFetching && isFetchingNextPage && (
+                <CircularProgress size={32} />
+              )}
+            </Box>
+          )}
+        </UnOrderedList>
+      </MainContainer>
     </PlaceContainer>
   );
 };
@@ -73,7 +118,6 @@ const Header = styled.div`
   z-index: 999;
   box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
   padding: 2rem 2rem 0 2rem;
-  /* background-color: rgba(219, 228, 215, 0.3); */
   background-color: ${COLORS.backgroundPrimary};
 `;
 
@@ -88,4 +132,35 @@ const BorderContainer = styled.div`
   position: relative;
   border: 1px solid rgba(90, 178, 125, 0.22);
   border-width: 0 0 1px 0;
+`;
+
+const MainContainer = styled.main`
+  width: 100%;
+  max-height: 700px;
+  height: 90vh;
+  background-color: ${COLORS.backgroundSecondary};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
+  user-select: none;
+  padding: 3rem 0 0 0;
+`;
+
+const UnOrderedList = styled.ul`
+  padding: 0;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  overflow: auto;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  > li:last-child {
+    border-bottom: 0;
+  }
 `;
