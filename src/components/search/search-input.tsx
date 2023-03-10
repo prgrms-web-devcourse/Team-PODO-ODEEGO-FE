@@ -1,9 +1,9 @@
-import { SearchAPI } from "@/pages/api/search";
+import { SearchAPI22 } from "@/axios/send-start-point";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 import { Button, InputAdornment, TextField } from "@mui/material";
@@ -12,38 +12,26 @@ import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
 import { tokenRecoilState } from "@/recoil/token-recoil";
 import { getSubway } from "@/axios/get-subway";
+import EnterSearchPageModal from "./enter-searchpage-modal";
+import SetStartPointModalContent from "./set-startpoint-modal";
+import SetLoginModalContent from "./login-modal";
+import { StartPointPros } from "@/types/startpoint-props";
 
 const SearchInput = () => {
-  const [value, setValue] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
-  const setRecoilData = useSetRecoilState<searchProps[]>(searchState);
-  const [testToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
-  const id = useSearchParams().get("id") || null; // input Id(주소입력창)
-  const groupId = useSearchParams().get("groupId") || null; // 방 Id
-  const host = useSearchParams().get("host") || null;
-
-  const { openModal, closeModal } = useModal();
-
+  const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
+  const [accessToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
   const router = useRouter();
 
-  const setLoginModalContent = () => {
-    return <p>로그인 되어 있지 않아 로그인 페이지로 이동합니다</p>;
-  };
+  const id = useSearchParams().get("id") || null; // input Id(주소입력창)
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id. 임시로 사용할 수 있는 ID b6deb966-8179-43db-9f08-ec5271cbaccc
+  const host = useSearchParams().get("host") || null;
+  const { openModal, closeModal } = useModal();
 
-  const ConfirmEnterSearchPageModal = () => {
-    return (
-      <>
-        {/* 닉네임을 받아올 수 있는가? */}
-        <h1>000님이 주소를 요청했습니다.</h1>
-        <p>약속 장소를 찾기 위해 주소가 필요합니다.</p>
-        <p>계속 하시겠습니까?</p>
-      </>
-    );
-  };
-
-  const handleConfirmEnterSearchPage = () => {
+  const handleConfirmEnterSearchPage = useCallback(() => {
     openModal({
-      children: ConfirmEnterSearchPageModal(),
+      children: <EnterSearchPageModal />,
       btnText: {
         confirm: "예",
         close: "아니오",
@@ -53,23 +41,25 @@ const SearchInput = () => {
         // router.push("/");
       },
     });
-  };
+  }, [openModal]);
 
-  // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
     window.addEventListener("popstate", () => {
       closeModal();
     });
+  });
 
+  // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
+  useEffect(() => {
     if (groupId !== null) {
       if (!host) handleConfirmEnterSearchPage();
     }
-  }, []);
+  }, [closeModal, groupId, handleConfirmEnterSearchPage, host]);
 
   // 링크를 공유 받았을 때.
-  if (groupId && !testToken) {
+  if (groupId && !accessToken) {
     openModal({
-      children: setLoginModalContent(),
+      children: <SetLoginModalContent />,
       btnText: {
         confirm: "로그인하기!",
         close: "취소",
@@ -83,25 +73,58 @@ const SearchInput = () => {
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
-    if (id === undefined || id === null) return;
-    handleStartPointModal(val);
+    const startPoint = {
+      groupId: groupId,
+      stationName: val.place_name,
+      lat: +val.y,
+      lng: +val.x,
+    };
+
+    console.log(groupId);
+    // 한 명이 모든 출발지를 입력할 때.
+    if (!groupId) {
+      if (id === undefined || id === null) return;
+
+      setRecoilData((prev: searchProps[]) => [
+        ...prev.slice(0, +id),
+        startPoint,
+        ...prev.slice(+id + 1),
+      ]);
+
+      return router.push("/");
+    }
+
+    handleStartPointModal(startPoint);
   };
 
   const { data: resultSubway } = useQuery(
-    ["search", value], // key가 충분히 unique 한가?
+    ["search", searchInput], // key가 충분히 unique 한가?
     () => {
       console.log(`search input is changed`);
-      return getSubway(value);
+      return getSubway(searchInput);
     },
     {
-      enabled: value.length > 0,
+      enabled: searchInput.length > 0,
       refetchOnMount: true,
       staleTime: 10000,
     }
   );
 
+  let timer: any = null;
   const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
+
+    // 임시 debounce 적용
+    if (timer !== null) {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        setSearchInput(value);
+      }, 500);
+    } else {
+      timer = window.setTimeout(() => {
+        setSearchInput(value);
+      }, 500);
+    }
 
     if (!resultSubway || resultSubway.length === 0) {
       setErrorMessage("검색 결과가 없습니다");
@@ -109,64 +132,36 @@ const SearchInput = () => {
       setErrorMessage("");
     }
 
-    setValue(value);
+    // setValue(value);
   };
 
-  const setStartPointModalContent = (startPoint: string) => {
-    return (
-      <>
-        <p>{startPoint}</p>
-        <p>출발역은 수정할 수 없습니다.</p>
-      </>
-    );
-  };
-
-  const handleStartPointModal = (val: searchOriginProps) => {
-    const obj = {
-      groupId: groupId,
-      stationName: val.place_name, //stationName
-      lat: val.y,
-      lng: val.x,
-      address: val.address_name, // 필요없는듯?
-    };
-
+  const handleStartPointModal = (startPoint: StartPointPros) => {
     openModal({
-      children: setStartPointModalContent(obj.stationName),
+      children: (
+        <SetStartPointModalContent startingPoint={startPoint.stationName} />
+      ),
       btnText: {
         confirm: "장소를 확정합니다.",
         close: "다시 선택합니다.",
       },
       // 출발지 확정시
       handleConfirm: () => {
-        // 공유된 링크로 접속할 때는 안쓰일듯?
-        if (id !== null)
-          setRecoilData((prev: searchProps[]) => [
-            ...prev.slice(0, +id),
-            obj,
-            ...prev.slice(+id + 1),
-          ]);
+        // 약속'방'을 만들어서 출발지를 입력할 때
+        if (groupId !== null) {
+          if (host) {
+            console.log("방장임!");
+            SearchAPI22.HostSendStartPoint(startPoint);
 
-        // 선택한 주소를 BE로 보낸다.
-        if (obj.groupId !== null) {
-          SearchAPI.sendStartPoint({
-            groupId: obj.groupId,
-            stationName: obj.stationName,
-            lat: +obj.lat,
-            lng: +obj.lng,
-          });
+            // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
+            router.push("/");
+          } else {
+            console.log("방장아님!");
+            SearchAPI22.NonHostSendStartPoint(startPoint);
+
+            // redirection 경로 상의 예정
+            router.push("/");
+          }
         }
-
-        if (host) {
-          // 주소 입력하고 모임 화면(홈페이지16)으로 redirection
-          console.log("방장임!");
-        } else {
-          // 주소 입력 후 메인 화면으로 redirection
-          //
-          console.log("방장아님!");
-          router.push("/");
-        }
-
-        // router.push("/");
       },
     });
   };

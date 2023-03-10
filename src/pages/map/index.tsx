@@ -1,23 +1,21 @@
 import MidpointButton from "@/components/map/midpoint-button";
-import { COLORS, SHADOWS } from "@/constants/css";
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
 import { useRef, useState } from "react";
-import { ArrowBack, Close } from "@mui/icons-material";
 import useMap from "@/hooks/use-map";
-// import { dummyData } from "@/utils/dummy-data";
 import { useRecoilValue } from "recoil";
 import { MidPointState } from "@/recoil/midpoint-state";
+import PlacesButton from "@/components/map/places-button";
+import MapHeader from "@/components/map/map-header";
+import { Stack } from "@mui/material";
 
 const MapPage = () => {
   const [currentMidway, setCurrentMidway] = useState(0);
   const mapContainerRef = useRef(null);
-  // const { start, midPointResponses } = dummyData;
-  //home-address page와  싱크 맞추면서 수정된 부분 : dummy -> useRecoilValue
   const { start, midPointResponses } = useRecoilValue(MidPointState);
-  const { map, setBoundToMidpoint } = useMap({
+  const { map, setMidpoint } = useMap({
     mapContainerRef,
     initialCenter: {
+      stationName: midPointResponses[0]?.stationName,
       lat: midPointResponses[0]?.lat,
       lng: midPointResponses[0]?.lng,
     },
@@ -26,19 +24,17 @@ const MapPage = () => {
 
   const handleNavigate = (id: string) => {
     const midpoint = midPointResponses.find((data) => data.id === id);
-    if (!midpoint) return;
-    if (!map) return;
-    setBoundToMidpoint({ lat: midpoint.lat, lng: midpoint.lng }, map);
+    if (!midpoint || !map) return;
+    if (midPointResponses.indexOf(midpoint) === currentMidway) return;
+
+    setMidpoint({ lat: midpoint.lat, lng: midpoint.lng }, midpoint.stationName);
     setCurrentMidway(midPointResponses.indexOf(midpoint));
   };
 
   return (
     <Wrapper>
       <Container>
-        <Header>
-          <ArrowBack htmlColor={COLORS.altGreen} fontSize='inherit' />
-          <Close htmlColor={COLORS.altGreen} fontSize='inherit' />
-        </Header>
+        <MapHeader />
         <Stack direction='row' spacing={4} justifyContent='center'>
           {midPointResponses.map((data, index) => (
             <MidpointButton
@@ -47,11 +43,15 @@ const MapPage = () => {
               stationName={data.stationName}
               isCurrent={currentMidway === index}
               onClick={handleNavigate}
+              line={data.line}
             />
           ))}
         </Stack>
       </Container>
       <Map ref={mapContainerRef} id='mapContainerRef' />
+      <PlacesButton
+        stationName={midPointResponses[currentMidway]?.stationName}
+      />
     </Wrapper>
   );
 };
@@ -72,20 +72,6 @@ const Container = styled.div`
   left: 0;
   width: 100%;
   z-index: 100;
-`;
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 4.5rem;
-  background-color: ${COLORS.backgroundSecondary};
-  box-shadow: ${SHADOWS.backdropNeutral};
-  margin-bottom: 2rem;
-  padding: 1rem;
-  box-sizing: border-box;
-  font-size: 2.4rem;
 `;
 
 const Map = styled.div`
