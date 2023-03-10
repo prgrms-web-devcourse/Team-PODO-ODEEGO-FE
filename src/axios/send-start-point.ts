@@ -11,7 +11,7 @@ export const SearchAPI22 = {
       const { data } = await HTTP.post({
         url: `/v1/groups/startpoint/nonhost`,
         headers: {
-          Authorization: `bearer ${accessToken}`,
+          Authorization: accessToken,
         },
         data: {
           value: value,
