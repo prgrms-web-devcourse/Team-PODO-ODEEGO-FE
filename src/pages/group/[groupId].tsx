@@ -22,7 +22,7 @@ import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useGroupDetail } from "@/axios/groups";
-import useLocalStorage from "@/hooks/use-localStorage";
+import { getLocalStorage } from "@/utils/storage";
 
 interface InputState {
   memberId: string;
@@ -39,7 +39,7 @@ const GroupPage = () => {
   const [isFirstVisit, setIsFirstVisit] = useRecoilState(isFirstVisitState);
   const setMidpointResponse = useSetRecoilState(MidPointState);
   const { openModal } = useModal();
-  const [token] = useLocalStorage("token", "");
+  const token = getLocalStorage("token");
   const [groupId, setGroupId] = useState<string>("");
   const { data, isLoading, isError, isFetching, refetch } = useGroupDetail(
     groupId,
