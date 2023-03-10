@@ -5,8 +5,8 @@ import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 
 import { setLocalStorage } from "@/utils/storage";
-import { axiosInstanceWitToken } from "@/axios/instance";
 import Header from "@/components/layout/header";
+import axios from "axios";
 
 const Kakao = () => {
   const router = useRouter();
@@ -30,13 +30,13 @@ const Kakao = () => {
 
           const resultKakao = await responseKakao.json();
 
-          // const { tokenResponse } = resultKakao;
+          const { tokenResponse } = resultKakao;
 
-          // console.log(tokenResponse);
-          // const data = await axios.post(`/api/auth/login`, tokenResponse);
+          // 카카오 토큰 쿠키에 저장완료
+          const data = await axios.post(`/api/auth/login`, tokenResponse);
 
-          // console.log(data);
-
+          const { access_token } = JSON.parse(data.config.data);
+          // 이 스토리지에 저장하는 역할을 지금 -> 쿠키에한거임
           setLocalStorage(
             "logoutToken",
             resultKakao.tokenResponse.access_token
@@ -48,10 +48,24 @@ const Kakao = () => {
               console.error("The page is reloaded");
             } else {
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
-              const { data } = await axiosInstanceWitToken.post(
-                loginBackendUrl
+
+              console.log(loginBackendUrl);
+              // const { data } = await axiosInstanceWitToken.post(
+              //   loginBackendUrl
+              // );
+              //
+              const { data } = await axios.post(
+                loginBackendUrl,
+                {},
+                {
+                  headers: {
+                    Authorization: `Bearer ${access_token}`,
+                  },
+                }
               );
+              console.log(data);
               setToken(data.accessToken);
+              // 오디고 토큰 쿠키에 저장하기
               setLocalStorage("token", data.accessToken);
             }
           }

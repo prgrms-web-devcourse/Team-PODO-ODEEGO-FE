@@ -11,6 +11,7 @@ function setCookie(name: string, value: string, options = {}) {
     const stringValue = JSON.stringify(value);
     const serializedCookie = serialize(name, stringValue, cookieOptions);
 
+    console.log(serializedCookie);
     return decodeURIComponent(serializedCookie);
   } catch (err) {
     throw new Error((err as Error).message);
@@ -20,10 +21,12 @@ function setCookie(name: string, value: string, options = {}) {
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { access_token } = req.body;
 
+  console.log(access_token);
+
   if (!access_token) {
     return res.status(400).json({ error: "Token is missing" });
   }
-  const cookie = setCookie("token", access_token);
+  const cookie = setCookie("logoutToken", access_token);
 
   res.setHeader("Set-Cookie", cookie);
   res.status(200).json({ message: "Cookie has been set" });
