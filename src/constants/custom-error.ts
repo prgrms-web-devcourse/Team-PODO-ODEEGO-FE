@@ -20,4 +20,8 @@ export const CustomError: temp = {
   G006: { message: "Group Member's station is already defined.", status: 400 },
   S001: { message: "Station Not Found.", status: 404 },
   P001: { message: "Place Not Found.", status: 404 },
+  A001: { message: "Token not found in request header.", status: 401 },
+  A002: { message: "Not granted token type.", status: 401 },
+  A003: { message: "Jwt is expired.", status: 401 },
+  A004: { message: "Invalid Jwt.", status: 401 },
 };
