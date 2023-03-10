@@ -7,18 +7,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { memberId } = req.body.value;
-  const { groupId } = req.body.value;
-  const { stationName } = req.body.value;
-  const { lat } = req.body.value;
-  const { lng } = req.body.value;
-  const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}/host?memberId=${memberId}`;
+  const { groupId, stationName, lat, lng } = req.body.value;
+  const header = req.headers;
 
-  console.log(`api/v1/groups/startpoint/host${req.body}`);
+  const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}/host`;
+
   try {
     const { data } = await axios({
       method: "patch",
       url: requestUrl,
+      headers: {
+        Authorization: `Bearer ${header.authorization}`,
+      },
       data: {
         stationName: stationName,
         lat: lat,
@@ -27,14 +27,22 @@ export default async function handler(
     });
 
     res.status(200).json(data);
-  } catch (e) {
-    if (axios.isAxiosError(e)) {
-      const errorCode = e.response?.data.errorCode;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      const errorCode = err.response?.data.errorCode;
 
-      res.status(CustomError[errorCode].status).json({
-        error: CustomError[errorCode].message,
-        status: CustomError[errorCode].status,
-      });
+      if (CustomError[errorCode]) {
+        res.status(CustomError[errorCode].status).json({
+          error: CustomError[errorCode].message,
+          status: CustomError[errorCode].status,
+        });
+      } else {
+        console.log(err);
+        res.status(400).json({
+          error: "api/v1/groups/startpoint/host patch fail",
+          status: 400,
+        });
+      }
     } else {
       res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
     }

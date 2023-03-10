@@ -1,21 +1,28 @@
 import { EndpointResponse } from "@/types/api/midpoint";
 import { searchProps } from "@/types/search-props";
 import axios from "axios";
-import HTTP from "./config/axios-instance";
+import HTTP from "@/axios/config/axios-instance";
+
+const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
 
 export const MidPointApi = {
   postMidPoint: async (addressList: searchProps[]) => {
-    const filteredAddressList = addressList.map((a) => ({
-      stationName: a.stationName.split(" ")[0],
-      lat: a.lat,
-      lng: a.lng,
-    }));
-
     try {
+      const modifiedAddressList = addressList.map((a) => {
+        const [stationName, line] = a.stationName.split(" ");
+
+        return {
+          stationName,
+          line,
+          lat: a.lat,
+          lng: a.lng,
+        };
+      });
+
       const { data } = await HTTP.post({
         url: "/v1/mid-point/search",
         data: {
-          stations: filteredAddressList,
+          stations: modifiedAddressList,
         },
       });
 
@@ -47,7 +54,7 @@ export const MidPointApi = {
       console.error(e);
       if (axios.isAxiosError(e)) {
         const { response } = e;
-        const errorMessage = response?.data?.message;
+        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
         throw new Error(errorMessage);
       }
     }

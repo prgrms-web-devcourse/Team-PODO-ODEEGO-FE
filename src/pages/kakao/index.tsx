@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
-import Header from "@/components/layout/header";
-import axios from "axios";
+
 import { setLocalStorage } from "@/utils/storage";
+import { axiosInstanceWitToken } from "@/axios/instance";
+import Header from "@/components/layout/header";
 
 const Kakao = () => {
   const router = useRouter();
@@ -13,16 +14,11 @@ const Kakao = () => {
 
   const [token, setToken] = useState("");
 
-  // const [token, setToken] = useRecoilState(accessTokenState);
-
   useEffect(() => {
     try {
-      // 새로고침시 500에러나옴
       const fetchKaokaoUserData = async () => {
         if (authCode) {
           const loginKakao = `/api/kakao-login`;
-
-          console.log(authCode);
 
           const responseKakao = await fetch(loginKakao, {
             method: "POST",
@@ -34,44 +30,38 @@ const Kakao = () => {
 
           const resultKakao = await responseKakao.json();
 
-          console.log(resultKakao);
+          // const { tokenResponse } = resultKakao;
 
-          const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
+          // console.log(tokenResponse);
+          // const data = await axios.post(`/api/auth/login`, tokenResponse);
 
-          console.log(loginBackendUrl);
-          // 새로고침 임시 방편 코드
-          if (window.performance) {
-            if (performance.navigation.type == 1) {
-              console.error("The page is reloaded");
-            } else {
-              const { data } = await axios.post(
-                loginBackendUrl,
-                {},
-                {
-                  headers: {
-                    Authorization: `Bearer ${resultKakao.tokenResponse.access_token}`,
-                  },
-                }
-              );
-
-              console.log(data);
-              setToken(data.accessToken);
-              setLocalStorage("token", data.accessToken);
-            }
-          }
+          // console.log(data);
 
           setLocalStorage(
             "logoutToken",
             resultKakao.tokenResponse.access_token
           );
+
+          // 새로고침 임시 방편 코드
+          if (window.performance) {
+            if (performance.navigation.type == 1) {
+              console.error("The page is reloaded");
+            } else {
+              const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
+              const { data } = await axiosInstanceWitToken.post(
+                loginBackendUrl
+              );
+              setToken(data.accessToken);
+              setLocalStorage("token", data.accessToken);
+            }
+          }
         }
       };
-
       fetchKaokaoUserData();
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }, [authCode, router]);
+  }, [authCode, router, setToken]);
 
   return (
     <SignUpContainer>
@@ -103,6 +93,6 @@ const BorderContainer = styled.div`
 `;
 
 const SignUpContainer = styled.div`
-  width: 100%;
+  width: 43rem;
   margin: 0 auto;
 `;
