@@ -14,7 +14,7 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <IconButton>
+          <IconButton sx={{ padding: 0 }}>
             <IosShareIcon
               sx={{
                 display: "block",
@@ -47,7 +47,6 @@ const Container = styled.li`
   list-style: none;
   padding: 2.1rem 1.5rem 2.5rem 1.5rem;
   background-color: ${COLORS.backgroundSecondary};
-  border-bottom: 1px solid rgba(90, 178, 125, 0.3);
 `;
 
 const TitleIconContainer = styled.div`

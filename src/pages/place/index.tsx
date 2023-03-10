@@ -9,6 +9,9 @@ import { PlaceResponse } from "@/types/api/place";
 import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
+import Error from "next/error";
+import { CustomError } from "@/constants/custom-error";
+import Image from "next/image";
 
 interface PageProps {
   stationName: string;
@@ -36,8 +39,14 @@ export const getServerSideProps = async ({
       },
     };
   } catch (e) {
-    //임시 처리
+    //TODO: 에러 바운더리 적용
     console.error(e);
+    if (axios.isAxiosError(e)) {
+      const errorCode = e.response?.data.errorCode;
+      const error = CustomError[errorCode];
+
+      return <Error statusCode={error.status} title={error.message} />;
+    }
   }
 };
 
@@ -85,7 +94,7 @@ const PlacePage = ({ stationName, places }: PageProps) => {
           ) : (
             <PlaceList placeList={places?.content} />
           )}
-          {hasNextPage && (
+          {hasNextPage ? (
             <Box
               sx={{
                 display: "flex",
@@ -97,6 +106,16 @@ const PlacePage = ({ stationName, places }: PageProps) => {
               {isFetching && isFetchingNextPage && (
                 <CircularProgress size={32} />
               )}
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "1.5rem 0",
+              }}>
+              <Image src='/logo1.svg' alt='odeego' width={200} height={30} />
             </Box>
           )}
         </UnOrderedList>
@@ -160,7 +179,7 @@ const UnOrderedList = styled.ul`
     display: none;
   }
 
-  > li:last-child {
-    border-bottom: 0;
+  & li:not(:first-child) {
+    border-top: 1px solid rgba(90, 178, 125, 0.3);
   }
 `;

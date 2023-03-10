@@ -11,8 +11,10 @@ interface PlaceImageProps {
 }
 
 const PlaceImage = ({ src, alt, placeholder }: PlaceImageProps) => {
+  // TODO: 이미지 최적화 작업을 하면서 lazy loading도입.
   // const { loaded, imgRef } = useLazyLoadImage(lazy);
 
+  // TODO: 이미지 최적화를 위한 pre-loading
   const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.onerror = null;
     e.currentTarget.remove();
@@ -56,6 +58,10 @@ const Container = styled.div`
   /* margin-right: 0.6rem; */
 `;
 
+/*
+CHECK
+- 이미지 최적화 실패했을 경우를 위해 주석 지우는 것 보류
+*/
 // const Image = styled.img`
 //   width: 12.5rem;
 //   height: 12.5rem;
