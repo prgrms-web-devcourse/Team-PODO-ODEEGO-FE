@@ -1,7 +1,8 @@
 type LocalStorage = typeof window.localStorage;
 
 export const getLocalStorage = (key: string) => {
-  // if (key === undefined || key === null) return;
+  if (key === undefined || key === null) return;
+  if (typeof window === "undefined") return;
 
   const storage: LocalStorage = localStorage;
   try {
@@ -16,6 +17,7 @@ export const getLocalStorage = (key: string) => {
 
 export const setLocalStorage = (key: string, value: string) => {
   if (value === undefined || value === null) return;
+  if (typeof window === "undefined") return;
 
   const storage: LocalStorage = localStorage;
   try {
@@ -27,6 +29,7 @@ export const setLocalStorage = (key: string, value: string) => {
 
 export const removeLocalStorage = (key: string) => {
   if (key === "") return;
+  if (typeof window === "undefined") return;
 
   const storage: LocalStorage = localStorage;
   try {

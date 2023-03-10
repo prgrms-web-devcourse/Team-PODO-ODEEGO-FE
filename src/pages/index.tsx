@@ -1,11 +1,5 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  IconButton,
-  Stack,
-} from "@mui/material";
+import { Box, CircularProgress, IconButton, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
@@ -13,7 +7,6 @@ import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { MidPointApi } from "@/axios/mid-point";
 import { GroupsApi } from "@/axios/groups";
-import { TestApi } from "@/axios/test";
 import { getLocalStorage, setLocalStorage } from "@/utils/storage";
 import { validateAddressListUnderTwoLength } from "@/utils/error";
 import Header from "@/components/layout/header";
@@ -25,14 +18,11 @@ import {
   ValidGroupModal,
 } from "@/components/home";
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
-import {
-  accessTokenState,
-  isFirstVisitState,
-  MidPointState,
-  searchState,
-} from "@/recoil";
+import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
+import useLocalStorage from "@/hooks/use-localStorage";
+import { AllGroupsResponse } from "@/types/api/group";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -52,7 +42,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [groupId, setGroupId] = useState("");
   const setMidPointResponse = useSetRecoilState(MidPointState);
-  const [token, setToken] = useRecoilState(accessTokenState);
+  const [token] = useLocalStorage("token", "");
   const hasAccessToken = token ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
@@ -126,9 +116,9 @@ export default function Home() {
   });
 
   const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
-    const { groups } = await GroupsApi.getAll(token);
+    const { groups }: AllGroupsResponse = await GroupsApi.getAll(token);
     const { groupId, remainingTime } = groups[0];
-
+    console.log(groups);
     const times = remainingTime.split(":");
     const minutes = Number(times[1]);
     const seconds = Math.floor(Number(times[2]));
@@ -159,19 +149,6 @@ export default function Home() {
 
     initGroupId();
   }, [hasAccessToken, setGroupId, token]);
-
-  //tmp 더미 회원 생성 메서드
-  const createTmpDummyUser = async () => {
-    const nickname = "k" + Math.random() + "";
-
-    try {
-      const { memberId } = await TestApi.postDummyUser(nickname);
-
-      setToken(memberId);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   //event handler
   const handleInputClickRoute = (index: number) => {
@@ -240,7 +217,6 @@ export default function Home() {
 
   return (
     <>
-      <Button onClick={createTmpDummyUser}>Set Token</Button>
       <Header />
       <MainContainer>
         <BorderContainer />

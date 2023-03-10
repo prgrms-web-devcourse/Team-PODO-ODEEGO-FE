@@ -14,3 +14,13 @@ export interface GroupDetailResponse {
   hostId: string;
   participants: ParticipantResponse[];
 }
+
+interface GroupResponse {
+  groupId: string;
+  capacity: number;
+  createdAt: Date;
+  remainingTime: string;
+}
+export interface AllGroupsResponse {
+  groups: [GroupResponse];
+}

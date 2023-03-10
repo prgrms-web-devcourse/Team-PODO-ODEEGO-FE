@@ -1,18 +1,18 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
-
-import { setLocalStorage } from "@/utils/storage";
-import { axiosInstanceWitToken } from "@/axios/instance";
 import Header from "@/components/layout/header";
+import useLocalStorage from "@/hooks/use-localStorage";
+import { axiosInstanceWitToken } from "@/axios/instance";
 
 const Kakao = () => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const [token, setToken] = useState("");
+  const [token, setToken] = useLocalStorage("token", "");
+  const [, setLogoutToken] = useLocalStorage("logoutToken", "");
 
   useEffect(() => {
     try {
@@ -37,10 +37,7 @@ const Kakao = () => {
 
           // console.log(data);
 
-          setLocalStorage(
-            "logoutToken",
-            resultKakao.tokenResponse.access_token
-          );
+          setLogoutToken(resultKakao.tokenResponse.access_token);
 
           // 새로고침 임시 방편 코드
           if (window.performance) {
@@ -52,7 +49,6 @@ const Kakao = () => {
                 loginBackendUrl
               );
               setToken(data.accessToken);
-              setLocalStorage("token", data.accessToken);
             }
           }
         }
@@ -61,7 +57,7 @@ const Kakao = () => {
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }, [authCode, router]);
+  }, [authCode, router, setLogoutToken, setToken]);
 
   return (
     <SignUpContainer>
