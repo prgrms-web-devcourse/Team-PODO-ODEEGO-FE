@@ -10,6 +10,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import { axiosInstanceWitToken } from "@/axios/instance";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import useModal from "../../hooks/use-modal";
 // interface TokenProps {
 //   token?: string;
 //   loginCookie?: string;
@@ -25,29 +26,26 @@ const Header = ({ token }: any) => {
     if (!getToken) return;
     setToken(getToken);
   }, [router, token]);
+  const { openModal } = useModal();
 
   const handleBackClick = async () => {
     switch (pathname) {
       case "/signin":
         router.push(`${ROUTES.HOME}`);
         break;
-
       case "/kakao":
-        const token = getLocalStorage("logoutToken");
-        try {
-          await fetch(`/api/kakao-logout`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token,
-            }),
-          });
-        } catch (err) {
-          throw new Error((err as Error).message);
-        }
-        router.push(`${ROUTES.HOME}`);
+        openModal({
+          children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
+          btnText: {
+            confirm: "홈으로",
+            close: "취소",
+          },
+          handleConfirm: async () => {
+            router.push(`${ROUTES.HOME}`);
+
+            // return response;
+          },
+        });
         break;
 
       case "/mypage":
