@@ -87,53 +87,54 @@ const Header = ({ token }: any) => {
     <HeaderContainer>
       {tokenData && (
         <HeaderIconWrap>
-          <KeyboardBackspaceIcon
-            style={{
-              marginTop: "0.6rem",
-            }}
-            onClick={handleBackClick}
-          />
-
-          <AccountCircleIcon
-            style={{
-              marginTop: "1rem",
-            }}
-            onClick={handleClickMypage}
-          />
-
-          <HeaderLogout>
+          <HeaderBackImage>
+            <KeyboardBackspaceIcon onClick={handleBackClick} />
+          </HeaderBackImage>
+          <NavbarIcons>
+            <AccountCircleIcon onClick={handleClickMypage} />
             <ExitToAppIcon onClick={handleLogout} />
-          </HeaderLogout>
+          </NavbarIcons>
         </HeaderIconWrap>
       )}
 
-      <HeaderImage>
-        <TextP>{HEADER_TEXT}</TextP>
+      <TextP>{HEADER_TEXT}</TextP>
 
-        <Image
-          src='/logo1.svg'
-          alt='Odeego Logo'
-          width={147}
-          height={56}
-          priority
-        />
-      </HeaderImage>
+      <Image
+        src='/logo1.svg'
+        alt='Odeego Logo'
+        width={147}
+        height={56}
+        priority
+      />
     </HeaderContainer>
   );
 };
 
 export default Header;
 
-const HeaderImage = styled.div``;
-
-const HeaderLogout = styled.h2`
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  position: relative;
-  right: 2rem;
+const HeaderBackImage = styled.div`
+  margin-left: 20px;
 `;
+
+const NavbarIcons = styled.div`
+  display: flex;
+  svg {
+    margin: 1rem;
+  }
+  align-items: center;
+  height: 10vh;
+  justify-content: right;
+  width: 100%;
+`;
+
+// const HeaderLogout = styled.h2`
+//   font-size: 1.2rem;
+//   font-weight: 700;
+//   color: #fff;
+//   cursor: pointer;
+//   position: relative;
+//   right: 2rem;
+// `;
 
 const HeaderContainer = styled.header`
   height: 17.4rem;
@@ -156,13 +157,11 @@ const TextP = styled.p`
 
 const HeaderIconWrap = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 90%;
-  margin-left: 2rem;
+
+  width: 100%;
   svg {
     font-size: 3rem;
   }
