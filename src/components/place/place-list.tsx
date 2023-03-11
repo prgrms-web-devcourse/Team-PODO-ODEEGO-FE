@@ -14,6 +14,7 @@ const PlaceList = ({ placeList }: PlaceListProps) => {
           businessName={p.businessName}
           address={p.address}
           images={p.images}
+          shareUrl={p.shareUrl}
         />
       ))}
     </>

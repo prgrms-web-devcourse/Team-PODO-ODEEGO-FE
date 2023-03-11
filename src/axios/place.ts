@@ -13,9 +13,6 @@ export const PlaceApi = {
         url: `/v1/places?stationName=${stationName}&category=${category}&page=${page}&size=${size}`,
       });
 
-      //TODO: 지우기 (Loading component확인을 위한 코드)
-      await (() => new Promise((r) => setTimeout(r, 500)))();
-
       return data;
     } catch (e) {
       console.error(e);

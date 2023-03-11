@@ -4,9 +4,10 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import { ImageResponse, PlaceResponse } from "@/types/api/place";
 import PlaceImage from "./place-image";
 import { IconButton } from "@mui/material";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 
-const Place = ({ businessName, address, images }: PlaceResponse) => {
+const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
   const [filteredImages, setFilteredImages] = useState<ImageResponse[]>([]);
 
   useEffect(() => {
@@ -16,15 +17,36 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
     setFilteredImages(imageArr);
   }, [images]);
 
+  const handleClickShareClipboard = async (
+    e: MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    await navigator.clipboard.writeText(`${shareUrl}`);
+    toast.success("복사 완료", {
+      style: {
+        border: "1px solid #FF7754",
+        color: "#FF7754",
+        fontSize: "1.5rem",
+      },
+      iconTheme: {
+        primary: "#FF7754",
+        secondary: "#FFFAEE",
+      },
+    });
+  };
+
   return (
     <Container>
+      <Toaster />
       <TitleIconContainer>
         <TitleContainer>
           <h3>{businessName}</h3>
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <IconButton sx={{ padding: 0 }}>
+          <IconButton sx={{ padding: 0 }} onClick={handleClickShareClipboard}>
             <IosShareIcon
               sx={{
                 display: "block",
