@@ -186,7 +186,7 @@ const UnOrderedList = styled.ul`
     display: none;
   }
 
-  & li:not(:first-of-child) {
+  & li:not(:first-of-type) {
     border-top: 1px solid rgba(90, 178, 125, 0.3);
   }
 `;

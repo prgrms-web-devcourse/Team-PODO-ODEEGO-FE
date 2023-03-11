@@ -26,12 +26,13 @@ const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
     await navigator.clipboard.writeText(`${shareUrl}`);
     toast.success("복사 완료", {
       style: {
-        border: "1px solid #FF7754",
-        color: "#FF7754",
-        fontSize: "1.5rem",
+        border: "1px solid #5AB27D",
+        color: "#464646",
+        fontWeight: "bold",
+        backgroundColor: "#FDFDFD",
       },
       iconTheme: {
-        primary: "#FF7754",
+        primary: "#5AB27D",
         secondary: "#FFFAEE",
       },
     });
