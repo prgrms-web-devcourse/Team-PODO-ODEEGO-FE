@@ -9,16 +9,16 @@ import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import { axiosInstanceWitToken } from "@/axios/instance";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+// interface TokenProps {
+//   token?: string;
+//   loginCookie?: string;
+// }
 
-interface TokenProps {
-  token?: string;
-}
-
-const Header = ({ token }: TokenProps) => {
+const Header = ({ token }: any) => {
   const router = useRouter();
   const { pathname } = router;
-
-  const [tokenData, setToken] = useState<string>("");
+  const [tokenData, setToken] = useState<string>(token);
 
   useEffect(() => {
     const getToken = getLocalStorage("logoutToken");
@@ -79,6 +79,10 @@ const Header = ({ token }: TokenProps) => {
     }
   };
 
+  const handleClickMypage = () => {
+    router.push("/mypage");
+  };
+
   return (
     <HeaderContainer>
       {tokenData && (
@@ -88,6 +92,13 @@ const Header = ({ token }: TokenProps) => {
               marginTop: "0.6rem",
             }}
             onClick={handleBackClick}
+          />
+
+          <AccountCircleIcon
+            style={{
+              marginTop: "1rem",
+            }}
+            onClick={handleClickMypage}
           />
 
           <HeaderLogout>
@@ -102,8 +113,8 @@ const Header = ({ token }: TokenProps) => {
         <Image
           src='/logo1.svg'
           alt='Odeego Logo'
-          width={137}
-          height={46}
+          width={147}
+          height={56}
           priority
         />
       </HeaderImage>
@@ -113,9 +124,7 @@ const Header = ({ token }: TokenProps) => {
 
 export default Header;
 
-const HeaderImage = styled.div`
-  height: 50%;
-`;
+const HeaderImage = styled.div``;
 
 const HeaderLogout = styled.h2`
   font-size: 1.2rem;
@@ -148,6 +157,10 @@ const TextP = styled.p`
 const HeaderIconWrap = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 90%;
   margin-left: 2rem;
   svg {

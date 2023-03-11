@@ -49,7 +49,6 @@ const Kakao = () => {
             } else {
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
-              console.log(loginBackendUrl);
               // const { data } = await axiosInstanceWitToken.post(
               //   loginBackendUrl
               // );
@@ -63,7 +62,6 @@ const Kakao = () => {
                   },
                 }
               );
-              console.log(data);
               setToken(data.accessToken);
               // 오디고 토큰 쿠키에 저장하기
               setLocalStorage("token", data.accessToken);
