@@ -1,11 +1,21 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { PlaceResponse } from "@/types/api/place";
+import { ImageResponse, PlaceResponse } from "@/types/api/place";
 import PlaceImage from "./place-image";
 import { IconButton } from "@mui/material";
+import { useEffect, useState } from "react";
 
 const Place = ({ businessName, address, images }: PlaceResponse) => {
+  const [filteredImages, setFilteredImages] = useState<ImageResponse[]>([]);
+
+  useEffect(() => {
+    //NET: ERR_CERT_INVALID_NAME 막기 위한 http url 거르기
+    const imageArr = images.filter((i) => i.url.indexOf("http://") === -1);
+
+    setFilteredImages(imageArr);
+  }, [images]);
+
   return (
     <Container>
       <TitleIconContainer>
@@ -27,7 +37,7 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {images.map((i, index) => (
+        {filteredImages.map((i, index) => (
           <PlaceImage
             lazy
             key={index}
