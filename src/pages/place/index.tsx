@@ -4,11 +4,10 @@ import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
-import PacManSpinner from "@/components/common/spinner/pac-man-spinner";
 import { useCallback } from "react";
 
 interface PageProps {
@@ -86,7 +85,7 @@ const PlacePage = ({ stationName }: PageProps) => {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
               }}>
-              <PacManSpinner pacManSize='40px' ballSize='13px' />
+              <CircularProgress size='5rem' sx={{ color: "#5AB27D" }} />
             </Box>
           ) : (
             <>
@@ -104,7 +103,7 @@ const PlacePage = ({ stationName }: PageProps) => {
                   }}
                   ref={setTarget}>
                   {isFetching && isFetchingNextPage && (
-                    <PacManSpinner pacManSize='30px' ballSize='10px' />
+                    <CircularProgress size='3rem' sx={{ color: "#5AB27D" }} />
                   )}
                 </Box>
               ) : (
