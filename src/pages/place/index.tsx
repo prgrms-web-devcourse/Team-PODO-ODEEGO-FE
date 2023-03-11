@@ -9,6 +9,7 @@ import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
 import PacManSpinner from "@/components/common/spinner/pac-man-spinner";
+import { useCallback } from "react";
 
 interface PageProps {
   stationName: string;
@@ -38,11 +39,17 @@ const PlacePage = ({ stationName }: PageProps) => {
     rootMargin: "0px",
     threshold: 0.5,
     onIntersect: async ([{ isIntersecting }]) => {
-      if (isIntersecting) {
+      if (isIntersecting && !isFetching && !isFetchingNextPage) {
         fetchNextPage();
       }
     },
   });
+
+  const fetchData = useCallback(
+    ({ pageParam = FIRST_PAGE_NUM }) =>
+      PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
+    [stationName, tabValue]
+  );
 
   const {
     data,
@@ -51,17 +58,12 @@ const PlacePage = ({ stationName }: PageProps) => {
     isFetching,
     isFetchingNextPage,
     hasNextPage,
-  } = useInfiniteQuery(
-    [USE_QUERY_KEYWORD, tabValue, stationName],
-    ({ pageParam = FIRST_PAGE_NUM }) =>
-      PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = allPages.length + 1;
-        return !lastPage.last ? nextPage : undefined;
-      },
-    }
-  );
+  } = useInfiniteQuery([USE_QUERY_KEYWORD, tabValue, stationName], fetchData, {
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = allPages.length + 1;
+      return !lastPage.last ? nextPage : undefined;
+    },
+  });
 
   return (
     <PlaceContainer>
