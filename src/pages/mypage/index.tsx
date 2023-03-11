@@ -71,26 +71,55 @@ const MyPage = () => {
     }
   };
 
+  const handleMyData = () => {
+    openModal({
+      children: "서울 강남구 독산대로 365",
+      btnText: {
+        close: "취소",
+      },
+    });
+  };
   return (
     <LoginContainer>
       <Header />
 
       <BorderContainer />
+      <MypageNameTitle>홍길동 님 안녕하세요 ^^!</MypageNameTitle>
 
       <LoginWrapper>
-        <h3>홍길동 님 안녕하세요 ^^!</h3>
-
         <MypageContainer>
           <AccountCircleIcon style={{ fontSize: 200, margin: "0 auto" }} />
 
           <MyapgeShutDown onClick={handleLogout}>로그아웃</MyapgeShutDown>
           <MypageLogout onClick={handleClick}>회원탈퇴</MypageLogout>
+          <MypageData onClick={handleMyData}>내 주소 보기</MypageData>
         </MypageContainer>
       </LoginWrapper>
     </LoginContainer>
   );
 };
 export default MyPage;
+
+const MypageNameTitle = styled.h3`
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MypageData = styled.div`
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+`;
 
 const MypageContainer = styled.div`
   display: flex;
