@@ -14,7 +14,7 @@ export const PlaceApi = {
       });
 
       //TODO: 지우기 (Loading component확인을 위한 코드)
-      await (() => new Promise((r) => setTimeout(r, 2000)))();
+      await (() => new Promise((r) => setTimeout(r, 500)))();
 
       return data;
     } catch (e) {
