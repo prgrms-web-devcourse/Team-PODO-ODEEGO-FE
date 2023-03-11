@@ -78,8 +78,11 @@ const PlacePage = ({ stationName }: PageProps) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: "5rem",
                 padding: "2rem 0 2.5rem 0",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
               }}>
               <PacManSpinner pacManSize='40px' ballSize='13px' />
             </Box>
