@@ -9,9 +9,6 @@ import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
 import PacManSpinner from "@/components/common/spinner/pac-man-spinner";
-// import { useEffect } from "react";
-// import { PlaceResponse } from "@/types/api/place";
-// import usePreloadImage from "@/hooks/use-preload-image";
 
 interface PageProps {
   stationName: string;
@@ -65,31 +62,6 @@ const PlacePage = ({ stationName }: PageProps) => {
       },
     }
   );
-
-  // const { isPreloaded, setImageList } = usePreloadImage();
-
-  // useEffect(() => {
-  //   // const reducedData = data?.pages.reduce(
-  //   //   (acc, curContent) => [
-  //   //     ...acc,
-  //   //     ...curContent.content.reduce(
-  //   //       (acc: [], curPlace: PlaceResponse) => [...acc, ...curPlace.images],
-  //   //       []
-  //   //     ),
-  //   //   ],
-  //   //   []
-  //   // );
-
-  //   const curContent = data?.pages[data?.pages.length - 1 || 0];
-  //   const imgList = curContent && [
-  //     ...curContent.content.reduce(
-  //       (acc: [], curPlace: PlaceResponse) => [...acc, ...curPlace.images],
-  //       []
-  //     ),
-  //   ];
-
-  //   setImageList(imgList);
-  // }, [data, setImageList]);
 
   return (
     <PlaceContainer>
