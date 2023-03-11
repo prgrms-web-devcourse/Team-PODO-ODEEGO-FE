@@ -4,18 +4,14 @@ import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
-import axios from "axios";
-import { PlaceResponse } from "@/types/api/place";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
-import Error from "next/error";
-import { CustomError } from "@/constants/custom-error";
 import Image from "next/image";
+import PacManSpinner from "@/components/common/spinner/pac-man-spinner";
 
 interface PageProps {
   stationName: string;
-  places: { content: PlaceResponse[] };
 }
 
 const SIZE = 4;
@@ -27,30 +23,14 @@ export const getServerSideProps = async ({
 }: {
   query: { stationName: string };
 }) => {
-  try {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=${FIRST_PAGE_NUM}&size=${SIZE}`
-    );
-
-    return {
-      props: {
-        stationName,
-        places: data,
-      },
-    };
-  } catch (e) {
-    //TODO: 에러 바운더리 적용
-    console.error(e);
-    if (axios.isAxiosError(e)) {
-      const errorCode = e.response?.data.errorCode;
-      const error = CustomError[errorCode];
-
-      return <Error statusCode={error.status} title={error.message} />;
-    }
-  }
+  return {
+    props: {
+      stationName,
+    },
+  };
 };
 
-const PlacePage = ({ stationName, places }: PageProps) => {
+const PlacePage = ({ stationName }: PageProps) => {
   const tabValue = useRecoilValue(tabState);
 
   const { setTarget } = useIntersectionObserver({
@@ -64,18 +44,25 @@ const PlacePage = ({ stationName, places }: PageProps) => {
     },
   });
 
-  const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
-    useInfiniteQuery(
-      [USE_QUERY_KEYWORD, tabValue],
-      ({ pageParam = FIRST_PAGE_NUM }) =>
-        PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
-      {
-        getNextPageParam: (lastPage, allPages) => {
-          const nextPage = allPages.length + 1;
-          return !lastPage.last ? nextPage : undefined;
-        },
-      }
-    );
+  const {
+    data,
+    fetchNextPage,
+    isLoading,
+    isFetching,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(
+    [USE_QUERY_KEYWORD, tabValue, stationName],
+    ({ pageParam = FIRST_PAGE_NUM }) =>
+      PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
+    {
+      keepPreviousData: false,
+      getNextPageParam: (lastPage, allPages) => {
+        const nextPage = allPages.length + 1;
+        return !lastPage.last ? nextPage : undefined;
+      },
+    }
+  );
 
   return (
     <PlaceContainer>
@@ -86,36 +73,53 @@ const PlacePage = ({ stationName, places }: PageProps) => {
       <BorderContainer />
       <MainContainer>
         <UnOrderedList>
-          {data ? (
-            data.pages.map((p, i) => (
-              <PlaceList key={i} placeList={p.content} />
-            ))
-          ) : (
-            <PlaceList placeList={places?.content} />
-          )}
-          {hasNextPage ? (
+          {isLoading ? (
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                padding: "1rem 0 2rem 0",
-              }}
-              ref={setTarget}>
-              {isFetching && isFetchingNextPage && (
-                <CircularProgress size={32} />
-              )}
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "1.5rem 0",
+                marginTop: "5rem",
+                padding: "2rem 0 2.5rem 0",
               }}>
-              <Image src='/logo1.svg' alt='odeego' width={200} height={30} />
+              <PacManSpinner pacManSize='40px' ballSize='13px' />
             </Box>
+          ) : (
+            <>
+              {data &&
+                data.pages.map((p, i) => (
+                  <PlaceList key={i} placeList={p.content} />
+                ))}
+              {hasNextPage ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "3rem 0 5rem 0",
+                  }}
+                  ref={setTarget}>
+                  {isFetching && isFetchingNextPage && (
+                    <PacManSpinner pacManSize='30px' ballSize='10px' />
+                  )}
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "1.5rem 0",
+                  }}>
+                  <Image
+                    src='/logo1.svg'
+                    alt='odeego'
+                    width={200}
+                    height={30}
+                  />
+                </Box>
+              )}
+            </>
           )}
         </UnOrderedList>
       </MainContainer>
