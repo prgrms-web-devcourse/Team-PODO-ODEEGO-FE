@@ -82,7 +82,21 @@ const Header = ({ token }: any) => {
   };
 
   const handleClickMypage = () => {
-    router.push("/mypage");
+    if (pathname === "/kakao") {
+      openModal({
+        children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
+        btnText: {
+          confirm: "마이페이지 이동",
+          close: "취소",
+        },
+        handleConfirm: async () => {
+          router.push("/mypage");
+          // return response;
+        },
+      });
+    } else {
+      router.push("/mypage");
+    }
   };
 
   return (
