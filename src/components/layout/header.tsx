@@ -49,6 +49,10 @@ const Header = ({ token }: any) => {
         }
         router.push(`${ROUTES.HOME}`);
         break;
+
+      case "/mypage":
+        router.push(`${ROUTES.HOME}`);
+        break;
     }
   };
 
