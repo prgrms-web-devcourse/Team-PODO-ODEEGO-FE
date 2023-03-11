@@ -56,7 +56,6 @@ const PlacePage = ({ stationName }: PageProps) => {
     ({ pageParam = FIRST_PAGE_NUM }) =>
       PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
     {
-      keepPreviousData: false,
       getNextPageParam: (lastPage, allPages) => {
         const nextPage = allPages.length + 1;
         return !lastPage.last ? nextPage : undefined;
