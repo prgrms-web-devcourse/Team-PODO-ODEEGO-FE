@@ -13,18 +13,14 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useModal from "../../hooks/use-modal";
 import fetch from "node-fetch";
 import Cookies from "cookies";
+import { GetServerSidePropsContext } from "next";
 
 interface TokenProps {
   token?: string;
 }
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const cookies = new Cookies(context.req, context.res);
   const token = cookies.get("token");
-
-  console.log("TEST");
-
-  if (token) {
-  }
 
   return {
     props: {

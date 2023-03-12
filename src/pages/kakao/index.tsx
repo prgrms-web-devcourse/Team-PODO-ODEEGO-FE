@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
@@ -9,14 +9,14 @@ import Header from "@/components/layout/header";
 
 import { axiosInstanceWitToken } from "@/axios/instance";
 import fetch from "node-fetch";
+import { GetServerSidePropsContext } from "next";
 
-export async function getServerSideProps(context: any) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { NEXT_PUBLIC_URL } = process.env;
 
   const loginKakao = `/api/kakao-login`;
 
   const { code: authCode } = context.query;
-  console.log(authCode);
 
   const responseKakao = await fetch(NEXT_PUBLIC_URL + loginKakao, {
     method: "POST",
@@ -32,7 +32,6 @@ export async function getServerSideProps(context: any) {
 
   const loginAuthUrl = `/api/auth/login`;
 
-  console.log("TTT");
   await fetch(NEXT_PUBLIC_URL + loginAuthUrl, {
     method: "POST",
     headers: {
@@ -40,6 +39,8 @@ export async function getServerSideProps(context: any) {
     },
     body: JSON.stringify(tokenResponse),
   });
+
+  console.log(tokenResponse.access_token);
 
   return {
     props: {
@@ -52,10 +53,7 @@ const Kakao = (props: any) => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const [token, setToken] = useState("");
-
   useEffect(() => {
-    console.log(token);
     try {
       const fetchKaokaoUserData = async () => {
         if (authCode) {
@@ -82,7 +80,6 @@ const Kakao = (props: any) => {
               //   }
               // );
 
-              setToken(data.accessToken);
               setLocalStorage("token", data.accessToken);
             }
           }
@@ -92,7 +89,7 @@ const Kakao = (props: any) => {
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  }, [authCode, router, setToken]);
+  }, [authCode, router]);
 
   return (
     <SignUpContainer>
