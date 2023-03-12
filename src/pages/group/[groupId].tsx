@@ -230,38 +230,40 @@ const GroupPage = () => {
               <Refresh />
             </CustomIconButton>
           </Box>
-          {(isSubmitting || isLoading) && (
-            <Box
-              sx={{
-                display: "flex",
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "100%",
-                justifyContent: "center",
-                zIndex: "1000",
-              }}>
-              <CircularProgress />
-            </Box>
-          )}
           <form>
-            <Stack spacing={1.5}>
-              {inputs &&
-                inputs.map(({ nickname, stationName, memberId }, index) => (
-                  <div key={index}>
-                    <FormInput
-                      index={index}
-                      address={stationName}
-                      placeholder='주소가 아직 없어요...'
-                      onClick={() => handleInputClick(memberId)}
-                    />
-                    <InputLabel>
-                      {stationName ? `${nickname}이 입력했습니다` : ""}
-                    </InputLabel>
-                  </div>
-                ))}
-            </Stack>
+            <InputsContainer>
+              {(isSubmitting || isLoading) && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "100%",
+                    justifyContent: "center",
+                    zIndex: "1000",
+                  }}>
+                  <CircularProgress />
+                </Box>
+              )}
+              <Stack spacing={1.5}>
+                {inputs &&
+                  inputs.map(({ nickname, stationName, memberId }, index) => (
+                    <InputWrapper key={index} index={index}>
+                      <FormInput
+                        index={index}
+                        address={stationName}
+                        placeholder='주소가 아직 없어요...'
+                        onClick={() => handleInputClick(memberId)}
+                      />
+                      <InputLabel>
+                        {stationName ? `${nickname}이 입력했습니다` : ""}
+                      </InputLabel>
+                    </InputWrapper>
+                  ))}
+              </Stack>
+            </InputsContainer>
             <Stack spacing={1.5} sx={{ marginTop: "2rem" }}>
               <CustomButton
                 variant='contained'
@@ -289,6 +291,10 @@ const GroupPage = () => {
 
 export default GroupPage;
 
+const InputsContainer = styled.div`
+  position: relative;
+`;
+
 const InputLabel = styled.span`
   display: inline-block;
   width: 100%;
@@ -304,5 +310,18 @@ const CustomIconButton = styled(IconButton)`
   color: ${COLORS.altGreen};
   > svg {
     font-size: 2rem;
+  }
+`;
+
+const InputWrapper = styled.div<{ index: number }>`
+  animation: ${({ index }) => `fadein ${(index + 1) * 0.3}s ease-in`};
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `;
