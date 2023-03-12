@@ -3,7 +3,7 @@ import { Box, CircularProgress, IconButton, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { MidPointApi } from "@/axios/mid-point";
 import { GroupsApi } from "@/axios/groups";
@@ -277,7 +277,6 @@ export default function Home() {
               altText={BUTTON_GROUPS_ALT_TEXT}
             />
           </Stack>
-          <Toaster />
         </Form>
       </MainContainer>
     </>

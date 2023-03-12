@@ -27,7 +27,7 @@ const SelectModal = ({ isValid }: SelectProps) => {
         <TextP>몇 명이 모이나요?</TextP>
       ) : (
         <TextPContainer>
-          <TextP>방이 만료되었습니다.</TextP>
+          <TextP>모임이 만료되었습니다.</TextP>
           <TextP>새로 만드시겠습니까?</TextP>
         </TextPContainer>
       )}
