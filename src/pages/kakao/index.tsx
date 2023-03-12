@@ -6,28 +6,44 @@ import { COLORS } from "@/constants/css";
 
 import { setLocalStorage } from "@/utils/storage";
 import Header from "@/components/layout/header";
-import axios from "axios";
-import Cookies from "cookies";
+
 import { axiosInstanceWitToken } from "@/axios/instance";
+import fetch from "node-fetch";
 
 export async function getServerSideProps(context: any) {
-  const cookies = new Cookies(context.req, context.res);
-  const token = cookies.get("token");
+  const { NEXT_PUBLIC_URL } = process.env;
 
-  // const isLoggedIn = false;
-  console.log(token);
+  const loginKakao = `/api/kakao-login`;
 
-  if (token) {
-    // const response = await axios.get("https://api.example.com/user");
-    //
-    // if (response.status === 200) {
-    //   isLoggedIn = true;
-    // }
-  }
+  const { code: authCode } = context.query;
+  console.log(authCode);
+
+  const responseKakao = await fetch(NEXT_PUBLIC_URL + loginKakao, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ authCode }),
+  });
+
+  const result = await responseKakao.json();
+
+  const { tokenResponse } = result;
+
+  const loginAuthUrl = `/api/auth/login`;
+
+  console.log("TTT");
+  await fetch(NEXT_PUBLIC_URL + loginAuthUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(tokenResponse),
+  });
 
   return {
     props: {
-      token: token,
+      tokenResponse,
     },
   };
 }
@@ -43,36 +59,13 @@ const Kakao = (props: any) => {
     try {
       const fetchKaokaoUserData = async () => {
         if (authCode) {
-          const loginKakao = `/api/kakao-login`;
-
-          const responseKakao = await fetch(loginKakao, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ authCode }),
-          });
-
-          const resultKakao = await responseKakao.json();
-
-          const { tokenResponse } = resultKakao;
-
-          // 카카오 토큰 쿠키에 저장완료
-
-          // const { access_token } = JSON.parse(data.config.data);
-          // 이 스토리지에 저장하는 역할을 지금 -> 쿠키에한거임
-          setLocalStorage(
-            "logoutToken",
-            resultKakao.tokenResponse.access_token
-          );
+          setLocalStorage("logoutToken", props.tokenResponse.access_token);
 
           // 새로고침 임시 방편 코드
           if (window.performance) {
             if (performance.navigation.type === 1) {
               console.error("The page is reloaded");
             } else {
-              await axios.post(`/api/auth/login`, tokenResponse);
-
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
               const { data } = await axiosInstanceWitToken.post(
@@ -103,7 +96,7 @@ const Kakao = (props: any) => {
 
   return (
     <SignUpContainer>
-      <Header token={props.token} />
+      <Header />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

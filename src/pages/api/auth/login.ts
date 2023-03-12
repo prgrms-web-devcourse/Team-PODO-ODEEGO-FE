@@ -20,11 +20,13 @@ function setCookie(name: string, value: string, options = {}) {
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { access_token } = req.body;
 
+  // 토큰자체가 안나오고있네>?
   if (!access_token) {
     return res.status(400).json({ error: "Token is missing" });
   }
   const cookie = setCookie("token", access_token);
-
+  console.log("TEST@@@@@@@@@@@@@@@@@@@@@");
+  console.log(cookie);
   res.setHeader("Set-Cookie", cookie);
   res.status(200).json({ message: "Cookie has been set" });
 }

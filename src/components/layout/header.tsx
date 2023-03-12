@@ -11,53 +11,43 @@ import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import { axiosInstanceWitToken } from "@/axios/instance";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useModal from "../../hooks/use-modal";
+import fetch from "node-fetch";
+import Cookies from "cookies";
 
-// interface TokenProps {
-//   token?: string;
-//   loginCookie?: string;
-// }
+interface TokenProps {
+  token?: string;
+}
+export async function getServerSideProps(context: any) {
+  const cookies = new Cookies(context.req, context.res);
+  const token = cookies.get("token");
 
-// import { GetServerSideProps } from "next";
+  console.log("TEST");
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const myCookie = context.req?.cookies || "";
-//
-//   const result = await fetch(`/api/user`);
-//   const data = await result.json();
-//
-//   console.log(data);
-//   console.log(myCookie.token);
-//   let isLoggedIn;
-//   if (!myCookie.token) {
-//     isLoggedIn = false;
-//   } // nextJS redirect method
-//   if (myCookie.token) {
-//     isLoggedIn = true;
-//     return { redirect: { destination: "/", permanent: false } };
-//   }
-//
-//   return {
-//     props: {
-//       token: data,
-//       isLoggedIn: isLoggedIn,
-//     },
-//   };
-// };
+  if (token) {
+  }
 
-const Header = ({ token }: any) =>
+  return {
+    props: {
+      token,
+    },
+  };
+}
+
+const Header = (props: TokenProps) =>
   // props: InferGetServerSidePropsType<typeof getServerSideProps>
   {
     // console.log(props);
     const router = useRouter();
     const { pathname } = router;
-    const [tokenData, setToken] = useState<string>(token);
+    const [tokenData, setToken] = useState<string>("");
 
+    console.log(props.token);
     useEffect(() => {
       const getToken = getLocalStorage("logoutToken");
       if (!getToken) return;
 
       setToken(getToken);
-    }, [router, token]);
+    }, [router, props]);
     const { openModal } = useModal();
 
     const handleBackClick = async () => {
@@ -133,7 +123,7 @@ const Header = ({ token }: any) =>
 
     return (
       <HeaderContainer>
-        {(token || tokenData) && (
+        {(props.token || tokenData) && (
           <HeaderIconWrap>
             <HeaderBackImage>
               <KeyboardBackspaceIcon onClick={handleBackClick} />
