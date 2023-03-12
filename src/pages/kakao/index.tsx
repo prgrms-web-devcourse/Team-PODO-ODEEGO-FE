@@ -58,7 +58,6 @@ const Kakao = (props: any) => {
           const { tokenResponse } = resultKakao;
 
           // 카카오 토큰 쿠키에 저장완료
-          await axios.post(`/api/auth/login`, tokenResponse);
 
           // const { access_token } = JSON.parse(data.config.data);
           // 이 스토리지에 저장하는 역할을 지금 -> 쿠키에한거임
@@ -72,6 +71,8 @@ const Kakao = (props: any) => {
             if (performance.navigation.type === 1) {
               console.error("The page is reloaded");
             } else {
+              await axios.post(`/api/auth/login`, tokenResponse);
+
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
               const { data } = await axiosInstanceWitToken.post(
