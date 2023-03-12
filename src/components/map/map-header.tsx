@@ -16,13 +16,22 @@ const MapHeader = () => {
   const setSearchState = useSetRecoilState(searchState);
   const { openModal } = useModal();
 
+  const modalContent = () => {
+    return (
+      <Content>
+        <p>검색 결과가 초기화됩니다.</p>
+        <p>다시 돌아가시겠습니까</p>
+      </Content>
+    );
+  };
+
   const handleGoBack = () => {
     router.push("/");
   };
 
   const handleCancel = () => {
     openModal({
-      children: <p>정말로 삭제 하시겠습니까?</p>,
+      children: modalContent(),
       btnText: {
         confirm: "확인",
         close: "취소",
@@ -66,5 +75,14 @@ const CustomIconButton = styled(IconButton)`
   color: ${COLORS.altGreen};
   > svg {
     font-size: 2rem;
+  }
+`;
+
+const Content = styled.div`
+  text-align: center;
+  margin: 1rem 0;
+
+  > p {
+    margin: 0;
   }
 `;
