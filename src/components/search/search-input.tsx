@@ -1,5 +1,5 @@
-import { SearchAPI } from "@/pages/api/search";
 import { SearchAPI22 } from "@/axios/send-start-point";
+import { getSubway } from "@/axios/get-subway";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -100,7 +100,7 @@ const SearchInput = () => {
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
       console.log("search input is changed");
-      return SearchAPI.getSubway(searchInput);
+      return getSubway(searchInput);
     },
     {
       enabled: searchInput.length > 0,
