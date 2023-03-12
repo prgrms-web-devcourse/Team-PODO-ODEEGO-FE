@@ -22,6 +22,7 @@ import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
+import formatTime from "@/utils/format-time";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -117,10 +118,7 @@ export default function Home() {
   const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
     const { groups }: AllGroupsResponse = await GroupsApi.getAll(token);
     const { groupId, remainingTime } = groups[0];
-
-    const times = remainingTime.split(":");
-    const minutes = Number(times[1]);
-    const seconds = Math.floor(Number(times[2]));
+    const { minutes, seconds } = formatTime(remainingTime);
 
     return {
       groupId,
