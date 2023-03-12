@@ -47,7 +47,9 @@ const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <IconButton sx={{ padding: 0 }} onClick={handleClickShareClipboard}>
+          <IconButton
+            sx={{ padding: "0.5rem" }}
+            onClick={handleClickShareClipboard}>
             <IosShareIcon
               sx={{
                 display: "block",
