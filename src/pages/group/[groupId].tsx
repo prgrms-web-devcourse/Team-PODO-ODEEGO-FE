@@ -250,7 +250,7 @@ const GroupPage = () => {
               <Stack spacing={1.5}>
                 {inputs &&
                   inputs.map(({ nickname, stationName, memberId }, index) => (
-                    <InputWrapper key={index} index={index}>
+                    <>
                       <FormInput
                         index={index}
                         address={stationName}
@@ -260,7 +260,7 @@ const GroupPage = () => {
                       <InputLabel>
                         {stationName ? `${nickname}이 입력했습니다` : ""}
                       </InputLabel>
-                    </InputWrapper>
+                    </>
                   ))}
               </Stack>
             </InputsContainer>
@@ -293,6 +293,7 @@ export default GroupPage;
 
 const InputsContainer = styled.div`
   position: relative;
+  min-height: 10rem;
 `;
 
 const InputLabel = styled.span`
@@ -310,18 +311,5 @@ const CustomIconButton = styled(IconButton)`
   color: ${COLORS.altGreen};
   > svg {
     font-size: 2rem;
-  }
-`;
-
-const InputWrapper = styled.div<{ index: number }>`
-  animation: ${({ index }) => `fadein ${(index + 1) * 0.3}s ease-in`};
-
-  @keyframes fadein {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
   }
 `;
