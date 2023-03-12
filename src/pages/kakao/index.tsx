@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
@@ -36,8 +36,9 @@ const Kakao = (props: any) => {
   const { code: authCode } = router.query;
 
   console.log(props.token);
-  // const [token, setToken] = useState("");
+  const [token, setToken] = useState("");
 
+  console.log(token);
   useEffect(() => {
     try {
       const fetchKaokaoUserData = async () => {

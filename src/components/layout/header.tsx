@@ -50,7 +50,7 @@ const Header = ({ token }: any) =>
     // console.log(props);
     const router = useRouter();
     const { pathname } = router;
-    const [tokenData, setToken] = useState<string>("");
+    const [tokenData, setToken] = useState<string>(token);
 
     console.log(token);
 
@@ -67,7 +67,7 @@ const Header = ({ token }: any) =>
       // };
       //
       // dataFetch();
-      setToken(token);
+      setToken(getToken);
       //
       // const fetchToken = async () => {
       //   const cookieData: any = await axios.post(`/api/user`);
@@ -151,7 +151,7 @@ const Header = ({ token }: any) =>
 
     return (
       <HeaderContainer>
-        {token && (
+        {(token || tokenData) && (
           <HeaderIconWrap>
             <HeaderBackImage>
               <KeyboardBackspaceIcon onClick={handleBackClick} />
