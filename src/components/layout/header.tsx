@@ -52,29 +52,11 @@ const Header = ({ token }: any) =>
     const { pathname } = router;
     const [tokenData, setToken] = useState<string>(token);
 
-    console.log(token);
-
-    console.log(tokenData);
     useEffect(() => {
       const getToken = getLocalStorage("logoutToken");
       if (!getToken) return;
 
-      // const dataFetch = async () => {
-      //   const result = await fetch(`/api/user`);
-      //   const data = await result.json();
-      //
-      //   console.log(data);
-      // };
-      //
-      // dataFetch();
       setToken(getToken);
-      //
-      // const fetchToken = async () => {
-      //   const cookieData: any = await axios.post(`/api/user`);
-      //   setToken(cookieData?.data?.jwt);
-      // };
-      //
-      // fetchToken();
     }, [router, token]);
     const { openModal } = useModal();
 

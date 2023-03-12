@@ -8,6 +8,7 @@ import { setLocalStorage } from "@/utils/storage";
 import Header from "@/components/layout/header";
 import axios from "axios";
 import Cookies from "cookies";
+import { axiosInstanceWitToken } from "@/axios/instance";
 
 export async function getServerSideProps(context: any) {
   const cookies = new Cookies(context.req, context.res);
@@ -35,11 +36,10 @@ const Kakao = (props: any) => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  console.log(props.token);
   const [token, setToken] = useState("");
 
-  console.log(token);
   useEffect(() => {
+    console.log(token);
     try {
       const fetchKaokaoUserData = async () => {
         if (authCode) {
@@ -58,9 +58,9 @@ const Kakao = (props: any) => {
           const { tokenResponse } = resultKakao;
 
           // 카카오 토큰 쿠키에 저장완료
-          const data = await axios.post(`/api/auth/login`, tokenResponse);
+          await axios.post(`/api/auth/login`, tokenResponse);
 
-          const { access_token } = JSON.parse(data.config.data);
+          // const { access_token } = JSON.parse(data.config.data);
           // 이 스토리지에 저장하는 역할을 지금 -> 쿠키에한거임
           setLocalStorage(
             "logoutToken",
@@ -74,22 +74,21 @@ const Kakao = (props: any) => {
             } else {
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
 
-              // const { data } = await axiosInstanceWitToken.post(
-              //   loginBackendUrl
-              // );
-              //
-              const { data } = await axios.post(
-                loginBackendUrl,
-                {},
-                {
-                  headers: {
-                    Authorization: `Bearer ${access_token}`,
-                  },
-                }
+              const { data } = await axiosInstanceWitToken.post(
+                loginBackendUrl
               );
 
+              // const { data } = await axios.post(
+              //   loginBackendUrl,
+              //   {},
+              //   {
+              //     headers: {
+              //       Authorization: `Bearer ${access_token}`,
+              //     },
+              //   }
+              // );
+
               setToken(data.accessToken);
-              // 오디고 토큰 쿠키에 저장하기
               setLocalStorage("token", data.accessToken);
             }
           }
