@@ -23,6 +23,8 @@ import { toast, Toaster } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useGroupDetail } from "@/axios/groups";
 import { getLocalStorage } from "@/utils/storage";
+import { ValidGroupModal } from "@/components/home";
+import formatTime from "@/utils/format-time";
 
 interface InputState {
   memberId: string;
@@ -41,6 +43,10 @@ const GroupPage = () => {
   const { openModal } = useModal();
   const token = getLocalStorage("token");
   const [groupId, setGroupId] = useState<string>("");
+  const [remainingTime, setRemainingTime] = useState<{
+    minutes: number;
+    seconds: number;
+  }>();
   const {
     data,
     isLoading,
@@ -184,6 +190,15 @@ const GroupPage = () => {
     router.push("/");
   }
 
+  useEffect(() => {
+    if (!data) return;
+
+    const { minutes, seconds } = formatTime(data.remainingTime);
+    if (minutes <= 5) {
+      setRemainingTime({ minutes, seconds });
+    }
+  }, [data]);
+
   return (
     <>
       <Header />
@@ -198,11 +213,19 @@ const GroupPage = () => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "center",
               marginBottom: "1rem",
             }}>
             <CustomIconButton onClick={handleLink}>
               <InsertLink />
             </CustomIconButton>
+            {remainingTime && (
+              <ValidGroupModal
+                minutes={remainingTime.minutes}
+                seconds={remainingTime.seconds}
+                style={{ fontSize: "1.2rem", textAlign: "center", margin: "0" }}
+              />
+            )}
             <CustomIconButton onClick={handleRefresh}>
               <Refresh />
             </CustomIconButton>
