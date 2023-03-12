@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
@@ -7,12 +7,36 @@ import { COLORS } from "@/constants/css";
 import { setLocalStorage } from "@/utils/storage";
 import Header from "@/components/layout/header";
 import axios from "axios";
+import Cookies from "cookies";
 
-const Kakao = () => {
+export async function getServerSideProps(context: any) {
+  const cookies = new Cookies(context.req, context.res);
+  const token = cookies.get("token");
+
+  // const isLoggedIn = false;
+  console.log(token);
+
+  if (token) {
+    // const response = await axios.get("https://api.example.com/user");
+    //
+    // if (response.status === 200) {
+    //   isLoggedIn = true;
+    // }
+  }
+
+  return {
+    props: {
+      token: token,
+    },
+  };
+}
+
+const Kakao = (props: any) => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
-  const [token, setToken] = useState("");
+  console.log(props.token);
+  // const [token, setToken] = useState("");
 
   useEffect(() => {
     try {
@@ -44,7 +68,7 @@ const Kakao = () => {
 
           // 새로고침 임시 방편 코드
           if (window.performance) {
-            if (performance.navigation.type == 1) {
+            if (performance.navigation.type === 1) {
               console.error("The page is reloaded");
             } else {
               const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
@@ -62,6 +86,7 @@ const Kakao = () => {
                   },
                 }
               );
+
               setToken(data.accessToken);
               // 오디고 토큰 쿠키에 저장하기
               setLocalStorage("token", data.accessToken);
@@ -77,7 +102,7 @@ const Kakao = () => {
 
   return (
     <SignUpContainer>
-      <Header token={token} />
+      <Header token={props.token} />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 
