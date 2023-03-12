@@ -96,7 +96,7 @@ const Kakao = (props: any) => {
 
   return (
     <SignUpContainer>
-      <Header />
+      <Header token={props.tokenResponse.access_token} />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
 

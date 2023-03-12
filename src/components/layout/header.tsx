@@ -33,7 +33,7 @@ export async function getServerSideProps(context: any) {
   };
 }
 
-const Header = (props: TokenProps) =>
+const Header = ({ token }: TokenProps) =>
   // props: InferGetServerSidePropsType<typeof getServerSideProps>
   {
     // console.log(props);
@@ -41,13 +41,12 @@ const Header = (props: TokenProps) =>
     const { pathname } = router;
     const [tokenData, setToken] = useState<string>("");
 
-    console.log(props.token);
     useEffect(() => {
       const getToken = getLocalStorage("logoutToken");
       if (!getToken) return;
 
       setToken(getToken);
-    }, [router, props]);
+    }, [router, token]);
     const { openModal } = useModal();
 
     const handleBackClick = async () => {
@@ -123,7 +122,7 @@ const Header = (props: TokenProps) =>
 
     return (
       <HeaderContainer>
-        {(props.token || tokenData) && (
+        {(token || tokenData) && (
           <HeaderIconWrap>
             <HeaderBackImage>
               <KeyboardBackspaceIcon onClick={handleBackClick} />
