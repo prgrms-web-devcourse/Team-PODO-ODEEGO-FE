@@ -12,10 +12,10 @@ export const validateAddressListUnderTwoLength = (
 
   let prevAddress = addressList[0];
   for (const curAddress of addressList) {
-    const { stationName: pStation, lat: pLat, lng: pLng } = prevAddress;
-    const { stationName: cStation, lat: cLat, lng: cLng } = curAddress;
+    const { lat: pLat, lng: pLng } = prevAddress;
+    const { lat: cLat, lng: cLng } = curAddress;
 
-    if (pStation !== cStation || pLat !== cLat || pLng !== cLng) return "";
+    if (pLat !== cLat || pLng !== cLng) return "";
 
     prevAddress = curAddress;
   }
