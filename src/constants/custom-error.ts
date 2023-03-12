@@ -14,6 +14,7 @@ export const CustomError: temp = {
   G004: { message: "Group host is absent.", status: 500 },
   G005: { message: "Group capacity is out of bounds.", status: 400 },
   G006: { message: "Group Member's station is already defined.", status: 400 },
+  G007: { message: "Group host not matched.", status: 403 },
   S001: { message: "Station Not Found.", status: 404 },
   P001: { message: "Place Not Found.", status: 404 },
   A001: { message: "Token not found in request header.", status: 401 },
