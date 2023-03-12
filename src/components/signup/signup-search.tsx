@@ -1,7 +1,6 @@
 import { SearchAPI } from "@/pages/api/search";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
 import React from "react";
 import { searchOriginProps } from "@/types/search-props";
@@ -11,11 +10,9 @@ import useSignupSearch from "@/hooks/use-signup-search";
 import SignupInput from "@/components/signup/signup-input";
 
 const SignUpSearchInput = () => {
-  const router = useRouter();
-
-  console.log(router);
   const {
     errorMessage,
+    isError,
     isToggleBoxLoading,
     handleSignUpSubmit,
     handleStationKeyDown,
@@ -51,7 +48,7 @@ const SignUpSearchInput = () => {
               sxNumber={50}
             />
           )}
-          <SignUpButton onClick={handleSignUpSubmit}>
+          <SignUpButton disabled={!!isError} onClick={handleSignUpSubmit}>
             내 주소 저장하기
           </SignUpButton>
         </form>
@@ -129,6 +126,8 @@ const SignUpSearchToggleData = styled.li`
 `;
 
 const SignUpButton = styled.button`
+  color: ${(props) => (props.disabled ? "#aaa" : "#fff")};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -137,7 +136,6 @@ const SignUpButton = styled.button`
   height: 5vh;
   margin-top: 10rem;
   border-radius: 5px;
-  color: #fff;
   background-color: #ff7754;
   border: none;
 `;

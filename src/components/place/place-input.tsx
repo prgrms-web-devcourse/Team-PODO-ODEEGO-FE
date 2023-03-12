@@ -1,54 +1,48 @@
-import { InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import React from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import { COLORS } from "@/constants/css";
+import { useRouter } from "next/router";
+import styled from "@emotion/styled";
+import { ROUTES } from "@/constants";
 
-const PlaceInput = () => {
+interface PlaceInputProps {
+  value: string;
+}
+
+const PlaceInput = ({ value }: PlaceInputProps) => {
+  const router = useRouter();
+
   return (
     <>
-      <TextField
-        sx={{
-          width: "100%",
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "7px",
-            height: 50,
-            border: "0",
-            borderBottom: "1px solid #909090",
-          },
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "none",
-          },
-        }}
-        inputProps={{
-          style: { fontSize: 15, border: 0 },
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <KeyboardBackspaceIcon
-                sx={{
-                  color: `${COLORS.mainGreen}`,
-                  fontSize: "20px",
-                }}
-              />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position='end'>
-              <CloseIcon
-                sx={{
-                  color: `${COLORS.mainGreen}`,
-                  fontSize: "20px",
-                }}
-              />
-            </InputAdornment>
-          ),
-        }}
-        value='강남역'
-        type='text'
-      />
+      <HeaderContainer>
+        <KeyboardBackspaceIcon
+          sx={{
+            color: `${COLORS.mainGreen}`,
+            fontSize: "20px",
+            cursor: "pointer",
+            left: "2rem",
+            top: "1.3rem",
+          }}
+          onClick={() => router.replace(`${ROUTES.MAP}`)}
+        />
+        <span>{value}</span>
+      </HeaderContainer>
     </>
   );
 };
 export default PlaceInput;
+
+const HeaderContainer = styled.div`
+  border-bottom: 2px solid rgba(90, 178, 125, 0.5);
+  border-bottom-style: solid !important;
+  font-size: 1.7rem;
+  color: black;
+  padding: 1.3rem 0.5rem;
+  position: relative;
+
+  & span {
+    margin-left: 1rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+`;

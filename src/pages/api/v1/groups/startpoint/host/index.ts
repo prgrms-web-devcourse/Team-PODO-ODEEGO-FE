@@ -12,7 +12,6 @@ export default async function handler(
 
   const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}/host`;
 
-  console.log(`api/v1/groups/startpoint/host${req.body}`);
   try {
     const { data } = await axios({
       method: "patch",
@@ -31,7 +30,7 @@ export default async function handler(
   } catch (err) {
     if (axios.isAxiosError(err)) {
       const errorCode = err.response?.data.errorCode;
-      console.log(`custom error code ${errorCode}`);
+
       if (CustomError[errorCode]) {
         res.status(CustomError[errorCode].status).json({
           error: CustomError[errorCode].message,

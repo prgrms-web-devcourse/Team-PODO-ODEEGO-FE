@@ -1,9 +1,8 @@
-import { SearchAPI } from "@/pages/api/search";
 import { SearchAPI22 } from "@/axios/send-start-point";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import React, { useCallback, useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
@@ -11,17 +10,18 @@ import { Button, InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
-import { tokenRecoilState } from "@/recoil/token-recoil";
+import { getSubway } from "@/axios/get-subway";
 import EnterSearchPageModal from "./enter-searchpage-modal";
 import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 import { StartPointPros } from "@/types/startpoint-props";
+import { getLocalStorage } from "@/utils/storage";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
-  const [accessToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
+  const token = getLocalStorage("token");
   const router = useRouter();
 
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
@@ -57,12 +57,16 @@ const SearchInput = () => {
   }, [closeModal, groupId, handleConfirmEnterSearchPage, host]);
 
   // 링크를 공유 받았을 때.
-  if (groupId && !accessToken) {
+  if (groupId && !token) {
     openModal({
       children: <SetLoginModalContent />,
       btnText: {
         confirm: "로그인하기!",
         close: "취소",
+      },
+      handleConfirm: () => {
+        // 로그인
+        router.push("/signin");
       },
       handleClose: () => {
         window.close();
@@ -100,8 +104,8 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log("search input is changed");
-      return SearchAPI.getSubway(searchInput);
+      console.log(`search input is changed`);
+      return getSubway(searchInput);
     },
     {
       enabled: searchInput.length > 0,
@@ -110,7 +114,7 @@ const SearchInput = () => {
     }
   );
 
-  let timer: any = null;
+  let timer: number | null = null;
   const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 

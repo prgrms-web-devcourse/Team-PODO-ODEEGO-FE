@@ -1,19 +1,11 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
-import Image from "next/image";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import IosShareIcon from "@mui/icons-material/IosShare";
+import { PlaceResponse } from "@/types/api/place";
+import PlaceImage from "./place-image";
+import { IconButton } from "@mui/material";
 
-interface PlaceProps {
-  businessName: string;
-  address: string;
-}
-
-const SHARE_TEXT = "공유";
-const BOOKMARK_TEXT = "저장";
-
-const Place = ({ businessName, address }: PlaceProps) => {
-  const tmpImageList = [1, 2, 3, 4];
+const Place = ({ businessName, address, images }: PlaceResponse) => {
   return (
     <Container>
       <TitleIconContainer>
@@ -22,39 +14,27 @@ const Place = ({ businessName, address }: PlaceProps) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <div>
+          <IconButton>
             <IosShareIcon
               sx={{
                 display: "block",
-                height: "2.1rem",
-                width: "2.1rem",
+                height: "2.5rem",
+                width: "2.5rem",
+                color: "#5ab27d",
               }}
             />
-            <p>{SHARE_TEXT}</p>
-          </div>
-          <div>
-            <BookmarkBorderIcon
-              sx={{
-                display: "block",
-                height: "2.3rem",
-                width: "2.3rem",
-              }}
-            />
-            <p>{BOOKMARK_TEXT}</p>
-          </div>
+          </IconButton>
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {tmpImageList.map((i, index) => (
-          <div key={index}>
-            <Image
-              src={`/cafe${(i % 3) + 1}.png`}
-              alt='cafe image'
-              width={125}
-              height={125}
-              priority
-            />
-          </div>
+        {images.map((i, index) => (
+          <PlaceImage
+            lazy
+            key={index}
+            src={i.url}
+            alt='place image'
+            placeholder='/default-img02.jpg'
+          />
         ))}
       </ImageContainer>
     </Container>
@@ -72,7 +52,7 @@ const Container = styled.li`
 
 const TitleIconContainer = styled.div`
   display: flex;
-  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
   justify-content: space-between;
 `;
 
@@ -81,38 +61,25 @@ const TitleContainer = styled.div`
   flex-direction: column;
 
   & h3 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-family: bold;
     margin: 0;
+    letter-spacing: -0.5px;
   }
 
   & p {
     font-size: 1.3rem;
     opacity: 0.7;
     margin: 0.6rem 0 0 0;
+    letter-spacing: -0.5px;
   }
 `;
 
 const IconsContainer = styled.div`
   display: flex;
   font-size: 0.8rem;
-
-  & div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  & div:not(:last-of-type) {
-    margin-right: 1.5rem;
-  }
-
-  & p {
-    display: inline-block;
-    margin-top: 0.3rem;
-    opacity: 0.7;
-  }
+  justify-content: center;
+  align-items: center;
 `;
 
 const ImageContainer = styled.div`
@@ -124,19 +91,12 @@ const ImageContainer = styled.div`
   white-space: nowrap;
 
   &::-webkit-scrollbar {
-    height: 0.25rem;
+    height: 1rem;
+    width: 100px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: ${COLORS.mainOrange};
     border-radius: 1rem;
-  }
-
-  > div {
-    flex: 0 0 auto;
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    border-radius: 1rem;
-    margin-right: 0.6rem;
+    background-color: rgb(90 178 125 / 50%);
   }
 `;

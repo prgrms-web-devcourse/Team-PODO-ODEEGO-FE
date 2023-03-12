@@ -1,32 +1,59 @@
-import Main from "@/components/place/main";
+import { COLORS } from "@/constants/css";
+import { PlaceResponse } from "@/types/api/place";
+import styled from "@emotion/styled";
+import Place from "./place";
 
-interface Props {
-  title: string;
-  businessName: string;
-  address: string;
+interface PlaceListProps {
+  placeList: PlaceResponse[];
 }
 
-interface ArrayProps {
-  data?: Array<Props>;
-}
-const PlaceList = ({ data }: ArrayProps) => {
-  console.log(data);
+const PlaceList = ({ placeList }: PlaceListProps) => {
   return (
-    <>
-      <Main />
-    </>
+    <MainContainer>
+      <UnOrderedList>
+        {(placeList || []).map((p: PlaceResponse, i: number) => (
+          <Place
+            key={i}
+            businessName={p.businessName}
+            address={p.address}
+            images={p.images}
+          />
+        ))}
+      </UnOrderedList>
+    </MainContainer>
   );
 };
 
 export default PlaceList;
 
-// const Container = styled.div`
-//   width: 100%;
-//   background-color: #fdfdfd;
-// `;
-//
-// const TempHeader = styled.header`
-//   width: 100%;
-//   height: 14rem;
-//   background-color: ${COLORS.mainGreen};
-// `;
+const MainContainer = styled.main`
+  width: 100%;
+  max-height: 700px;
+  height: 90vh;
+  background-color: ${COLORS.backgroundSecondary};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
+  /* box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2); */
+  user-select: none;
+  padding: 3rem 0 0 0;
+`;
+
+const UnOrderedList = styled.ul`
+  padding: 0;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  overflow: auto;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  > li:last-child {
+    border-bottom: 0;
+  }
+`;

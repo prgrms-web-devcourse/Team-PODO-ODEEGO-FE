@@ -6,7 +6,6 @@ import Main from "@/components/layout/main";
 import { COLORS } from "@/constants";
 import { useModal } from "@/hooks";
 import { isFirstVisitState, MidPointState } from "@/recoil";
-import { tokenRecoilState } from "@/recoil/token-recoil";
 import { searchProps } from "@/types/search-props";
 import styled from "@emotion/styled";
 import { InsertLink, Refresh } from "@mui/icons-material";
@@ -21,8 +20,9 @@ import {
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { useGroup } from "@/axios/groups";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { useGroupDetail } from "@/axios/groups";
+import { getLocalStorage } from "@/utils/storage";
 
 interface InputState {
   memberId: string;
@@ -39,9 +39,9 @@ const GroupPage = () => {
   const [isFirstVisit, setIsFirstVisit] = useRecoilState(isFirstVisitState);
   const setMidpointResponse = useSetRecoilState(MidPointState);
   const { openModal } = useModal();
-  const token = useRecoilValue(tokenRecoilState);
+  const token = getLocalStorage("token");
   const [groupId, setGroupId] = useState<string>("");
-  const { data, isLoading, isError, isFetching, refetch } = useGroup(
+  const { data, isLoading, isError, isFetching, refetch } = useGroupDetail(
     groupId,
     token
   );
@@ -99,18 +99,15 @@ const GroupPage = () => {
   };
 
   const linkModalContent = useCallback(() => {
+    const groupLink = `${process.env.NEXT_PUBLIC_DOMAIN}/search?groupId=${groupId}`;
     const handleCopy = async () => {
-      await navigator.clipboard.writeText(`/search?groupId=${groupId}`);
+      await navigator.clipboard.writeText(groupLink);
     };
 
     return (
       <div>
         <p>링크를 공유해서 주소를 입력받으세요</p>
-        <FormInput
-          index={0}
-          address={`/search?groupId=${groupId}`}
-          onClick={handleCopy}
-        />
+        <FormInput index={0} address={groupLink} onClick={handleCopy} />
       </div>
     );
   }, [groupId]);
@@ -174,6 +171,7 @@ const GroupPage = () => {
     setMidpointResponse(midpoints);
     await GroupsApi.deleteGroup(groupId, token);
     setIsSubmitting(false);
+    router.push("/map");
   };
 
   if (isError) {
