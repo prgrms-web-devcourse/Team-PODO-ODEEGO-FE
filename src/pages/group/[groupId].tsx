@@ -41,10 +41,15 @@ const GroupPage = () => {
   const { openModal } = useModal();
   const token = getLocalStorage("token");
   const [groupId, setGroupId] = useState<string>("");
-  const { data, isLoading, isError, isFetching, refetch } = useGroupDetail(
-    groupId,
-    token
-  );
+  const {
+    data,
+    isLoading,
+    isError,
+    isLoadingError,
+    isFetching,
+    refetch,
+    error,
+  } = useGroupDetail(groupId, token);
 
   useEffect(() => {
     if (router.isReady) {
@@ -174,8 +179,8 @@ const GroupPage = () => {
     router.push("/map");
   };
 
-  if (isError) {
-    toast.error("페이지 호출하는데 문제가 생겼어요...");
+  if ((isLoadingError || isError) && error instanceof Error) {
+    toast.error(error.message);
     router.push("/");
   }
 
