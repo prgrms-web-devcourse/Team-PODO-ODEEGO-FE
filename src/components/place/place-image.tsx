@@ -43,10 +43,9 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  width: 12.5rem;
-  height: 12.5rem;
-  border-radius: 1rem;
-  margin-right: 0.6rem;
+  width: 12.4rem;
+  height: 12.4rem;
+  object-fit: cover;
 
   &.disabled {
     display: none;

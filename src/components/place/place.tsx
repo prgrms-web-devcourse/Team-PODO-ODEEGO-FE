@@ -47,7 +47,9 @@ const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <IconButton sx={{ padding: 0 }} onClick={handleClickShareClipboard}>
+          <IconButton
+            sx={{ padding: "0.5rem" }}
+            onClick={handleClickShareClipboard}>
             <IosShareIcon
               sx={{
                 display: "block",
@@ -118,9 +120,8 @@ const ImageContainer = styled.div`
   width: 100%;
   display: flex;
   padding-bottom: 0.5rem;
-
   overflow-x: auto;
-  white-space: nowrap;
+  gap: 0.6rem;
 
   &::-webkit-scrollbar {
     height: 1rem;
