@@ -144,7 +144,9 @@ const SearchInput = () => {
       // 출발지 확정시
       handleConfirm: async () => {
         // 약속'방'을 만들어서 출발지를 입력할 때
-        if (groupId !== null) {
+        if (groupId === null) return;
+
+        try {
           if (host) {
             console.log("방장임!");
             await SearchAPI22.HostSendStartPoint(startPoint);
@@ -158,6 +160,10 @@ const SearchInput = () => {
             // redirection 경로 상의 예정
             router.replace("/");
           }
+        } catch (err) {
+          console.log(err);
+          closeModal();
+          router.push("/");
         }
       },
     });

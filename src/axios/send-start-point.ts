@@ -53,7 +53,7 @@ export const SearchAPI22 = {
       return result;
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        const errorCode = err.response?.data.errorCode;
+        const errorCode = err.response?.data.status;
 
         toast.error(err.response?.data.error);
 
