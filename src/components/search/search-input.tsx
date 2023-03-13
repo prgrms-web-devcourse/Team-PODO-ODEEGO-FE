@@ -37,12 +37,14 @@ const SearchInput = () => {
         confirm: "예",
         close: "아니오",
       },
-      // 출발지 확정시
       handleConfirm: () => {
         // router.push("/");
       },
+      handleClose: () => {
+        router.push("/");
+      },
     });
-  }, [openModal]);
+  }, [openModal, router]);
 
   // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
