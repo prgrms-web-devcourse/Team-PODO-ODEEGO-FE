@@ -119,15 +119,17 @@ const Header = ({ token }: TokenProps) =>
     return (
       <HeaderContainer>
         {(token || tokenData) && (
-          <HeaderIconWrap>
+          <>
             <HeaderBackImage>
               <KeyboardBackspaceIcon onClick={handleBackClick} />
             </HeaderBackImage>
-            <NavbarIcons>
-              <AccountCircleIcon onClick={handleClickMypage} />
-              <ExitToAppIcon onClick={handleLogout} />
-            </NavbarIcons>
-          </HeaderIconWrap>
+            <HeaderIconWrap>
+              <NavbarIcons>
+                <AccountCircleIcon onClick={handleClickMypage} />
+                <ExitToAppIcon onClick={handleLogout} />
+              </NavbarIcons>
+            </HeaderIconWrap>
+          </>
         )}
 
         <TextP>{HEADER_TEXT}</TextP>
@@ -146,7 +148,12 @@ const Header = ({ token }: TokenProps) =>
 export default Header;
 
 const HeaderBackImage = styled.div`
-  margin-left: 20px;
+  position: absolute;
+  left: 10%;
+  top: 11%;
+  svg {
+    font-size: 3rem;
+  }
 `;
 
 const NavbarIcons = styled.div`
@@ -155,24 +162,15 @@ const NavbarIcons = styled.div`
     margin: 1rem;
   }
   align-items: center;
-  height: 10vh;
   justify-content: right;
-  width: 100%;
+  top: 0;
 `;
-
-// const HeaderLogout = styled.h2`
-//   font-size: 1.2rem;
-//   font-weight: 700;
-//   color: #fff;
-//   cursor: pointer;
-//   position: relative;
-//   right: 2rem;
-// `;
 
 const HeaderContainer = styled.header`
   height: 17.4rem;
   max-height: 174px;
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -189,12 +187,9 @@ const TextP = styled.p`
 `;
 
 const HeaderIconWrap = styled.div`
-  display: flex;
-  align-items: center;
   position: absolute;
-  top: 0;
-
-  width: 100%;
+  right: 5%;
+  top: 7%;
   svg {
     font-size: 3rem;
   }
