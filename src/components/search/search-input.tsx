@@ -37,9 +37,11 @@ const SearchInput = () => {
         confirm: "예",
         close: "아니오",
       },
-      // 출발지 확정시
       handleConfirm: () => {
         // router.push("/");
+      },
+      handleClose: () => {
+        router.push("/");
       },
     });
   }, [openModal]);
