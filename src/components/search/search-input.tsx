@@ -1,9 +1,9 @@
-import { SearchAPI } from "@/pages/api/search";
 import { SearchAPI22 } from "@/axios/send-start-point";
+import { getSubway } from "@/axios/get-subway";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import React, { useCallback, useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
@@ -11,21 +11,21 @@ import { Button, InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
-import { tokenRecoilState } from "@/recoil/token-recoil";
 import EnterSearchPageModal from "./enter-searchpage-modal";
 import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 import { StartPointPros } from "@/types/startpoint-props";
+import { getLocalStorage } from "@/utils/storage";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
-  const [accessToken] = useRecoilState(tokenRecoilState); // 로그인 토큰 가져오기.
+  const token = getLocalStorage("token"); // 로그인 토큰 가져오기.
   const router = useRouter();
 
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
-  const groupId = useSearchParams().get("groupId") || null; // 방 Id. 임시로 사용할 수 있는 ID b6deb966-8179-43db-9f08-ec5271cbaccc
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id.
   const host = useSearchParams().get("host") || null;
   const { openModal, closeModal } = useModal();
 
@@ -57,7 +57,7 @@ const SearchInput = () => {
   }, [closeModal, groupId, handleConfirmEnterSearchPage, host]);
 
   // 링크를 공유 받았을 때.
-  if (groupId && !accessToken) {
+  if (groupId && !token) {
     openModal({
       children: <SetLoginModalContent />,
       btnText: {
@@ -68,7 +68,6 @@ const SearchInput = () => {
         window.close();
       },
     });
-    // 로그인 화면으로 대체 예정.
     router.push("/signin");
   }
 
@@ -80,7 +79,6 @@ const SearchInput = () => {
       lng: +val.x,
     };
 
-    console.log(groupId);
     // 한 명이 모든 출발지를 입력할 때.
     if (!groupId) {
       if (id === undefined || id === null) return;
@@ -101,7 +99,7 @@ const SearchInput = () => {
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
       console.log("search input is changed");
-      return SearchAPI.getSubway(searchInput);
+      return getSubway(searchInput);
     },
     {
       enabled: searchInput.length > 0,
@@ -110,7 +108,7 @@ const SearchInput = () => {
     }
   );
 
-  let timer: any = null;
+  let timer: number | null = null;
   const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 

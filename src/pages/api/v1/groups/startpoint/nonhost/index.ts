@@ -7,7 +7,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log(`api/v1/groups/startpoint/nonhost`);
   const { groupId, stationName, lat, lng } = req.body.value;
   const header = req.headers;
 
@@ -38,15 +37,16 @@ export default async function handler(
           error: CustomError[errorCode].message,
           status: CustomError[errorCode].status,
         });
-      } else {
-        console.log(err);
-        res.status(400).json({
+      } else if (err.response?.status) {
+        res.status(err.response?.status).json({
           error: "api/v1/groups/startpoint/host patch fail",
-          status: 400,
+          status: err.response?.status,
         });
       }
     } else {
-      res.status(400).json({ error: "NEXT API CALL ERROR", status: 400 });
+      res
+        .status(400)
+        .json({ error: "Unkwon Error In NEXT API CALL ERROR", status: 400 });
     }
   }
 }
