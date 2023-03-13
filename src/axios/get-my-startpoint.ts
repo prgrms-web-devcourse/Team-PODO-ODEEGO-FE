@@ -23,6 +23,7 @@ export const GetMyStartpoint = async () => {
       if (CustomError[errorCode]) {
         throw new Error(`${err.response?.data.error}`);
       } else if (err.response?.status) {
+        console.log(err);
         throw new Error("unknown Error");
       }
     }

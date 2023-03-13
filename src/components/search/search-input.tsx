@@ -111,29 +111,33 @@ const SearchInput = () => {
   );
 
   let timer: number | null = null;
-  const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+  const handleChangeStartPoint = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
 
-    // 임시 debounce 적용
-    if (timer !== null) {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        setSearchInput(value);
-      }, 500);
-    } else {
-      timer = window.setTimeout(() => {
-        setSearchInput(value);
-      }, 500);
-    }
+      // 임시 debounce 적용
+      if (timer !== null) {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          setSearchInput(value);
+        }, 500);
+      } else {
+        timer = window.setTimeout(() => {
+          setSearchInput(value);
+        }, 500);
+      }
 
-    if (!resultSubway || resultSubway.length === 0) {
-      setErrorMessage("검색 결과가 없습니다");
-    } else {
-      setErrorMessage("");
-    }
+      if (!resultSubway || resultSubway.length === 0) {
+        setErrorMessage("검색 결과가 없습니다");
+      } else {
+        setErrorMessage("");
+      }
 
-    // setValue(value);
-  };
+      console.log(value);
+      setSearchInput(value);
+    },
+    []
+  );
 
   const handleStartPointModal = (startPoint: StartPointPros) => {
     openModal({
@@ -198,7 +202,7 @@ const SearchInput = () => {
           }}
           type='text'
           onChange={handleChangeStartPoint}
-          // value={searchInput}
+          value={searchInput}
         />
         {(resultSubway?.length <= 0 || !resultSubway) && (
           <NotFound title={errorMessage} icon={"지하철역"} sxNumber={50} />
