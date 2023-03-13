@@ -130,7 +130,7 @@ export const globalStyles = (
       select,
       textarea {
         font-family: inherit; /* 1 */
-        font-size: 100%; /* 1 */
+        font-size: 1.6rem; /* 1 */
         line-height: 1.15; /* 1 */
         margin: 0; /* 2 */
       }
