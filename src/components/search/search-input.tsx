@@ -143,18 +143,18 @@ const SearchInput = () => {
         close: "다시 선택합니다.",
       },
       // 출발지 확정시
-      handleConfirm: () => {
+      handleConfirm: async () => {
         // 약속'방'을 만들어서 출발지를 입력할 때
         if (groupId !== null) {
           if (host) {
             console.log("방장임!");
-            SearchAPI22.HostSendStartPoint(startPoint);
+            await SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
             router.replace(`/group/${groupId}`);
           } else {
             console.log("방장아님!");
-            SearchAPI22.NonHostSendStartPoint(startPoint);
+            await SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
             router.replace("/");
