@@ -53,8 +53,8 @@ const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
             <IosShareIcon
               sx={{
                 display: "block",
-                height: "2.5rem",
-                width: "2.5rem",
+                height: "2rem",
+                width: "2rem",
                 color: "#5ab27d",
               }}
             />
