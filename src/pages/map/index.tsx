@@ -1,17 +1,19 @@
 import MidpointButton from "@/components/map/midpoint-button";
 import styled from "@emotion/styled";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useMap from "@/hooks/use-map";
 import { useRecoilValue } from "recoil";
 import { MidPointState } from "@/recoil/midpoint-state";
 import PlacesButton from "@/components/map/places-button";
 import MapHeader from "@/components/map/map-header";
 import { Stack } from "@mui/material";
+import { EndpointResponse } from "@/types/api/midpoint";
 
 const MapPage = () => {
   const [currentMidway, setCurrentMidway] = useState(0);
   const mapContainerRef = useRef(null);
   const { start, midPointResponses } = useRecoilValue(MidPointState);
+  const [midpoints, setMidpoints] = useState<EndpointResponse[]>();
   const { map, setMidpoint } = useMap({
     mapContainerRef,
     initialCenter: {
@@ -31,21 +33,26 @@ const MapPage = () => {
     setCurrentMidway(midPointResponses.indexOf(midpoint));
   };
 
+  useEffect(() => {
+    setMidpoints(midPointResponses);
+  }, [midPointResponses]);
+
   return (
     <Wrapper>
       <Container>
         <MapHeader />
         <Stack direction='row' spacing={4} justifyContent='center'>
-          {midPointResponses.map((data, index) => (
-            <MidpointButton
-              key={data.id}
-              id={data.id}
-              stationName={data.stationName}
-              isCurrent={currentMidway === index}
-              onClick={handleNavigate}
-              line={data.line}
-            />
-          ))}
+          {midpoints &&
+            midpoints.map((data, index) => (
+              <MidpointButton
+                key={data.id}
+                id={data.id}
+                stationName={data.stationName}
+                isCurrent={currentMidway === index}
+                onClick={handleNavigate}
+                line={data.line}
+              />
+            ))}
         </Stack>
       </Container>
       <Map ref={mapContainerRef} id='mapContainerRef' />
