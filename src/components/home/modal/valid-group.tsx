@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 
 interface ValidGroupProps {
   minutes: number;
   seconds: number;
+  [props: string]: any;
 }
 
 const INTERVAL_IN_MILLISECONDS = 1000; //1s
 
-const ValidGroupModal = ({ minutes, seconds }: ValidGroupProps) => {
+const ValidGroupModal = ({ minutes, seconds, ...props }: ValidGroupProps) => {
   const [min, setMinutes] = useState(minutes);
   const [sec, setSeconds] = useState(seconds * 1000);
   const [referenceTime, setReferenceTime] = useState(Date.now());
@@ -37,15 +39,13 @@ const ValidGroupModal = ({ minutes, seconds }: ValidGroupProps) => {
     };
 
     setTimeout(countDownUntilZero, INTERVAL_IN_MILLISECONDS);
-  }, [min, sec]);
+  }, [min, referenceTime, sec]);
 
   return (
-    <>
-      <TextP>
-        남은 시간:{" "}
-        {`${min}분 ${sec === 60 * 1000 ? 59 : Math.ceil(sec / 1000)}초`}
-      </TextP>
-    </>
+    <TextP style={props.style}>
+      남은 시간:{" "}
+      {`${min}분 ${sec === 60 * 1000 ? 59 : Math.ceil(sec / 1000)}초`}
+    </TextP>
   );
 };
 

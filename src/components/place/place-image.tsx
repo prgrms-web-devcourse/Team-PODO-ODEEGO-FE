@@ -13,19 +13,6 @@ interface PlaceImageProps {
 const PlaceImage = ({ lazy, src, alt, placeholder }: PlaceImageProps) => {
   const { loaded, imgRef } = useLazyLoadImage(lazy);
 
-  // const myLoader = ({
-  //   src,
-  //   width,
-  //   quality,
-  // }: {
-  //   src: string;
-  //   width: number;
-  //   quality?: number;
-  // }) => {
-  //   console.log(width, quality);
-  //   return `${src}`;
-  // };
-
   const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.onerror = null;
     e.currentTarget.remove();
@@ -34,14 +21,6 @@ const PlaceImage = ({ lazy, src, alt, placeholder }: PlaceImageProps) => {
   return (
     <>
       <Container>
-        {/* <Image
-          ref={imgRef}
-          referrerPolicy='no-referrer'
-          src={loaded ? (src ? src : placeholder) : placeholder}
-          alt={alt}
-          draggable={false}
-          onError={handleImageError}
-        /> */}
         <Image
           ref={imgRef}
           src={
@@ -76,10 +55,9 @@ const Container = styled.div`
 `;
 
 // const Image = styled.img`
-//   width: 12.5rem;
-//   height: 12.5rem;
-//   border-radius: 1rem;
-//   margin-right: 0.6rem;
+//   width: 12.4rem;
+//   height: 12.4rem;
+//   object-fit: cover;
 
 //   &.disabled {
 //     display: none;

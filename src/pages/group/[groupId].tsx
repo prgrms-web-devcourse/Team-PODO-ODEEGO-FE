@@ -3,7 +3,7 @@ import { MidPointApi } from "@/axios/mid-point";
 import FormInput from "@/components/common/form-input";
 import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
-import { COLORS } from "@/constants";
+import { COLORS, COUNT, ERROR_TEXT } from "@/constants";
 import { useModal } from "@/hooks";
 import { isFirstVisitState, MidPointState } from "@/recoil";
 import { searchProps } from "@/types/search-props";
@@ -19,10 +19,12 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useGroupDetail } from "@/axios/groups";
-import { getLocalStorage } from "@/utils/storage";
+import { getLocalStorage, setLocalStorage } from "@/utils/storage";
+import { SelectModal, ValidGroupModal } from "@/components/home";
+import formatTime from "@/utils/format-time";
 
 interface InputState {
   memberId: string;
@@ -41,10 +43,20 @@ const GroupPage = () => {
   const { openModal } = useModal();
   const token = getLocalStorage("token");
   const [groupId, setGroupId] = useState<string>("");
-  const { data, isLoading, isError, isFetching, refetch } = useGroupDetail(
-    groupId,
-    token
-  );
+  const [remainingTime, setRemainingTime] = useState<{
+    minutes: number;
+    seconds: number;
+  }>();
+  const {
+    data,
+    isLoading,
+    isError,
+    isLoadingError,
+    isFetching,
+    isInitialLoading,
+    refetch,
+    error,
+  } = useGroupDetail(groupId, token);
 
   useEffect(() => {
     if (router.isReady) {
@@ -174,10 +186,60 @@ const GroupPage = () => {
     router.push("/map");
   };
 
-  if (isError) {
-    toast.error("페이지 호출하는데 문제가 생겼어요...");
+  if ((isLoadingError || isError) && error instanceof Error) {
+    toast.error(error.message);
     router.push("/");
   }
+
+  useEffect(() => {
+    if (!data) return;
+
+    const { minutes, seconds } = formatTime(data.remainingTime);
+
+    if (minutes === 0 && seconds === 0) {
+      const gId = groupId;
+      openModal({
+        children: <SelectModal isValid={false} />,
+        btnText: {
+          confirm: "모임 만들기",
+          close: "홈으로 가기",
+        },
+        handleConfirm: async () => {
+          try {
+            const count = getLocalStorage(COUNT);
+            if (count === "")
+              throw new Error(ERROR_TEXT.ERROR_UNSELECT_PEOPLE_COUNT);
+
+            //만료된 방이 있다면, 방 삭제 후, 방 만들기
+            await GroupsApi.deleteGroup(gId, token);
+
+            const data = await GroupsApi.postCreateGroup(token, count);
+            setLocalStorage(COUNT, "");
+
+            const { groupId } = data;
+            setIsFirstVisit(true);
+            router.replace(`/group/${groupId}`);
+          } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            toast.error(errorMessage);
+          }
+        },
+        handleClose: async () => {
+          try {
+            await GroupsApi.deleteGroup(gId, token);
+            router.replace("/");
+          } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            toast.error(errorMessage);
+          }
+        },
+      });
+    }
+
+    if (minutes <= 5) {
+      setRemainingTime({ minutes, seconds });
+    }
+  }, [data, groupId, openModal, router, setIsFirstVisit, token]);
 
   return (
     <>
@@ -193,47 +255,57 @@ const GroupPage = () => {
             sx={{
               display: "flex",
               justifyContent: "space-between",
+              alignItems: "center",
               marginBottom: "1rem",
             }}>
             <CustomIconButton onClick={handleLink}>
               <InsertLink />
             </CustomIconButton>
+            {remainingTime && (
+              <ValidGroupModal
+                minutes={remainingTime.minutes}
+                seconds={remainingTime.seconds}
+                style={{ fontSize: "1.2rem", textAlign: "center", margin: "0" }}
+              />
+            )}
             <CustomIconButton onClick={handleRefresh}>
               <Refresh />
             </CustomIconButton>
           </Box>
-          {(isSubmitting || isLoading) && (
-            <Box
-              sx={{
-                display: "flex",
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "100%",
-                justifyContent: "center",
-                zIndex: "1000",
-              }}>
-              <CircularProgress />
-            </Box>
-          )}
           <form>
-            <Stack spacing={1.5}>
-              {inputs &&
-                inputs.map(({ nickname, stationName, memberId }, index) => (
-                  <div key={index}>
-                    <FormInput
-                      index={index}
-                      address={stationName}
-                      placeholder='주소가 아직 없어요...'
-                      onClick={() => handleInputClick(memberId)}
-                    />
-                    <InputLabel>
-                      {stationName ? `${nickname}이 입력했습니다` : ""}
-                    </InputLabel>
-                  </div>
-                ))}
-            </Stack>
+            <InputsContainer>
+              {(isSubmitting || isLoading || isInitialLoading) && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "100%",
+                    justifyContent: "center",
+                    zIndex: "1000",
+                  }}>
+                  <CircularProgress />
+                </Box>
+              )}
+              <Stack spacing={1.5}>
+                {inputs &&
+                  inputs.map(({ nickname, stationName, memberId }, index) => (
+                    <>
+                      <FormInput
+                        index={index}
+                        address={stationName}
+                        placeholder='주소가 아직 없어요...'
+                        onClick={() => handleInputClick(memberId)}
+                      />
+                      <InputLabel>
+                        {stationName ? `${nickname}이 입력했습니다` : ""}
+                      </InputLabel>
+                    </>
+                  ))}
+              </Stack>
+            </InputsContainer>
             <Stack spacing={1.5} sx={{ marginTop: "2rem" }}>
               <CustomButton
                 variant='contained'
@@ -253,13 +325,17 @@ const GroupPage = () => {
             </Stack>
           </form>
         </Container>
-        <Toaster />
       </Main>
     </>
   );
 };
 
 export default GroupPage;
+
+const InputsContainer = styled.div`
+  position: relative;
+  min-height: 10rem;
+`;
 
 const InputLabel = styled.span`
   display: inline-block;

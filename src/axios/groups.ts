@@ -59,8 +59,13 @@ export const GroupsApi = {
       });
 
       return data;
-    } catch (error) {
-      throw error;
+    } catch (e) {
+      console.error(e);
+      if (axios.isAxiosError(e)) {
+        const { response } = e;
+        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
+        throw new Error(errorMessage);
+      }
     }
   },
   deleteGroup: async (groupId: string, token: string) => {
@@ -73,8 +78,13 @@ export const GroupsApi = {
       });
 
       return data;
-    } catch (error) {
-      throw error;
+    } catch (e) {
+      console.error(e);
+      if (axios.isAxiosError(e)) {
+        const { response } = e;
+        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
+        throw new Error(errorMessage);
+      }
     }
   },
 };
