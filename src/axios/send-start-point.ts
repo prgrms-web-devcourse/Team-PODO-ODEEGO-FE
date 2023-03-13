@@ -39,7 +39,6 @@ export const SearchAPI22 = {
   HostSendStartPoint: async (value: StartPointPros) => {
     const accessToken = getLocalStorage("token");
 
-    console.log(`Host Send Start Point: ${value}`);
     try {
       const result = await HTTP.patch({
         url: `/v1/groups/startpoint/host`,

@@ -136,8 +136,9 @@ const SearchInput = () => {
       },
       // 출발지 확정시
       handleConfirm: async () => {
+        if (groupId === null) return;
         // 약속'방'을 만들어서 출발지를 입력할 때
-        if (groupId !== null) {
+        try {
           if (host) {
             await SearchAPI22.HostSendStartPoint(startPoint);
 
@@ -150,6 +151,11 @@ const SearchInput = () => {
             toast.success("경로 제출이 완료되었어요!");
             router.replace("/");
           }
+        } catch (err: any) {
+          console.log(err.message);
+          closeModal();
+          toast.error("오류가 발생했어요!");
+          router.push("/");
         }
       },
     });
