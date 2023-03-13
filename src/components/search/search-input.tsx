@@ -69,7 +69,7 @@ const SearchInput = () => {
       },
     });
     // 로그인 화면으로 대체 예정.
-    router.push("/");
+    router.push("/signin");
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
