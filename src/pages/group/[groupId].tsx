@@ -18,13 +18,14 @@ import {
   Stack,
 } from "@mui/material";
 import { useRouter } from "next/router";
-import { MouseEvent, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useGroupDetail } from "@/axios/groups";
 import { getLocalStorage, setLocalStorage } from "@/utils/storage";
 import { SelectModal, ValidGroupModal } from "@/components/home";
-import formatTime from "@/utils/format-time";
+import { formatTime } from "@/utils/helpers";
+import { debounce } from "lodash";
 
 interface InputState {
   memberId: string;
@@ -96,7 +97,7 @@ const GroupPage = () => {
     setInputs(initialInputs);
   }, [getInputsByParticipant]);
 
-  const handleInputClick = (memberId: string) => {
+  const handleInputClick = debounce((memberId: string) => {
     if (isFetching || isSubmitting) return;
     if (!data) return;
 
@@ -108,7 +109,7 @@ const GroupPage = () => {
         host: memberId === hostId,
       },
     });
-  };
+  }, 300);
 
   const linkModalContent = useCallback(() => {
     const groupLink = `${process.env.NEXT_PUBLIC_DOMAIN}/search?groupId=${groupId}`;
@@ -137,18 +138,19 @@ const GroupPage = () => {
     if (!isLoading && !isError && isFirstVisit) openLinkModal();
   }, [isFirstVisit, openLinkModal, isError, isLoading]);
 
-  const handleLink = () => {
+  const handleLink = debounce(() => {
     openLinkModal();
-  };
+  }, 300);
 
-  const handleRefresh = async () => {
+  const handleRefresh = debounce(async () => {
+    console.log("clicked!");
     setIsSubmitting(true);
     await refetch();
     getInputsByParticipant();
     setIsSubmitting(false);
-  };
+  }, 300);
 
-  const handleCancel = () => {
+  const handleCancel = debounce(() => {
     openModal({
       children: <p>정말로 삭제하시겠습니까?</p>,
       btnText: {
@@ -162,10 +164,9 @@ const GroupPage = () => {
         router.push("/");
       },
     });
-  };
+  }, 300);
 
-  const handleSearch = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSearch = async () => {
     if (!data) return;
     const { participants, capacity } = data;
 
@@ -185,6 +186,8 @@ const GroupPage = () => {
     setIsSubmitting(false);
     router.push("/map");
   };
+
+  const handleSearchDebounced = debounce(handleSearch, 300);
 
   if ((isLoadingError || isError) && error instanceof Error) {
     toast.error(error.message);
@@ -292,7 +295,7 @@ const GroupPage = () => {
               <Stack spacing={1.5}>
                 {inputs &&
                   inputs.map(({ nickname, stationName, memberId }, index) => (
-                    <>
+                    <div key={memberId}>
                       <FormInput
                         index={index}
                         address={stationName}
@@ -302,7 +305,7 @@ const GroupPage = () => {
                       <InputLabel>
                         {stationName ? `${nickname}이 입력했습니다` : ""}
                       </InputLabel>
-                    </>
+                    </div>
                   ))}
               </Stack>
             </InputsContainer>
@@ -319,7 +322,10 @@ const GroupPage = () => {
                 color='secondary'
                 size='large'
                 type='submit'
-                onClick={handleSearch}>
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSearchDebounced();
+                }}>
                 중간지점 찾기
               </CustomButton>
             </Stack>
