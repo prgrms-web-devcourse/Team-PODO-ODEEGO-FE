@@ -33,7 +33,7 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const { ERROR_UNSELECT_PEOPLE_COUNT } = ERROR_TEXT;
+const { ERROR_UNSELECT_PEOPLE_COUNT, ERROR_DUPLICATE_START_POINT } = ERROR_TEXT;
 
 const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
 
@@ -196,6 +196,8 @@ export default function Home() {
       if (errorMessage) throw new Error(errorMessage);
 
       const data = await MidPointApi.postMidPoint(notEmptyAddressList);
+
+      if (data.start.length <= 1) throw new Error(ERROR_DUPLICATE_START_POINT);
 
       setAddressList(notEmptyAddressList);
       setMidPointResponse(data);
