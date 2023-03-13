@@ -9,14 +9,11 @@ import { axiosInstanceWitToken } from "@/axios/instance";
 import { useRouter } from "next/router";
 
 const MyPage = () => {
-  // 임시 로그인 토큰
-  // const token = "";
-
   const { openModal } = useModal();
 
   const router = useRouter();
 
-  const handleClick = () => {
+  const handleClickAccount = () => {
     openModal({
       children: "회원탈퇴 하시겠습니까?.",
       btnText: {
@@ -48,7 +45,7 @@ const MyPage = () => {
     });
   };
 
-  const handleLogout = async () => {
+  const handleClickLogout = async () => {
     const logoutToken = getLocalStorage("logoutToken");
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
@@ -71,20 +68,24 @@ const MyPage = () => {
   };
 
   return (
-    <LoginContainer>
+    <MypageContainer>
       <Header />
 
       <BorderContainer />
 
-      <LoginWrapper>
+      <MypageWrapper>
         <MypageContainer>
           {/*<AccountCircleIcon style={{ fontSize: 200, margin: "0 auto" }} />*/}
 
-          <MyapgeShutDown onClick={handleLogout}>로그아웃</MyapgeShutDown>
-          <MypageLogout onClick={handleClick}>회원탈퇴</MypageLogout>
+          <MypageDeleteAcoountButton onClick={handleClickAccount}>
+            회원탈퇴
+          </MypageDeleteAcoountButton>
+          <MypageLogoutButton onClick={handleClickLogout}>
+            로그아웃
+          </MypageLogoutButton>
         </MypageContainer>
-      </LoginWrapper>
-    </LoginContainer>
+      </MypageWrapper>
+    </MypageContainer>
   );
 };
 export default MyPage;
@@ -110,12 +111,7 @@ export default MyPage;
 //   border-radius: 5px;
 // `;
 
-const MypageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const MyapgeShutDown = styled.button`
+const MypageDeleteAcoountButton = styled.button`
   background-color: #4caf50;
   border: none;
   color: white;
@@ -129,7 +125,7 @@ const MyapgeShutDown = styled.button`
   border-radius: 5px;
 `;
 
-const MypageLogout = styled.button`
+const MypageLogoutButton = styled.button`
   background-color: #4caf50;
   border: none;
   color: white;
@@ -150,12 +146,12 @@ const BorderContainer = styled.div`
   border-radius: 20px 20px 0 0;
 `;
 
-const LoginContainer = styled.div`
+const MypageContainer = styled.div`
   width: 110%;
   margin: 0 auto;
 `;
 
-const LoginWrapper = styled.div`
+const MypageWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
