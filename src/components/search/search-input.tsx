@@ -16,6 +16,8 @@ import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 import { StartPointPros } from "@/types/startpoint-props";
 import { getLocalStorage } from "@/utils/storage";
+import GetMyStartpoint from "@/axios/get-my-startpoint";
+import { toast } from "react-hot-toast";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -157,6 +159,7 @@ const SearchInput = () => {
             await SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
+            toast.success("경로 제출이 완료되었어요!");
             router.replace("/");
           }
         }
@@ -165,9 +168,14 @@ const SearchInput = () => {
   };
 
   // 개인 정보 받아오기 API가 완성되면 '내주소'를 TextField에 넣을 수 있게한다.
-  const handleClickButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickButton = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("click");
+
+    if (!token) toast.error("로그인을 먼저 해주세요!");
+
+    const myDefaultStartpoint = await GetMyStartpoint();
+    setSearchInput(myDefaultStartpoint.stationName);
+    console.log(myDefaultStartpoint.stationName);
   };
 
   return (
@@ -190,6 +198,7 @@ const SearchInput = () => {
           }}
           type='text'
           onChange={handleChangeStartPoint}
+          // value={searchInput}
         />
         {(resultSubway?.length <= 0 || !resultSubway) && (
           <NotFound title={errorMessage} icon={"지하철역"} sxNumber={50} />
