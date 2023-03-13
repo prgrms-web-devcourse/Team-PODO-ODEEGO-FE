@@ -158,7 +158,10 @@ const SearchInput = () => {
   const handleClickButton = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    if (!token) toast.error("로그인을 먼저 해주세요!");
+    if (!token) {
+      toast.error("로그인을 먼저 해주세요!");
+      router.push("/signin");
+    }
 
     const myDefaultStartpoint = await GetMyStartpoint();
     setSearchInput(myDefaultStartpoint.stationName);

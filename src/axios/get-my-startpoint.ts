@@ -1,7 +1,8 @@
 import HTTP from "./config/axios-instance";
 import { getLocalStorage } from "@/utils/storage";
 import axios from "axios";
-import { CustomError } from "@/constants/custom-error";
+
+const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
 
 export const GetMyStartpoint = async () => {
   const accessToken = getLocalStorage("token");
@@ -17,15 +18,11 @@ export const GetMyStartpoint = async () => {
 
     return data;
   } catch (err) {
+    console.error(err);
     if (axios.isAxiosError(err)) {
-      const errorCode = err.response?.data.errorCode;
-
-      if (CustomError[errorCode]) {
-        throw new Error(`${err.response?.data.error}`);
-      } else if (err.response?.status) {
-        console.log(err);
-        throw new Error("unknown Error");
-      }
+      const { response } = err;
+      const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
+      throw new Error(errorMessage);
     }
     throw new Error("axios/get-my-startpoint error: fail to getMyStartStation");
   }
