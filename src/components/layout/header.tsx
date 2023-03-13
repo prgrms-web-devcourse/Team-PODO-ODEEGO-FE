@@ -68,7 +68,7 @@ const Header = ({ token }: TokenProps) => {
     }
   };
 
-  const handleLogout = async () => {
+  const handleClickLogout = async () => {
     const logoutToken = getLocalStorage("logoutToken");
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
@@ -117,13 +117,14 @@ const Header = ({ token }: TokenProps) => {
     <HeaderContainer>
       {(token || tokenData) && (
         <>
-          <HeaderBackImage>
+          <HeaderBackImageWrap>
             <KeyboardBackspaceIcon onClick={handleBackClick} />
-          </HeaderBackImage>
+          </HeaderBackImageWrap>
+
           <HeaderIconWrap>
             <NavbarIcons>
               <AccountCircleIcon onClick={handleClickMypage} />
-              <ExitToAppIcon onClick={handleLogout} />
+              <ExitToAppIcon onClick={handleClickLogout} />
             </NavbarIcons>
           </HeaderIconWrap>
         </>
@@ -144,7 +145,7 @@ const Header = ({ token }: TokenProps) => {
 
 export default Header;
 
-const HeaderBackImage = styled.div`
+const HeaderBackImageWrap = styled.div`
   position: absolute;
   left: 10%;
   top: 11%;
