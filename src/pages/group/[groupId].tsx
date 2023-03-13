@@ -3,7 +3,7 @@ import { MidPointApi } from "@/axios/mid-point";
 import FormInput from "@/components/common/form-input";
 import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
-import { COLORS } from "@/constants";
+import { COLORS, COUNT, ERROR_TEXT } from "@/constants";
 import { useModal } from "@/hooks";
 import { isFirstVisitState, MidPointState } from "@/recoil";
 import { searchProps } from "@/types/search-props";
@@ -19,11 +19,11 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { MouseEvent, useCallback, useEffect, useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useGroupDetail } from "@/axios/groups";
-import { getLocalStorage } from "@/utils/storage";
-import { ValidGroupModal } from "@/components/home";
+import { getLocalStorage, setLocalStorage } from "@/utils/storage";
+import { SelectModal, ValidGroupModal } from "@/components/home";
 import formatTime from "@/utils/format-time";
 
 interface InputState {
@@ -53,6 +53,7 @@ const GroupPage = () => {
     isError,
     isLoadingError,
     isFetching,
+    isInitialLoading,
     refetch,
     error,
   } = useGroupDetail(groupId, token);
@@ -194,10 +195,51 @@ const GroupPage = () => {
     if (!data) return;
 
     const { minutes, seconds } = formatTime(data.remainingTime);
+
+    if (minutes === 0 && seconds === 0) {
+      const gId = groupId;
+      openModal({
+        children: <SelectModal isValid={false} />,
+        btnText: {
+          confirm: "모임 만들기",
+          close: "홈으로 가기",
+        },
+        handleConfirm: async () => {
+          try {
+            const count = getLocalStorage(COUNT);
+            if (count === "")
+              throw new Error(ERROR_TEXT.ERROR_UNSELECT_PEOPLE_COUNT);
+
+            //만료된 방이 있다면, 방 삭제 후, 방 만들기
+            await GroupsApi.deleteGroup(gId, token);
+
+            const data = await GroupsApi.postCreateGroup(token, count);
+            setLocalStorage(COUNT, "");
+
+            const { groupId } = data;
+            setIsFirstVisit(true);
+            router.replace(`/group/${groupId}`);
+          } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            toast.error(errorMessage);
+          }
+        },
+        handleClose: async () => {
+          try {
+            await GroupsApi.deleteGroup(gId, token);
+            router.replace("/");
+          } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            toast.error(errorMessage);
+          }
+        },
+      });
+    }
+
     if (minutes <= 5) {
       setRemainingTime({ minutes, seconds });
     }
-  }, [data]);
+  }, [data, groupId, openModal, router, setIsFirstVisit, token]);
 
   return (
     <>
@@ -232,7 +274,7 @@ const GroupPage = () => {
           </Box>
           <form>
             <InputsContainer>
-              {(isSubmitting || isLoading) && (
+              {(isSubmitting || isLoading || isInitialLoading) && (
                 <Box
                   sx={{
                     display: "flex",
@@ -283,7 +325,6 @@ const GroupPage = () => {
             </Stack>
           </form>
         </Container>
-        <Toaster />
       </Main>
     </>
   );
