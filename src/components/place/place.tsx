@@ -1,20 +1,55 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
 import IosShareIcon from "@mui/icons-material/IosShare";
-import { PlaceResponse } from "@/types/api/place";
+import { ImageResponse, PlaceResponse } from "@/types/api/place";
 import PlaceImage from "./place-image";
 import { IconButton } from "@mui/material";
+import { MouseEvent, useEffect, useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 
-const Place = ({ businessName, address, images }: PlaceResponse) => {
+const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
+  const [filteredImages, setFilteredImages] = useState<ImageResponse[]>([]);
+
+  useEffect(() => {
+    //NET: ERR_CERT_INVALID_NAME 막기 위한 http url 거르기
+    const imageArr = images.filter((i) => i.url.indexOf("http://") === -1);
+
+    setFilteredImages(imageArr);
+  }, [images]);
+
+  const handleClickShareClipboard = async (
+    e: MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    await navigator.clipboard.writeText(`${shareUrl}`);
+    toast.success("복사 완료", {
+      style: {
+        border: "1px solid #5AB27D",
+        color: "#464646",
+        fontWeight: "bold",
+        backgroundColor: "#FDFDFD",
+      },
+      iconTheme: {
+        primary: "#5AB27D",
+        secondary: "#FFFAEE",
+      },
+    });
+  };
+
   return (
     <Container>
+      <Toaster />
       <TitleIconContainer>
         <TitleContainer>
           <h3>{businessName}</h3>
           <p>{address}</p>
         </TitleContainer>
         <IconsContainer>
-          <IconButton>
+          <IconButton
+            sx={{ padding: "0.5rem" }}
+            onClick={handleClickShareClipboard}>
             <IosShareIcon
               sx={{
                 display: "block",
@@ -27,7 +62,7 @@ const Place = ({ businessName, address, images }: PlaceResponse) => {
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {images.map((i, index) => (
+        {filteredImages.map((i, index) => (
           <PlaceImage
             lazy
             key={index}
@@ -47,7 +82,6 @@ const Container = styled.li`
   list-style: none;
   padding: 2.1rem 1.5rem 2.5rem 1.5rem;
   background-color: ${COLORS.backgroundSecondary};
-  border-bottom: 1px solid rgba(90, 178, 125, 0.3);
 `;
 
 const TitleIconContainer = styled.div`

@@ -6,4 +6,5 @@ export interface PlaceResponse {
   businessName: string;
   address: string;
   images: ImageResponse[];
+  shareUrl: string;
 }
