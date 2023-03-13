@@ -2,7 +2,8 @@ import { SearchAPI22 } from "@/axios/send-start-point";
 import { getSubway } from "@/axios/get-subway";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import { useSetRecoilState } from "recoil";
 import React, { useCallback, useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
@@ -43,11 +44,11 @@ const SearchInput = () => {
     });
   }, [openModal]);
 
-  useEffect(() => {
-    window.addEventListener("popstate", () => {
-      closeModal();
-    });
-  });
+  // useEffect(() => {
+  //   window.addEventListener("popstate", () => {
+  //     closeModal();
+  //   });
+  // });
 
   // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
@@ -57,19 +58,23 @@ const SearchInput = () => {
   }, [closeModal, groupId, handleConfirmEnterSearchPage, host]);
 
   // 링크를 공유 받았을 때.
-  if (groupId && !token) {
-    openModal({
-      children: <SetLoginModalContent />,
-      btnText: {
-        confirm: "로그인하기!",
-        close: "취소",
-      },
-      handleClose: () => {
-        window.close();
-      },
-    });
-    router.push("/signin");
-  }
+  useEffect(() => {
+    if (groupId && !token) {
+      openModal({
+        children: <SetLoginModalContent />,
+        btnText: {
+          confirm: "로그인하기!",
+          close: "취소",
+        },
+        handleClose: () => {
+          router.push("/");
+        },
+        handleConfirm: () => {
+          router.push("/signin", undefined, { shallow: true });
+        },
+      });
+    }
+  }, [groupId, openModal, router, token]);
 
   const handleLocationClick = (val: searchOriginProps) => {
     const startPoint = {
