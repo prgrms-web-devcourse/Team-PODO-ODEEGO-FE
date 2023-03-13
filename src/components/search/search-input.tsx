@@ -100,7 +100,6 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log("search input is changed");
       return getSubway(searchInput);
     },
     {
@@ -110,34 +109,20 @@ const SearchInput = () => {
     }
   );
 
-  let timer: number | null = null;
-  const handleChangeStartPoint = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = e.target;
+  const handleChangeStartPoint = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { value } = e.target;
+    setSearchInput(value);
 
-      // 임시 debounce 적용
-      if (timer !== null) {
-        window.clearTimeout(timer);
-        timer = window.setTimeout(() => {
-          setSearchInput(value);
-        }, 500);
-      } else {
-        timer = window.setTimeout(() => {
-          setSearchInput(value);
-        }, 500);
-      }
+    if (!resultSubway || resultSubway.length === 0) {
+      setErrorMessage("검색 결과가 없습니다");
+    } else {
+      setErrorMessage("");
+    }
 
-      if (!resultSubway || resultSubway.length === 0) {
-        setErrorMessage("검색 결과가 없습니다");
-      } else {
-        setErrorMessage("");
-      }
-
-      console.log(value);
-      setSearchInput(value);
-    },
-    []
-  );
+    setSearchInput(value);
+  };
 
   const handleStartPointModal = (startPoint: StartPointPros) => {
     openModal({
@@ -153,13 +138,11 @@ const SearchInput = () => {
         // 약속'방'을 만들어서 출발지를 입력할 때
         if (groupId !== null) {
           if (host) {
-            console.log("방장임!");
             await SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
             router.replace(`/group/${groupId}`);
           } else {
-            console.log("방장아님!");
             await SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
@@ -179,7 +162,6 @@ const SearchInput = () => {
 
     const myDefaultStartpoint = await GetMyStartpoint();
     setSearchInput(myDefaultStartpoint.stationName);
-    console.log(myDefaultStartpoint.stationName);
   };
 
   return (
@@ -201,7 +183,7 @@ const SearchInput = () => {
             ),
           }}
           type='text'
-          onChange={handleChangeStartPoint}
+          onChange={(e) => handleChangeStartPoint(e)}
           value={searchInput}
         />
         {(resultSubway?.length <= 0 || !resultSubway) && (
