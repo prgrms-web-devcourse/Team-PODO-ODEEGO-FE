@@ -31,11 +31,10 @@ const PlaceImage = ({ lazy, src, alt, placeholder }: PlaceImageProps) => {
               : placeholder
           }
           alt={alt}
-          width={125}
-          height={125}
+          width={124}
+          height={124}
           style={{
-            borderRadius: "1rem",
-            marginRight: "0.6rem",
+            objectFit: "cover",
           }}
           priority
           onError={handleImageError}
@@ -53,13 +52,3 @@ const Container = styled.div`
   overflow: hidden;
   border-radius: 1rem;
 `;
-
-// const Image = styled.img`
-//   width: 12.4rem;
-//   height: 12.4rem;
-//   object-fit: cover;
-
-//   &.disabled {
-//     display: none;
-//   }
-// `;
