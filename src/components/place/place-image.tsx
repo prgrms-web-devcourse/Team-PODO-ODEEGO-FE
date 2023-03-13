@@ -1,6 +1,5 @@
 import { useLazyLoadImage } from "@/hooks";
 import styled from "@emotion/styled";
-import Image from "next/image";
 import { SyntheticEvent } from "react";
 
 interface PlaceImageProps {
@@ -10,21 +9,12 @@ interface PlaceImageProps {
   placeholder: string;
 }
 
-const PlaceImage = ({
-  lazy = false,
-  src,
-  alt,
-  placeholder,
-}: PlaceImageProps) => {
+const PlaceImage = ({ lazy, src, alt, placeholder }: PlaceImageProps) => {
   const { loaded, imgRef } = useLazyLoadImage(lazy);
 
   const handleImageError = (e: SyntheticEvent<HTMLImageElement>) => {
     e.currentTarget.onerror = null;
     e.currentTarget.remove();
-  };
-
-  const imageUrlLoader = () => {
-    return loaded ? (src ? src : placeholder) : placeholder;
   };
 
   return (
@@ -34,18 +24,8 @@ const PlaceImage = ({
           ref={imgRef}
           referrerPolicy='no-referrer'
           src={loaded ? (src ? src : placeholder) : placeholder}
-          loader={imageUrlLoader}
           alt={alt}
-          width={125}
-          height={125}
-          priority
           draggable={false}
-          //Warn: Image with src has a "loader" property that does not implement width. Please implement it or use the "unoptimized" property instead.
-          unoptimized={true}
-          style={{
-            borderRadius: "1rem",
-            marginRight: "0.6rem",
-          }}
           onError={handleImageError}
         />
       </Container>
@@ -60,16 +40,14 @@ const Container = styled.div`
   aspect-ratio: 1/1;
   overflow: hidden;
   border-radius: 1rem;
-  /* margin-right: 0.6rem; */
 `;
 
-// const Image = styled.img`
-//   width: 12.5rem;
-//   height: 12.5rem;
-//   border-radius: 1rem;
-//   margin-right: 0.6rem;
+const Image = styled.img`
+  width: 12.4rem;
+  height: 12.4rem;
+  object-fit: cover;
 
-//   &.disabled {
-//     display: none;
-//   }
-// `;
+  &.disabled {
+    display: none;
+  }
+`;
