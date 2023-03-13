@@ -25,7 +25,7 @@ export const SearchAPI22 = {
         const errorCode = err.response?.data.errorCode;
 
         if (CustomError[errorCode]) {
-          throw new Error(`${err.response?.data.error}`);
+          throw new Error(`${CustomError[errorCode].error}`);
         } else if (err.response?.status) {
           throw new Error("unknown Error");
         }
@@ -55,7 +55,7 @@ export const SearchAPI22 = {
         const errorCode = err.response?.data.errorCode;
 
         if (CustomError[errorCode]) {
-          throw new Error(`${err.response?.data.error}`);
+          throw new Error(`${CustomError[errorCode].error}`);
         } else if (err.response?.status) {
           throw new Error("unknown Error");
         }
