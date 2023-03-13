@@ -7,6 +7,8 @@ import Layout from "../components/layout/layout";
 import Script from "next/script";
 import { ThemeProvider } from "@emotion/react";
 import { theme } from "@/styles/theme";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "@/components/fallbackui";
 
 declare global {
   // Kakao 함수를 전역에서 사용할 수 있도록 선언
@@ -31,13 +33,20 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <RecoilRoot>
           <ThemeProvider theme={theme}>
-            {globalStyles}
-            <Layout>
-              <Component {...pageProps} />
-              <Script
-                src='https://developers.kakao.com/sdk/js/kakao.js'
-                onLoad={kakaoInit}></Script>
-            </Layout>
+            <ErrorBoundary
+              FallbackComponent={ErrorFallback}
+              onReset={() => {
+                // reset the state of your app so the error doesn't happen again
+                console.log("에러때문에 리셋함");
+              }}>
+              {globalStyles}
+              <Layout>
+                <Component {...pageProps} />
+                <Script
+                  src='https://developers.kakao.com/sdk/js/kakao.js'
+                  onLoad={kakaoInit}></Script>
+              </Layout>
+            </ErrorBoundary>
           </ThemeProvider>
         </RecoilRoot>
       </QueryClientProvider>
