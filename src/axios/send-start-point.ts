@@ -3,6 +3,7 @@ import axios from "axios";
 import HTTP from "./config/axios-instance";
 import { getLocalStorage } from "@/utils/storage";
 import { CustomError } from "@/constants/custom-error";
+import { toast } from "react-hot-toast";
 
 export const SearchAPI22 = {
   NonHostSendStartPoint: async (value: StartPointPros) => {
@@ -25,6 +26,7 @@ export const SearchAPI22 = {
         const errorCode = err.response?.data.errorCode;
 
         if (CustomError[errorCode]) {
+          toast.error(CustomError[errorCode].error);
           throw new Error(`${CustomError[errorCode].error}`);
         } else if (err.response?.status) {
           throw new Error("unknown Error");
@@ -55,6 +57,7 @@ export const SearchAPI22 = {
         const errorCode = err.response?.data.errorCode;
 
         if (CustomError[errorCode]) {
+          toast.error(CustomError[errorCode].error);
           throw new Error(`${CustomError[errorCode].error}`);
         } else if (err.response?.status) {
           throw new Error("unknown Error");

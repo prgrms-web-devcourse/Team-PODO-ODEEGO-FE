@@ -1,5 +1,5 @@
 interface temp {
-  [key: string]: { message: string; status: number; error?: string };
+  [key: string]: { message: string; status: number; error: string };
 }
 
 export const CustomError: temp = {
