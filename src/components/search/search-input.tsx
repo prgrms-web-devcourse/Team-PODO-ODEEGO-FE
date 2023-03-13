@@ -44,7 +44,7 @@ const SearchInput = () => {
         router.push("/");
       },
     });
-  }, [openModal]);
+  }, [openModal, router]);
 
   // URL Params에 groupId가 포함되어 있으면 모달을 보여준다.
   useEffect(() => {
