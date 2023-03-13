@@ -20,9 +20,7 @@ const FormInput = ({
   onRemove,
 }: AddressFormInputProps) => {
   return (
-    <Box
-      key={index}
-      sx={{ width: "100%", position: "relative", cursor: "pointer" }}>
+    <Container index={index}>
       <CustomTextField
         id='index'
         placeholder={placeholder}
@@ -59,11 +57,29 @@ const FormInput = ({
           <ClearIcon />
         </IconButton>
       )}
-    </Box>
+    </Container>
   );
 };
 
 export default FormInput;
+
+const Container = styled.div<{ index: number }>`
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  animation: ${({ index }) => `fadein ${(index + 1) * 0.2}s ease-in`};
+
+  @keyframes fadein {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+`;
 
 const CustomTextField = styled(TextField)`
   background-color: ${COLORS.backgroundSecondary};

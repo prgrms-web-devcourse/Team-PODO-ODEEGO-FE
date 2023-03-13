@@ -3,7 +3,7 @@ import { Box, CircularProgress, IconButton, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { MidPointApi } from "@/axios/mid-point";
 import { GroupsApi } from "@/axios/groups";
@@ -22,6 +22,7 @@ import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
+import formatTime from "@/utils/format-time";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -117,10 +118,7 @@ export default function Home() {
   const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
     const { groups }: AllGroupsResponse = await GroupsApi.getAll(token);
     const { groupId, remainingTime } = groups[0];
-
-    const times = remainingTime.split(":");
-    const minutes = Number(times[1]);
-    const seconds = Math.floor(Number(times[2]));
+    const { minutes, seconds } = formatTime(remainingTime);
 
     return {
       groupId,
@@ -281,7 +279,6 @@ export default function Home() {
               altText={BUTTON_GROUPS_ALT_TEXT}
             />
           </Stack>
-          <Toaster />
         </Form>
       </MainContainer>
     </>

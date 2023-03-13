@@ -2,11 +2,13 @@ import { SIZE } from "../../constants/css";
 import styled from "@emotion/styled";
 import GlobalModal from "@/components/common/global-modal";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Container>
       <GlobalModal />
+      <Toaster />
       {children}
     </Container>
   );
