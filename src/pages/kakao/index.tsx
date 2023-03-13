@@ -9,7 +9,7 @@ import Header from "@/components/layout/header";
 
 import { axiosInstanceWitToken } from "@/axios/instance";
 import fetch from "node-fetch";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { NEXT_PUBLIC_URL } = process.env;
@@ -49,7 +49,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-const Kakao = (props: any) => {
+const Kakao = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
   const router = useRouter();
   const { code: authCode } = router.query;
 
