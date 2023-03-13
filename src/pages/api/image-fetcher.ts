@@ -20,18 +20,13 @@ export default async function handler(
     )) as NodeJS.ReadableStream;
 
     if (!rStream) {
-      /* Failed to fetch
-     We could either redirect to the url URL (or some other 
-    fallback url e.g. res.redirect(https://example.com/someImage.png)
-    or error: */
-      return res.status(500).json({ message: "Internal server error" });
+      throw new Error("Internal server error");
     }
 
     const pt = new Stream.PassThrough();
 
     Stream.pipeline(rStream, pt, (err) => {
-      if (err)
-        return res.status(500).json({ message: "Internal server error" });
+      if (err) throw new Error("Internal server error");
     });
 
     pt.pipe(res);
