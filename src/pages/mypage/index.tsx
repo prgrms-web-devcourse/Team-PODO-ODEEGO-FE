@@ -74,16 +74,14 @@ const MyPage = () => {
       <BorderContainer />
 
       <MypageWrapper>
-        <MypageContainer>
-          {/*<AccountCircleIcon style={{ fontSize: 200, margin: "0 auto" }} />*/}
+        {/*<AccountCircleIcon style={{ fontSize: 200, margin: "0 auto" }} />*/}
 
-          <MypageDeleteAcoountButton onClick={handleClickAccount}>
-            회원탈퇴
-          </MypageDeleteAcoountButton>
-          <MypageLogoutButton onClick={handleClickLogout}>
-            로그아웃
-          </MypageLogoutButton>
-        </MypageContainer>
+        <MypageDeleteAcoountButton onClick={handleClickAccount}>
+          회원탈퇴
+        </MypageDeleteAcoountButton>
+        <MypageLogoutButton onClick={handleClickLogout}>
+          로그아웃
+        </MypageLogoutButton>
       </MypageWrapper>
     </MypageContainer>
   );
@@ -147,7 +145,7 @@ const BorderContainer = styled.div`
 `;
 
 const MypageContainer = styled.div`
-  width: 110%;
+  width: 100%;
   margin: 0 auto;
 `;
 
