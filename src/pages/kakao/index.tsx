@@ -72,16 +72,6 @@ const Kakao = (
                 loginBackendUrl
               );
 
-              // const { data } = await axios.post(
-              //   loginBackendUrl,
-              //   {},
-              //   {
-              //     headers: {
-              //       Authorization: `Bearer ${access_token}`,
-              //     },
-              //   }
-              // );
-
               setLocalStorage("token", data.accessToken);
             }
           }

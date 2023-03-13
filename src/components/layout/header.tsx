@@ -29,121 +29,118 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-const Header = ({ token }: TokenProps) =>
-  // props: InferGetServerSidePropsType<typeof getServerSideProps>
-  {
-    // console.log(props);
-    const router = useRouter();
-    const { pathname } = router;
-    const [tokenData, setToken] = useState<string>("");
+const Header = ({ token }: TokenProps) => {
+  const router = useRouter();
+  const { pathname } = router;
+  const [tokenData, setToken] = useState<string>("");
 
-    useEffect(() => {
-      const getToken = getLocalStorage("logoutToken");
-      if (!getToken) return;
+  useEffect(() => {
+    const getToken = getLocalStorage("logoutToken");
+    if (!getToken) return;
 
-      setToken(getToken);
-    }, [router, token]);
-    const { openModal } = useModal();
+    setToken(getToken);
+  }, [router, token]);
+  const { openModal } = useModal();
 
-    const handleBackClick = async () => {
-      switch (pathname) {
-        case "/signin":
-          router.push(`${ROUTES.HOME}`);
-          break;
-        case "/kakao":
-          openModal({
-            children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
-            btnText: {
-              confirm: "홈으로",
-              close: "취소",
-            },
-            handleConfirm: async () => {
-              router.push(`${ROUTES.HOME}`);
-
-              // return response;
-            },
-          });
-          break;
-
-        case "/mypage":
-          router.push(`${ROUTES.HOME}`);
-          break;
-      }
-    };
-
-    const handleLogout = async () => {
-      const logoutToken = getLocalStorage("logoutToken");
-      try {
-        const kakaoLogoutUrl = `/api/kakao-logout`;
-        await fetch(kakaoLogoutUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            logoutToken,
-          }),
-        });
-
-        const odeegoLogoutUrl = `/api/odeego-leave`;
-        const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
-        setToken("");
-        removeLocalStorage("token");
-
-        removeLocalStorage("logoutToken");
+  const handleBackClick = async () => {
+    switch (pathname) {
+      case "/signin":
         router.push(`${ROUTES.HOME}`);
-        return response;
-      } catch (err) {
-        throw new Error((err as Error).message);
-      }
-    };
-
-    const handleClickMypage = () => {
-      if (pathname === "/kakao") {
+        break;
+      case "/kakao":
         openModal({
           children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
           btnText: {
-            confirm: "마이페이지 이동",
+            confirm: "홈으로",
             close: "취소",
           },
           handleConfirm: async () => {
-            router.push("/mypage");
+            router.push(`${ROUTES.HOME}`);
+
             // return response;
           },
         });
-      } else {
-        router.push("/mypage");
-      }
-    };
+        break;
 
-    return (
-      <HeaderContainer>
-        {(token || tokenData) && (
-          <>
-            <HeaderBackImage>
-              <KeyboardBackspaceIcon onClick={handleBackClick} />
-            </HeaderBackImage>
-            <HeaderIconWrap>
-              <NavbarIcons>
-                <AccountCircleIcon onClick={handleClickMypage} />
-                <ExitToAppIcon onClick={handleLogout} />
-              </NavbarIcons>
-            </HeaderIconWrap>
-          </>
-        )}
-
-        <TextP>{HEADER_TEXT}</TextP>
-
-        <Image
-          src='/logo1.svg'
-          alt='Odeego Logo'
-          width={147}
-          height={56}
-          priority
-        />
-      </HeaderContainer>
-    );
+      case "/mypage":
+        router.push(`${ROUTES.HOME}`);
+        break;
+    }
   };
+
+  const handleLogout = async () => {
+    const logoutToken = getLocalStorage("logoutToken");
+    try {
+      const kakaoLogoutUrl = `/api/kakao-logout`;
+      await fetch(kakaoLogoutUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          logoutToken,
+        }),
+      });
+
+      const odeegoLogoutUrl = `/api/odeego-leave`;
+      const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
+      setToken("");
+      removeLocalStorage("token");
+
+      removeLocalStorage("logoutToken");
+      router.push(`${ROUTES.HOME}`);
+      return response;
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
+  };
+
+  const handleClickMypage = () => {
+    if (pathname === "/kakao") {
+      openModal({
+        children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
+        btnText: {
+          confirm: "마이페이지 이동",
+          close: "취소",
+        },
+        handleConfirm: async () => {
+          router.push("/mypage");
+          // return response;
+        },
+      });
+    } else {
+      router.push("/mypage");
+    }
+  };
+
+  return (
+    <HeaderContainer>
+      {(token || tokenData) && (
+        <>
+          <HeaderBackImage>
+            <KeyboardBackspaceIcon onClick={handleBackClick} />
+          </HeaderBackImage>
+          <HeaderIconWrap>
+            <NavbarIcons>
+              <AccountCircleIcon onClick={handleClickMypage} />
+              <ExitToAppIcon onClick={handleLogout} />
+            </NavbarIcons>
+          </HeaderIconWrap>
+        </>
+      )}
+
+      <TextP>{HEADER_TEXT}</TextP>
+
+      <Image
+        src='/logo1.svg'
+        alt='Odeego Logo'
+        width={147}
+        height={56}
+        priority
+      />
+    </HeaderContainer>
+  );
+};
 
 export default Header;
 
