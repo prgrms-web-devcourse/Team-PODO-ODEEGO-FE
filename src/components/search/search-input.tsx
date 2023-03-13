@@ -1,4 +1,5 @@
 import { SearchAPI22 } from "@/axios/send-start-point";
+import { getSubway } from "@/axios/get-subway";
 import styled from "@emotion/styled";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,7 +11,6 @@ import { Button, InputAdornment, TextField } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
-import { getSubway } from "@/axios/get-subway";
 import EnterSearchPageModal from "./enter-searchpage-modal";
 import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
@@ -21,11 +21,11 @@ const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
   const [errorMessage, setErrorMessage] = useState("검색 결과가 없습니다");
   const setRecoilData = useSetRecoilState<searchProps[]>(searchState); // 입력한 출발지들(혼자서 모두 입력할 때 사용)
-  const token = getLocalStorage("token");
+  const token = getLocalStorage("token"); // 로그인 토큰 가져오기.
   const router = useRouter();
 
   const id = useSearchParams().get("id") || null; // input Id(주소입력창)
-  const groupId = useSearchParams().get("groupId") || null; // 방 Id. 임시로 사용할 수 있는 ID b6deb966-8179-43db-9f08-ec5271cbaccc
+  const groupId = useSearchParams().get("groupId") || null; // 방 Id.
   const host = useSearchParams().get("host") || null;
   const { openModal, closeModal } = useModal();
 
@@ -64,16 +64,11 @@ const SearchInput = () => {
         confirm: "로그인하기!",
         close: "취소",
       },
-      handleConfirm: () => {
-        // 로그인
-        router.push("/signin");
-      },
       handleClose: () => {
         window.close();
       },
     });
-    // 로그인 화면으로 대체 예정.
-    router.push("/");
+    router.push("/signin");
   }
 
   const handleLocationClick = (val: searchOriginProps) => {
@@ -84,7 +79,6 @@ const SearchInput = () => {
       lng: +val.x,
     };
 
-    console.log(groupId);
     // 한 명이 모든 출발지를 입력할 때.
     if (!groupId) {
       if (id === undefined || id === null) return;
@@ -104,7 +98,7 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log(`search input is changed`);
+      console.log("search input is changed");
       return getSubway(searchInput);
     },
     {
@@ -149,21 +143,21 @@ const SearchInput = () => {
         close: "다시 선택합니다.",
       },
       // 출발지 확정시
-      handleConfirm: () => {
+      handleConfirm: async () => {
         // 약속'방'을 만들어서 출발지를 입력할 때
         if (groupId !== null) {
           if (host) {
             console.log("방장임!");
-            SearchAPI22.HostSendStartPoint(startPoint);
+            await SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
-            router.push("/");
+            router.replace(`/group/${groupId}`);
           } else {
             console.log("방장아님!");
-            SearchAPI22.NonHostSendStartPoint(startPoint);
+            await SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
-            router.push("/");
+            router.replace("/");
           }
         }
       },
