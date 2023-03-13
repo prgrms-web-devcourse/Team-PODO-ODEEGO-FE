@@ -44,6 +44,7 @@ const LoginPage = () => {
         },
       });
     } else {
+      // test
       window.Kakao.Auth.authorize({
         //개인 테스트용 리다이랙션 주소
         // redirectUri: "http://localhost:3000/kakao",
