@@ -10,18 +10,15 @@ export const validateAddressListUnderTwoLength = (
     return ERROR_MISSING_START_POINT;
   }
 
-  if (addressList.length === 2) {
-    const one = addressList[0];
-    const two = addressList[1];
+  let prevAddress = addressList[0];
+  for (const curAddress of addressList) {
+    const { lat: pLat, lng: pLng } = prevAddress;
+    const { lat: cLat, lng: cLng } = curAddress;
 
-    if (
-      one.stationName === two.stationName &&
-      one.lat === two.lat &&
-      one.lng === two.lng
-    ) {
-      return ERROR_DUPLICATE_START_POINT;
-    }
+    if (pLat !== cLat || pLng !== cLng) return "";
+
+    prevAddress = curAddress;
   }
 
-  return "";
+  return ERROR_DUPLICATE_START_POINT;
 };

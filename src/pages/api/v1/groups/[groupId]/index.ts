@@ -27,7 +27,7 @@ export default async function handler(
       const errorCode = e.response?.data.errorCode;
 
       res.status(CustomError[errorCode].status).json({
-        error: CustomError[errorCode].message,
+        error: CustomError[errorCode].error ?? CustomError[errorCode].message,
         status: CustomError[errorCode].status,
       });
     } else {

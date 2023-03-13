@@ -1,8 +1,9 @@
 import { COLORS } from "@/constants";
 import { SHADOWS } from "@/constants/css";
 import { useModal } from "@/hooks";
-import { MidPointState } from "@/recoil";
+import { MidPointState, searchState } from "@/recoil";
 import { DefaultMidpointValue } from "@/recoil/midpoint-state";
+import { defaultSearchState } from "@/recoil/search-state";
 import styled from "@emotion/styled";
 import { ArrowBack, Close } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
@@ -12,7 +13,17 @@ import { useSetRecoilState } from "recoil";
 const MapHeader = () => {
   const router = useRouter();
   const setMidPointState = useSetRecoilState(MidPointState);
+  const setSearchState = useSetRecoilState(searchState);
   const { openModal } = useModal();
+
+  const modalContent = () => {
+    return (
+      <Content>
+        <p>검색 결과가 초기화됩니다.</p>
+        <p>다시 돌아가시겠습니까</p>
+      </Content>
+    );
+  };
 
   const handleGoBack = () => {
     router.push("/");
@@ -20,13 +31,14 @@ const MapHeader = () => {
 
   const handleCancel = () => {
     openModal({
-      children: <p>정말로 삭제 하시겠습니까?</p>,
+      children: modalContent(),
       btnText: {
         confirm: "확인",
         close: "취소",
       },
       handleConfirm: () => {
         setMidPointState(DefaultMidpointValue);
+        setSearchState(defaultSearchState);
         router.push("/");
       },
     });
@@ -63,5 +75,14 @@ const CustomIconButton = styled(IconButton)`
   color: ${COLORS.altGreen};
   > svg {
     font-size: 2rem;
+  }
+`;
+
+const Content = styled.div`
+  text-align: center;
+  margin: 1rem 0;
+
+  > p {
+    margin: 0;
   }
 `;

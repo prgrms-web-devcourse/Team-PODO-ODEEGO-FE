@@ -1,5 +1,5 @@
 interface temp {
-  [key: string]: { message: string; status: number };
+  [key: string]: { message: string; status: number; error?: string };
 }
 
 export const CustomError: temp = {
@@ -8,12 +8,21 @@ export const CustomError: temp = {
   M003: { message: "Member nickname length is out of bounds.", status: 400 },
   M004: { message: "Member nickname is unformatted.", status: 400 },
   M005: { message: "Station doesn't exists in our service.", status: 400 },
-  G001: { message: "Group Not Found.", status: 404 },
+  G001: {
+    message: "Group Not Found.",
+    status: 404,
+    error: "모임 유효시간이 지났거나 잘못된 모임 주소입니다.",
+  },
   G002: { message: "Member is already participating group.", status: 400 },
   G003: { message: "Group is already full.", status: 400 },
   G004: { message: "Group host is absent.", status: 500 },
   G005: { message: "Group capacity is out of bounds.", status: 400 },
   G006: { message: "Group Member's station is already defined.", status: 400 },
+  G007: {
+    message: "Group host not matched.",
+    status: 403,
+    error: "모임 상세 페이지는 모임 주인만 볼 수 있습니다.",
+  },
   S001: { message: "Station Not Found.", status: 404 },
   P001: { message: "Place Not Found.", status: 404 },
   A001: { message: "Token not found in request header.", status: 401 },

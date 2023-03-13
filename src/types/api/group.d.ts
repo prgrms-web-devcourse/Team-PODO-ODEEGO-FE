@@ -10,7 +10,7 @@ export interface ParticipantResponse {
 
 export interface GroupDetailResponse {
   capacity: number;
-  remainingTime: Date;
+  remainingTime: string;
   hostId: string;
   participants: ParticipantResponse[];
 }
