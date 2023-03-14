@@ -85,7 +85,7 @@ const Header = ({ token }: TokenProps) => {
   const { openModal } = useModal();
 
   const handleClickLogin = () => {
-    router.push("/signin");
+    router.push(`${ROUTES.LOGIN}`);
   };
 
   const handleClickMypage = () => {
@@ -97,12 +97,12 @@ const Header = ({ token }: TokenProps) => {
           close: "취소",
         },
         handleConfirm: async () => {
-          router.push("/mypage");
+          router.push(`${ROUTES.MYPAGE}`);
           // return response;
         },
       });
     } else {
-      router.push("/mypage");
+      router.push(`${ROUTES.MYPAGE}`);
     }
   };
 
