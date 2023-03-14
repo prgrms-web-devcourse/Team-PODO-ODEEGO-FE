@@ -10,7 +10,17 @@ import useModal from "../../hooks/use-modal";
 import Cookies from "cookies";
 import { GetServerSidePropsContext } from "next";
 import LoginIcon from "@mui/icons-material/Login";
-import { Grow, MenuItem, MenuList, Paper, Popper, Stack } from "@mui/material";
+import {
+  Divider,
+  Grow,
+  IconButton,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 import { axiosInstanceWitToken } from "@/axios/instance";
 import { ROUTES } from "@/constants";
 
@@ -102,7 +112,14 @@ const Header = ({ token }: TokenProps) => {
         <>
           <HeaderIconWrap>
             <NavbarIcons>
-              <AccountCircleIcon ref={anchorRef} onClick={handleOpenToggle} />
+              <IconButton
+                style={{
+                  color: "white",
+                }}
+                ref={anchorRef}
+                onClick={handleOpenToggle}>
+                <AccountCircleIcon />
+              </IconButton>
               {/*<AccountCircleIcon onClick={handleClickMypage} />*/}
             </NavbarIcons>
           </HeaderIconWrap>
@@ -127,10 +144,11 @@ const Header = ({ token }: TokenProps) => {
                 }}>
                 <Stack direction='row' spacing={2}>
                   <Paper>
-                    <MenuList>
+                    <MenuList style={{}}>
                       <MenuItem onClick={handleClickMypage}>
                         마이페이지
                       </MenuItem>
+                      <Divider />
                       <MenuItem onClick={handleClickLogOut}>로그아웃</MenuItem>
                     </MenuList>
                   </Paper>
@@ -146,8 +164,15 @@ const Header = ({ token }: TokenProps) => {
       {!token && !tokenData && (
         <>
           <HeaderIconWrap>
-            {/*<LoginIcon onClick={handleOpenToggle} />*/}
-            <LoginIcon onClick={handleClickLogin} />
+            <Tooltip title='로그인' arrow>
+              <IconButton
+                style={{
+                  color: "white",
+                }}>
+                {/*<LoginIcon onClick={handleOpenToggle} />*/}
+                <LoginIcon onClick={handleClickLogin} />
+              </IconButton>
+            </Tooltip>
           </HeaderIconWrap>
         </>
       )}
