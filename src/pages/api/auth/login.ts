@@ -24,7 +24,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({ error: "Token is missing" });
   }
   const cookie = setCookie("token", access_token);
-
   res.setHeader("Set-Cookie", cookie);
   res.status(200).json({ message: "Cookie has been set" });
 }
