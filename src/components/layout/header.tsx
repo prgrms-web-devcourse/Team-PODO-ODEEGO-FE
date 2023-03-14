@@ -49,7 +49,11 @@ const Header = ({ token }: TokenProps) => {
         break;
       case "/kakao":
         openModal({
-          children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
+          children: (
+            <p style={{ textAlign: "center", width: "20rem" }}>
+              추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.
+            </p>
+          ),
           btnText: {
             confirm: "홈으로",
             close: "취소",
