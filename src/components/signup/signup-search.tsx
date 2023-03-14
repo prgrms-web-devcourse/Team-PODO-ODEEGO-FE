@@ -108,6 +108,7 @@ const SignUpSearchToggleWrapper = styled.ul`
 `;
 
 const SignUpSearchToggleData = styled.li`
+  list-style: none;
   padding: 2rem 0;
   margin: 0 2rem;
   box-sizing: border-box;
