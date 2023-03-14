@@ -21,6 +21,7 @@ export const PlaceApi = {
         const errorMessage = response?.data?.message;
         throw new Error(errorMessage);
       }
+      return true;
     }
   },
 };

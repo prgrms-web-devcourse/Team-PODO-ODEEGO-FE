@@ -69,15 +69,11 @@ export default function Home() {
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      //모임 생성 Test API
-      // - 현재 약속방을 삭제하는 기능이 없음
-      // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
       const gId = groupId;
       try {
         const count = getLocalStorage(COUNT);
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
-        //만료된 방이 있다면, 방 삭제 후, 방 만들기
         if (!isValid && gId) {
           await GroupsApi.deleteGroup(gId, token);
         }
@@ -131,7 +127,6 @@ export default function Home() {
     const initGroupId = async () => {
       if (!hasAccessToken) return;
 
-      //TODO 실제 모임조회 api로 바꾸기
       try {
         const data = await GroupsApi.getAll(token);
         const groupId = data?.groups?.[0]?.groupId || "";
@@ -154,8 +149,6 @@ export default function Home() {
   };
 
   const handleButtonClickGroups = async () => {
-    // * 유효시간 모달 체크 코드
-    // openModal(getValidGroupModalConfig(1, 0));
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
