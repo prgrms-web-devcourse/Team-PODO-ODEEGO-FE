@@ -5,7 +5,7 @@ import useMap from "@/hooks/use-map";
 import { useRecoilValue } from "recoil";
 import { MidPointState } from "@/recoil/midpoint-state";
 import PlacesButton from "@/components/map/places-button";
-import MapHeader from "@/components/map/map-header";
+import SubHeader from "@/components/layout/sub-header";
 import { Stack } from "@mui/material";
 import { EndpointResponse } from "@/types/api/midpoint";
 
@@ -40,7 +40,7 @@ const MapPage = () => {
   return (
     <Wrapper>
       <Container>
-        <MapHeader />
+        <SubHeader isMap={true} />
         <Stack direction='row' spacing={4} justifyContent='center'>
           {midpoints &&
             midpoints.map((data, index) => (

@@ -80,17 +80,20 @@ const _Modal = ({
           {btnText ? (
             <FlexContainer direction='row'>
               {btnText.confirm && (
-                <Button
+                <CustomButton
                   variant='contained'
                   color='primary'
                   onClick={onConfirmDebounce}>
                   {btnText.confirm}
-                </Button>
+                </CustomButton>
               )}
               {btnText.close && (
-                <Button variant='contained' color='neutral' onClick={onCancel}>
+                <CustomButton
+                  variant='contained'
+                  color='neutral'
+                  onClick={onCancel}>
                   {btnText.close}
-                </Button>
+                </CustomButton>
               )}
             </FlexContainer>
           ) : null}
@@ -129,6 +132,10 @@ const Box = styled.div`
   box-sizing: border-box;
   background-color: ${COLORS.backgroundPrimary};
   border-radius: 0.8rem;
+`;
+
+const CustomButton = styled(Button)`
+  font-size: 1.1rem;
 `;
 
 const CloseButton = styled(IconButton)<IconButtonProps>`

@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
-import styled from "@emotion/styled";
-import { COLORS } from "@/constants/css";
 
 import { setLocalStorage } from "@/utils/storage";
 import Header from "@/components/layout/header";
+import Main from "@/components/layout/main";
 
 import { axiosInstanceWitToken } from "@/axios/instance";
 import fetch from "node-fetch";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { Container } from "@mui/material";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { NEXT_PUBLIC_URL } = process.env;
@@ -84,35 +84,14 @@ const Kakao = (
   }, [authCode, router]);
 
   return (
-    <SignUpContainer>
+    <>
       <Header token={props.tokenResponse.access_token} />
-      <BorderContainer />
-      <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
-
-      <SignUpSearchInput />
-    </SignUpContainer>
+      <Main text='회원정보'>
+        <Container>
+          <SignUpSearchInput />
+        </Container>
+      </Main>
+    </>
   );
 };
 export default Kakao;
-
-const SignUpTitle = styled.h1`
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 50px;
-  margin-bottom: 50px;
-`;
-
-const BorderContainer = styled.div`
-  height: 25px;
-  width: 100%;
-  background-color: ${COLORS.backgroundPrimary};
-  margin-top: -15px;
-  border-radius: 20px 20px 0 0;
-`;
-
-const SignUpContainer = styled.div`
-  width: 43rem;
-  margin: 0 auto;
-`;

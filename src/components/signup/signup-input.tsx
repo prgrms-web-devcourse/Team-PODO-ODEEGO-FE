@@ -1,7 +1,9 @@
 import { InputAdornment, TextField } from "@mui/material";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { Search } from "@mui/icons-material";
 import React from "react";
 import { errorType, valueType } from "@/types/register-props";
+import { COLORS } from "@/constants";
+import styled from "@emotion/styled";
 
 interface SignupInputProps<T, U> {
   values: T;
@@ -9,6 +11,11 @@ interface SignupInputProps<T, U> {
   errorMessage: U;
   handleStationKeyDown: (arg: React.KeyboardEvent<HTMLInputElement>) => void;
 }
+
+const label = {
+  nickname: "닉네임을 입력해주세요",
+  station: "가까운 지하철역을 입력해주세요",
+};
 
 const SignupInput = ({
   values,
@@ -18,21 +25,13 @@ const SignupInput = ({
 }: SignupInputProps<Partial<valueType>, Partial<errorType>>) => {
   return (
     <>
-      <TextField
-        style={{
-          width: "100%",
-        }}
-        sx={{
-          marginBottom: "10px",
-        }}
-        inputProps={{
-          style: { fontSize: 15 },
-        }}
+      <CustomTextField
         // name ="name"
         name='nickname'
         // value={nickname}
         value={values.nickname || ""}
         onChange={handleValue}
+        placeholder={label.nickname}
       />
 
       {errorMessage.nickname ? (
@@ -53,31 +52,48 @@ const SignupInput = ({
 
       {/*  태스트용*/}
       {/*  pull error*/}
-      <TextField
+      <CustomTextField
         value={values.defaultStationName || ""}
-        // value={station}
-        style={{
-          width: "100%",
-        }}
-        inputProps={{
-          style: { fontSize: 15 },
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <KeyboardBackspaceIcon />
-            </InputAdornment>
-          ),
-        }}
-        // defaultStationName
-        // name='station'
+        placeholder={label.station}
         name='defaultStationName'
-        // '
         type='text'
         onChange={handleValue}
         onKeyDown={handleStationKeyDown}
+        sx={{ zIndex: "100" }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <Search fontSize='large' sx={{ color: COLORS.altGreen }} />
+            </InputAdornment>
+          ),
+        }}
       />
     </>
   );
 };
 export default SignupInput;
+
+const CustomTextField = styled(TextField)`
+  width: 100%;
+  background-color: ${COLORS.backgroundSecondary};
+
+  & .MuiOutlinedInput-root {
+    fieldset {
+      border-color: ${COLORS.borderPrimary};
+    }
+
+    &.Mui-focused fieldset {
+      border-color: ${COLORS.mainGreen};
+    }
+
+    &:hover fieldset {
+      border-color: ${COLORS.mainGreen};
+    }
+
+    & input {
+      color: ${COLORS.semiBlack};
+      font-size: 1.5rem;
+      -webkit-text-fill-color: ${COLORS.semiBlack};
+    }
+  }
+`;

@@ -1,6 +1,7 @@
 import DirectionsTransitRoundedIcon from "@mui/icons-material/DirectionsTransitRounded";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import { COLORS } from "@/constants";
 
 interface NotFoundProps {
   title: string;
@@ -31,5 +32,8 @@ const NotFountContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  height: 100%;
+  max-height: fit-content;
+  margin: 5rem 0;
+  color: ${COLORS.borderPrimary};
 `;
