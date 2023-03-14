@@ -94,8 +94,8 @@ const PlacePage = ({ stationName }: PageProps) => {
                   <PlaceList key={i} placeList={p.content} />
                 ))}
               {hasNextPage ? (
-                <Box
-                  sx={{
+                <li
+                  style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -105,10 +105,10 @@ const PlacePage = ({ stationName }: PageProps) => {
                   {isFetching && isFetchingNextPage && (
                     <CircularProgress size='3rem' sx={{ color: "#5AB27D" }} />
                   )}
-                </Box>
+                </li>
               ) : (
-                <Box
-                  sx={{
+                <li
+                  style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -120,7 +120,7 @@ const PlacePage = ({ stationName }: PageProps) => {
                     width={200}
                     height={30}
                   />
-                </Box>
+                </li>
               )}
             </>
           )}
