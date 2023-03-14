@@ -56,25 +56,23 @@ const Kakao = (
   const { code: authCode } = router.query;
 
   useEffect(() => {
-    try {
-      const fetchKaokaoUserData = async () => {
+    const fetchKaokaoUserData = async () => {
+      try {
         if (authCode) {
           setLocalStorage("logoutToken", props.tokenResponse.access_token);
-          if (!window.performance) return;
-          // 새로고침 임시 방편 코드
-          if (performance.navigation.type === 1) {
-            console.error("The page is reloaded");
-          } else {
+          if (window.performance && performance.navigation.type !== 1) {
             const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
             const { data } = await axiosInstanceWitToken.post(loginBackendUrl);
             setLocalStorage("token", data.accessToken);
+          } else {
+            console.error("The page is reloaded");
           }
         }
-      };
-      fetchKaokaoUserData();
-    } catch (err) {
-      throw new Error((err as Error).message);
-    }
+      } catch (err) {
+        throw new Error((err as Error).message);
+      }
+    };
+    fetchKaokaoUserData();
   }, [authCode, router]);
 
   return (
