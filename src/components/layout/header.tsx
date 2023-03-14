@@ -1,6 +1,6 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
-import Image from "next/image";
+
 const HEADER_TEXT = "어디서 만날까?";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { ROUTES } from "@/constants/routes";
@@ -132,13 +132,7 @@ const Header = ({ token }: TokenProps) => {
 
       <TextP>{HEADER_TEXT}</TextP>
 
-      <Image
-        src='/logo1.svg'
-        alt='Odeego Logo'
-        width={147}
-        height={56}
-        priority
-      />
+      <embed src='/logo1.svg' width={147} height={56} />
     </HeaderContainer>
   );
 };
