@@ -176,7 +176,7 @@ const SearchInput = () => {
   };
 
   return (
-    <CustomContainer>
+    <CustomContainer sx={{ padding: "0 1rem", boxSizing: "border-box" }}>
       <SearchInputWrapper>
         <CustomTextField
           autoFocus

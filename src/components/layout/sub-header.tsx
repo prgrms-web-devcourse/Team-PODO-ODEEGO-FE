@@ -10,11 +10,12 @@ import { IconButton } from "@mui/material";
 import { useRouter } from "next/router";
 import { useSetRecoilState } from "recoil";
 
-const MapHeader = () => {
+const SubHeader = (props: { isMap?: boolean }) => {
   const router = useRouter();
   const setMidPointState = useSetRecoilState(MidPointState);
   const setSearchState = useSetRecoilState(searchState);
   const { openModal } = useModal();
+  const { isMap } = props;
 
   const modalContent = () => {
     return (
@@ -48,14 +49,16 @@ const MapHeader = () => {
       <CustomIconButton onClick={handleGoBack}>
         <ArrowBack htmlColor={COLORS.altGreen} fontSize='inherit' />
       </CustomIconButton>
-      <CustomIconButton onClick={handleCancel}>
-        <Close htmlColor={COLORS.altGreen} fontSize='inherit' />
-      </CustomIconButton>
+      {isMap && (
+        <CustomIconButton onClick={handleCancel}>
+          <Close htmlColor={COLORS.altGreen} fontSize='inherit' />
+        </CustomIconButton>
+      )}
     </Header>
   );
 };
 
-export default MapHeader;
+export default SubHeader;
 
 const Header = styled.div`
   display: flex;
