@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 const HEADER_TEXT = "어디서 만날까?";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useModal from "../../hooks/use-modal";
@@ -33,7 +33,7 @@ const Header = ({ token }: TokenProps) => {
   const [tokenData, setToken] = useState<string>("");
 
   const [open, setOpen] = useState(false);
-  const achorRef = useRef<HTMLButtonElement>(null);
+  const anchorRef = React.useRef<HTMLButtonElement>(null);
 
   const handleOpenToggle = () => {
     setOpen((prev) => !prev);
@@ -55,12 +55,10 @@ const Header = ({ token }: TokenProps) => {
           logoutToken,
         }),
       });
-
       const odeegoLogoutUrl = `/api/odeego-leave`;
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
       setToken("");
       removeLocalStorage("token");
-
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
       return response;
@@ -104,7 +102,7 @@ const Header = ({ token }: TokenProps) => {
         <>
           <HeaderIconWrap>
             <NavbarIcons>
-              <AccountCircleIcon onClick={handleOpenToggle} />
+              <AccountCircleIcon ref={anchorRef} onClick={handleOpenToggle} />
               {/*<AccountCircleIcon onClick={handleClickMypage} />*/}
             </NavbarIcons>
           </HeaderIconWrap>
@@ -114,6 +112,7 @@ const Header = ({ token }: TokenProps) => {
               left: "75%",
               top: "30%",
             }}
+            anchorEl={anchorRef.current}
             open={open}
             placement='bottom-start'
             transition
@@ -127,7 +126,7 @@ const Header = ({ token }: TokenProps) => {
                 }}>
                 <Stack direction='row' spacing={2}>
                   <Paper>
-                    <MenuList anchorEl={achorRef?.current}>
+                    <MenuList>
                       <MenuItem onClick={handleClickMypage}>
                         마이페이지
                       </MenuItem>
