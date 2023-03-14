@@ -14,10 +14,10 @@ const SignUpSearchInput = () => {
     errorMessage,
     isError,
     isToggleBoxLoading,
-    handleSignUpSubmit,
-    handleStationKeyDown,
-    handleLocationClick,
-    handleValue,
+    handleSubmitSignup,
+    handleKeyDownStation,
+    handleClickLocation,
+    handleChangeValue,
     values,
   } = useSignupSearch();
 
@@ -37,9 +37,9 @@ const SignUpSearchInput = () => {
         <form>
           <SignupInput
             values={values}
-            handleValue={handleValue}
+            handleValue={handleChangeValue}
             errorMessage={errorMessage}
-            handleStationKeyDown={handleStationKeyDown}
+            handleStationKeyDown={handleKeyDownStation}
           />
           {errorMessage?.defaultStationName?.length && (
             <NotFound
@@ -48,7 +48,7 @@ const SignUpSearchInput = () => {
               sxNumber={50}
             />
           )}
-          <SignUpButton disabled={!!isError} onClick={handleSignUpSubmit}>
+          <SignUpButton disabled={!!isError} onClick={handleSubmitSignup}>
             내 주소 저장하기
           </SignUpButton>
         </form>
@@ -60,7 +60,7 @@ const SignUpSearchInput = () => {
             return (
               <SignUpSearchToggleWrapper key={index}>
                 <SignUpSearchToggleData
-                  onClick={() => handleLocationClick(val)}
+                  onClick={() => handleClickLocation(val)}
                   key={index}>
                   {val.place_name}
                 </SignUpSearchToggleData>

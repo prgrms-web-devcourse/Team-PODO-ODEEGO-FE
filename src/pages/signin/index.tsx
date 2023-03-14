@@ -56,8 +56,7 @@ const LoginPage = () => {
     }
   };
 
-  // 임시 로그인 토큰
-  // const token = "";
+  // test
   return (
     <LoginContainer>
       <Header />

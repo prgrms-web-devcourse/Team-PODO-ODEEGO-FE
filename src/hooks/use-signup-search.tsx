@@ -26,7 +26,7 @@ const useSignupSearch = () => {
   const router = useRouter();
   console.log(token);
 
-  const handleValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
     checkSignup.StationAndNickName(
@@ -42,7 +42,7 @@ const useSignupSearch = () => {
     });
   };
 
-  const handleStationKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDownStation = (e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.keyCode) {
       case 8:
         setToggleBoxIsLoading(true);
@@ -50,7 +50,7 @@ const useSignupSearch = () => {
     }
   };
 
-  const handleLocationClick = (val: searchOriginProps) => {
+  const handleClickLocation = (val: searchOriginProps) => {
     setToggleBoxIsLoading(false);
 
     setToken(getLocalStorage("token"));
@@ -60,7 +60,7 @@ const useSignupSearch = () => {
     });
   };
 
-  const handleSignUpSubmit = async (e: React.MouseEvent<HTMLElement>) => {
+  const handleSubmitSignup = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const registerUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/members/sign-up`;
 
@@ -80,10 +80,10 @@ const useSignupSearch = () => {
     errorMessage,
     isToggleBoxLoading,
     values,
-    handleSignUpSubmit,
-    handleLocationClick,
-    handleStationKeyDown,
-    handleValue,
+    handleSubmitSignup,
+    handleClickLocation,
+    handleKeyDownStation,
+    handleChangeValue,
     isError,
   };
 };
