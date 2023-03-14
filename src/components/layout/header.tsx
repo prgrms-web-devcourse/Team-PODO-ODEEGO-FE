@@ -33,7 +33,7 @@ const Header = ({ token }: TokenProps) => {
   const [tokenData, setToken] = useState<string>("");
 
   const [open, setOpen] = useState(false);
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const anchorRef = React.useRef<any>(null);
 
   const handleOpenToggle = () => {
     setOpen((prev) => !prev);
@@ -106,6 +106,7 @@ const Header = ({ token }: TokenProps) => {
               {/*<AccountCircleIcon onClick={handleClickMypage} />*/}
             </NavbarIcons>
           </HeaderIconWrap>
+
           <Popper
             style={{
               position: "absolute",
