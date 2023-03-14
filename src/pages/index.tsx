@@ -200,7 +200,11 @@ export default function Home() {
           midPointResponse.start,
           notEmptyAddressList
         );
-        if (isEqual) data = midPointResponse;
+        if (isEqual) {
+          data = midPointResponse;
+          router.push(`${MAP}`);
+          return;
+        }
       }
       data = await MidPointApi.postMidPoint(notEmptyAddressList);
 
