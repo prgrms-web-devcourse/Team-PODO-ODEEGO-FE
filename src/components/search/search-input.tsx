@@ -174,6 +174,11 @@ const SearchInput = () => {
     setSearchInput(myDefaultStartpoint.stationName);
   };
 
+  const handleClickBackspaceIcon = () => {
+    console.log("clicked");
+    router.back();
+  };
+
   return (
     <SearchContainer>
       <SearchInputWrapper>
@@ -188,7 +193,14 @@ const SearchInput = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
-                <KeyboardBackspaceIcon />
+                <KeyboardBackspaceIcon
+                  sx={{
+                    ":hover": {
+                      cursor: "pointer",
+                    },
+                  }}
+                  onClick={handleClickBackspaceIcon}
+                />
               </InputAdornment>
             ),
           }}
