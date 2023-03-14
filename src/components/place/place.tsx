@@ -94,6 +94,7 @@ const TitleIconContainer = styled.div`
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
+  color: #000000;
 
   & h3 {
     font-size: 1.8rem;
