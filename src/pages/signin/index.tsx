@@ -61,9 +61,11 @@ const LoginPage = () => {
     <LoginContainer>
       <Header />
       <Main text='로그인'>
-        <LoginWrapper>
-          <Image src={kakao_image} alt={"dsa"} onClick={handleKakaoLogin} />
-        </LoginWrapper>
+        <Box>
+          <LoginButton onClick={handleKakaoLogin} aria-label='카카오 로그인'>
+            <Image src={kakao_image} alt={"dsa"} />
+          </LoginButton>
+        </Box>
       </Main>
     </LoginContainer>
   );
@@ -75,14 +77,22 @@ const LoginContainer = styled.div`
   margin: 0 auto;
 `;
 
-const LoginWrapper = styled.div`
+const Box = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  height: 50vh;
-  h3 {
-    margin-bottom: 60px;
+  height: 50%;
+`;
+
+const LoginButton = styled.button`
+  align-self: center;
+  display: flex;
+  cursor: pointer;
+  border-radius: 0.6rem;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px -1px rgb(28 27 30 / 23%);
+  transition: all 0.2s;
+
+  &:hover,
+  &:focus {
+    box-shadow: 2px 2px 6px -1px rgb(28 27 30 / 38%);
   }
 `;
