@@ -6,15 +6,20 @@ import PlaceImage from "./place-image";
 import { IconButton } from "@mui/material";
 import { MouseEvent, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
+import usePreloadImage from "@/hooks/use-preloading-image";
 
 const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
   const [filteredImages, setFilteredImages] = useState<ImageResponse[]>([]);
+  const { isPreloaded, setImageList } = usePreloadImage();
 
   useEffect(() => {
     //NET: ERR_CERT_INVALID_NAME 막기 위한 http url 거르기
     const imageArr = images.filter((i) => i.url.indexOf("http://") === -1);
 
     setFilteredImages(imageArr);
+
+    //PreLoading을 위해 imageArr 넘겨주기!
+    setImageList(imageArr.map((i) => i.url));
   }, [images]);
 
   const handleClickShareClipboard = async (
@@ -63,15 +68,17 @@ const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
         </IconsContainer>
       </TitleIconContainer>
       <ImageContainer>
-        {filteredImages.map((i, index) => (
-          <PlaceImage
-            lazy
-            key={index}
-            src={i.url}
-            alt='place image'
-            placeholder='/default-img02.jpg'
-          />
-        ))}
+        {/* Preloading이 완료되면 filteredImages를 렌더링 */}
+        {isPreloaded &&
+          filteredImages.map((i, index) => (
+            <PlaceImage
+              lazy
+              key={index}
+              src={i.url}
+              alt='place image'
+              placeholder='/default-img02.jpg'
+            />
+          ))}
       </ImageContainer>
     </Container>
   );
