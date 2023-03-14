@@ -30,15 +30,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const { tokenResponse } = result;
 
-  const loginAuthUrl = `/api/auth/login`;
+  // const loginAuthUrl = `/api/auth/login`;
 
-  await fetch(NEXT_PUBLIC_URL + loginAuthUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(tokenResponse),
-  });
+  // await fetch(NEXT_PUBLIC_URL + loginAuthUrl, {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(tokenResponse),
+  // });
 
   console.log(tokenResponse.access_token);
 
