@@ -8,6 +8,8 @@ import NotFound from "@/components/search/not-found";
 
 import useSignupSearch from "@/hooks/use-signup-search";
 import SignupInput from "@/components/signup/signup-input";
+import { Button } from "@mui/material";
+import { COLORS } from "@/constants";
 
 const SignUpSearchInput = () => {
   const {
@@ -32,7 +34,7 @@ const SignUpSearchInput = () => {
   );
 
   return (
-    <SignUpSearchContainer>
+    <>
       <SignUpSearchInputWrapper>
         <form>
           <SignupInput
@@ -48,9 +50,14 @@ const SignUpSearchInput = () => {
               sxNumber={50}
             />
           )}
-          <SignUpButton disabled={!!isError} onClick={handleSubmitSignup}>
+          <CustomButton
+            variant='contained'
+            color='secondary'
+            size='large'
+            disabled={!!isError}
+            onClick={handleSubmitSignup}>
             내 주소 저장하기
-          </SignUpButton>
+          </CustomButton>
         </form>
       </SignUpSearchInputWrapper>
 
@@ -69,7 +76,7 @@ const SignUpSearchInput = () => {
           })}
         </SignUpSearchToggleBox>
       )}
-    </SignUpSearchContainer>
+    </>
   );
 };
 export default SignUpSearchInput;
@@ -81,61 +88,42 @@ const SignUpSearchInputWrapper = styled.div`
   }
 `;
 
-const SignUpSearchContainer = styled.div`
-  width: 390px;
-  max-height: 884px;
-  position: relative;
-  margin: auto;
-  border: 0;
-`;
-
 const SignUpSearchToggleBox = styled.div`
-  margin-top: 118px;
+  position: relative;
+  top: -9.5rem;
   height: 150px;
   overflow-y: auto;
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
   max-height: 884px;
-  width: 370px;
-  background-color: #fff;
-  position: absolute;
-  top: 45px;
-  border: #464646;
+  background-color: ${COLORS.backgroundSecondary};
+  border: 1px solid ${COLORS.borderPrimary};
+  border-radius: 0 0 0.5rem 0.5rem;
   padding: 15px;
 `;
 
 const SignUpSearchToggleWrapper = styled.ul`
   position: relative;
-  right: 9%;
 `;
 
 const SignUpSearchToggleData = styled.li`
-  padding: 10px 8px;
-  width: 100%;
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  border-bottom: 1px solid rgba(236, 244, 255, 0.95);
-  list-style: none;
+  padding: 2rem 0;
+  margin: 0 2rem;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+  border-bottom: 1px solid rgba(180, 201, 188, 0.2);
+
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(180, 201, 188, 0.2);
     cursor: pointer;
   }
   position: relative;
 `;
 
-const SignUpButton = styled.button`
-  color: ${(props) => (props.disabled ? "#aaa" : "#fff")};
-  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 70%;
-  margin: 0 auto;
-  height: 5vh;
-  margin-top: 10rem;
-  border-radius: 5px;
-  background-color: #ff7754;
-  border: none;
+const CustomButton = styled(Button)`
+  font-size: 1.5rem;
+  width: 100%;
+  margin-top: 5rem;
 `;
