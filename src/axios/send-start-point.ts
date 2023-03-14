@@ -26,7 +26,8 @@ export const SearchAPI22 = {
         const errorCode = err.response?.data.errorCode;
 
         if (CustomError[errorCode]) {
-          throw new Error(`${err.response?.data.error}`);
+          toast.error(CustomError[errorCode].error);
+          throw new Error(`${CustomError[errorCode].error}`);
         } else if (err.response?.status) {
           throw new Error("unknown Error");
         }
@@ -38,7 +39,6 @@ export const SearchAPI22 = {
   HostSendStartPoint: async (value: StartPointPros) => {
     const accessToken = getLocalStorage("token");
 
-    console.log(`Host Send Start Point: ${value}`);
     try {
       const result = await HTTP.patch({
         url: `/v1/groups/startpoint/host`,
@@ -55,15 +55,14 @@ export const SearchAPI22 = {
       if (axios.isAxiosError(err)) {
         const errorCode = err.response?.data.errorCode;
 
-        toast.error(err.response?.data.error);
-
         if (CustomError[errorCode]) {
-          throw new Error(`${err.response?.data.error}`);
+          toast.error(CustomError[errorCode].error);
+          throw new Error(`${CustomError[errorCode].error}`);
         } else if (err.response?.status) {
           throw new Error("unknown Error");
         }
       }
-      throw new Error("axios/send-start-point error: HostSendStartPoint");
+      throw new Error("axios/send-start-point error: NonHostSend");
     }
   },
 };

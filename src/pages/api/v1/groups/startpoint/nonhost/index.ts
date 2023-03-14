@@ -36,11 +36,13 @@ export default async function handler(
         res.status(CustomError[errorCode].status).json({
           error: CustomError[errorCode].message,
           status: CustomError[errorCode].status,
+          errorCode: errorCode,
         });
       } else if (err.response?.status) {
         res.status(err.response?.status).json({
           error: "api/v1/groups/startpoint/host patch fail",
           status: err.response?.status,
+          errorCode: errorCode,
         });
       }
     } else {

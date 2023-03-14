@@ -17,6 +17,8 @@ import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 import { StartPointPros } from "@/types/startpoint-props";
 import { getLocalStorage } from "@/utils/storage";
+import GetMyStartpoint from "@/axios/get-my-startpoint";
+import { toast } from "react-hot-toast";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -99,7 +101,6 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log("search input is changed");
       return getSubway(searchInput);
     },
     {
@@ -109,21 +110,11 @@ const SearchInput = () => {
     }
   );
 
-  let timer: number | null = null;
-  const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeStartPoint = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { value } = e.target;
-
-    // 임시 debounce 적용
-    if (timer !== null) {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        setSearchInput(value);
-      }, 500);
-    } else {
-      timer = window.setTimeout(() => {
-        setSearchInput(value);
-      }, 500);
-    }
+    setSearchInput(value);
 
     if (!resultSubway || resultSubway.length === 0) {
       setErrorMessage("검색 결과가 없습니다");
@@ -131,7 +122,7 @@ const SearchInput = () => {
       setErrorMessage("");
     }
 
-    // setValue(value);
+    setSearchInput(value);
   };
 
   const handleStartPointModal = (startPoint: StartPointPros) => {
@@ -145,30 +136,42 @@ const SearchInput = () => {
       },
       // 출발지 확정시
       handleConfirm: async () => {
+        if (groupId === null) return;
         // 약속'방'을 만들어서 출발지를 입력할 때
-        if (groupId !== null) {
+        try {
           if (host) {
-            console.log("방장임!");
             await SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
             router.replace(`/group/${groupId}`);
           } else {
-            console.log("방장아님!");
             await SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
+            toast.success("경로 제출이 완료되었어요!");
             router.replace("/");
           }
+        } catch (err: any) {
+          console.log(err.message);
+          closeModal();
+          toast.error("오류가 발생했어요!");
+          router.push("/");
         }
       },
     });
   };
 
   // 개인 정보 받아오기 API가 완성되면 '내주소'를 TextField에 넣을 수 있게한다.
-  const handleClickButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickButton = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("click");
+
+    if (!token) {
+      toast.error("로그인을 먼저 해주세요!");
+      router.push("/signin");
+    }
+
+    const myDefaultStartpoint = await GetMyStartpoint();
+    setSearchInput(myDefaultStartpoint.stationName);
   };
 
   return (
@@ -190,7 +193,8 @@ const SearchInput = () => {
             ),
           }}
           type='text'
-          onChange={handleChangeStartPoint}
+          onChange={(e) => handleChangeStartPoint(e)}
+          value={searchInput}
         />
         {(resultSubway?.length <= 0 || !resultSubway) && (
           <NotFound title={errorMessage} icon={"지하철역"} sxNumber={50} />
