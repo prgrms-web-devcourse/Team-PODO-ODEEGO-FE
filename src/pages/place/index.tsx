@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { tabState } from "@/recoil/search-state";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
@@ -8,13 +8,16 @@ import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { PlaceListResponse } from "@/types/api/place";
+import axios from "axios";
 
 interface PageProps {
   stationName: string;
+  places: PlaceListResponse[];
 }
 
-const SIZE = 4;
+const SIZE = 5;
 const FIRST_PAGE_NUM = 0;
 const USE_QUERY_KEYWORD = "place";
 
@@ -23,16 +26,25 @@ export const getServerSideProps = async ({
 }: {
   query: { stationName: string };
 }) => {
-  return {
-    props: {
-      stationName,
-    },
-  };
+  try {
+    const { data } = await axios(
+      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=${FIRST_PAGE_NUM}&size=${SIZE}`
+    );
+    return {
+      props: {
+        stationName,
+        places: data,
+      },
+    };
+  } catch (e) {
+    return {
+      notFound: true,
+    };
+  }
 };
 
-const PlacePage = ({ stationName }: PageProps) => {
-  const [tabValue, setTabValue] = useRecoilState(tabState);
-  const [isFirstVisit, setIsFirstVisit] = useState(true);
+const PlacePage = ({ stationName, places }: PageProps) => {
+  const tabValue = useRecoilValue(tabState);
 
   const { setTarget } = useIntersectionObserver({
     root: null,
@@ -47,12 +59,7 @@ const PlacePage = ({ stationName }: PageProps) => {
 
   const fetchData = useCallback(
     ({ pageParam = FIRST_PAGE_NUM }) =>
-      PlaceApi.getPlaces(
-        stationName,
-        isFirstVisit ? "" : tabValue,
-        pageParam,
-        SIZE
-      ),
+      PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
     [stationName, tabValue]
   );
 
@@ -64,16 +71,9 @@ const PlacePage = ({ stationName }: PageProps) => {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery([USE_QUERY_KEYWORD, tabValue, stationName], fetchData, {
-    getNextPageParam: (lastPage, allPages) => {
-      const nextPage = allPages.length + 1;
-      return !lastPage.last ? nextPage : undefined;
-    },
+    getNextPageParam: (lastPage, allPages) =>
+      !lastPage.last ? allPages.length + 1 : undefined,
   });
-
-  useEffect(() => {
-    setTabValue("");
-    setIsFirstVisit(false);
-  }, []);
 
   return (
     <PlaceContainer>
@@ -100,10 +100,13 @@ const PlacePage = ({ stationName }: PageProps) => {
             </Box>
           ) : (
             <>
-              {data &&
-                data.pages.map((p, i) => (
-                  <PlaceList key={i} placeList={p.content} />
-                ))}
+              {data
+                ? data.pages.map((page, index) => (
+                    <PlaceList key={index} placeList={page.content} />
+                  ))
+                : places.map((p, i) => (
+                    <PlaceList key={i} placeList={p.content} />
+                  ))}
               {hasNextPage ? (
                 <li
                   style={{
@@ -140,6 +143,7 @@ const PlacePage = ({ stationName }: PageProps) => {
     </PlaceContainer>
   );
 };
+
 export default PlacePage;
 
 const PlaceContainer = styled.div`
