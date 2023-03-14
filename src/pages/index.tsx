@@ -242,6 +242,7 @@ export default function Home() {
                 <FormInput
                   key={index}
                   index={index}
+                  placeholder='주소 입력'
                   address={input.stationName}
                   onClick={() => !isLoading && handleInputClickRoute(index)}
                   onRemove={(e) => !isLoading && removeInput(e, index)}
