@@ -306,7 +306,7 @@ const GroupPage = () => {
                   ))}
               </Stack>
             </InputsContainer>
-            <Stack spacing={1.5} sx={{ marginTop: "2rem" }}>
+            <Stack spacing={2.5} sx={{ marginTop: "5rem" }}>
               <CustomButton
                 variant='contained'
                 color='primary'
@@ -345,7 +345,7 @@ const InputLabel = styled.span`
 `;
 
 const CustomButton = styled(Button)`
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 `;
 
 const CustomIconButton = styled(IconButton)`
