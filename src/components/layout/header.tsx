@@ -9,50 +9,66 @@ import { useEffect, useState } from "react";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import { axiosInstanceWitToken } from "@/axios/instance";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import useModal from "../../hooks/use-modal";
+import fetch from "node-fetch";
+import Cookies from "cookies";
+import { GetServerSidePropsContext } from "next";
 
 interface TokenProps {
   token?: string;
+}
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const cookies = new Cookies(context.req, context.res);
+  const token = cookies.get("token");
+
+  return {
+    props: {
+      token,
+    },
+  };
 }
 
 const Header = ({ token }: TokenProps) => {
   const router = useRouter();
   const { pathname } = router;
-
   const [tokenData, setToken] = useState<string>("");
 
   useEffect(() => {
     const getToken = getLocalStorage("logoutToken");
     if (!getToken) return;
+
     setToken(getToken);
   }, [router, token]);
+  const { openModal } = useModal();
 
   const handleBackClick = async () => {
     switch (pathname) {
       case "/signin":
         router.push(`${ROUTES.HOME}`);
         break;
-
       case "/kakao":
-        const token = getLocalStorage("logoutToken");
-        try {
-          await fetch(`/api/kakao-logout`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              token,
-            }),
-          });
-        } catch (err) {
-          throw new Error((err as Error).message);
-        }
+        openModal({
+          children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
+          btnText: {
+            confirm: "홈으로",
+            close: "취소",
+          },
+          handleConfirm: async () => {
+            router.push(`${ROUTES.HOME}`);
+
+            // return response;
+          },
+        });
+        break;
+
+      case "/mypage":
         router.push(`${ROUTES.HOME}`);
         break;
     }
   };
 
-  const handleLogout = async () => {
+  const handleClickLogout = async () => {
     const logoutToken = getLocalStorage("logoutToken");
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
@@ -79,57 +95,80 @@ const Header = ({ token }: TokenProps) => {
     }
   };
 
+  const handleClickMypage = () => {
+    if (pathname === "/kakao") {
+      openModal({
+        children: "추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.",
+        btnText: {
+          confirm: "마이페이지 이동",
+          close: "취소",
+        },
+        handleConfirm: async () => {
+          router.push("/mypage");
+          // return response;
+        },
+      });
+    } else {
+      router.push("/mypage");
+    }
+  };
+
   return (
     <HeaderContainer>
-      {tokenData && (
-        <HeaderIconWrap>
-          <KeyboardBackspaceIcon
-            style={{
-              marginTop: "0.6rem",
-            }}
-            onClick={handleBackClick}
-          />
+      {(token || tokenData) && (
+        <>
+          <HeaderBackImageWrap>
+            <KeyboardBackspaceIcon onClick={handleBackClick} />
+          </HeaderBackImageWrap>
 
-          <HeaderLogout>
-            <ExitToAppIcon onClick={handleLogout} />
-          </HeaderLogout>
-        </HeaderIconWrap>
+          <HeaderIconWrap>
+            <NavbarIcons>
+              <AccountCircleIcon onClick={handleClickMypage} />
+              <ExitToAppIcon onClick={handleClickLogout} />
+            </NavbarIcons>
+          </HeaderIconWrap>
+        </>
       )}
 
-      <HeaderImage>
-        <TextP>{HEADER_TEXT}</TextP>
+      <TextP>{HEADER_TEXT}</TextP>
 
-        <Image
-          src='/logo1.svg'
-          alt='Odeego Logo'
-          width={137}
-          height={46}
-          priority
-        />
-      </HeaderImage>
+      <Image
+        src='/logo1.svg'
+        alt='Odeego Logo'
+        width={147}
+        height={56}
+        priority
+      />
     </HeaderContainer>
   );
 };
 
 export default Header;
 
-const HeaderImage = styled.div`
-  height: 50%;
+const HeaderBackImageWrap = styled.div`
+  position: absolute;
+  left: 10%;
+  top: 11%;
+  svg {
+    font-size: 3rem;
+  }
 `;
 
-const HeaderLogout = styled.h2`
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #fff;
-  cursor: pointer;
-  position: relative;
-  right: 2rem;
+const NavbarIcons = styled.div`
+  display: flex;
+  svg {
+    margin: 1rem;
+  }
+  align-items: center;
+  justify-content: right;
+  top: 0;
 `;
 
 const HeaderContainer = styled.header`
   height: 17.4rem;
   max-height: 174px;
   display: flex;
+  position: relative;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -146,10 +185,9 @@ const TextP = styled.p`
 `;
 
 const HeaderIconWrap = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 90%;
-  margin-left: 2rem;
+  position: absolute;
+  right: 5%;
+  top: 7%;
   svg {
     font-size: 3rem;
   }

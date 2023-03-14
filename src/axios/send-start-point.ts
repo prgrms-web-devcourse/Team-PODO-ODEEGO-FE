@@ -2,6 +2,8 @@ import { StartPointPros } from "@/types/startpoint-props";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
 import { getLocalStorage } from "@/utils/storage";
+import { CustomError } from "@/constants/custom-error";
+import { toast } from "react-hot-toast";
 
 export const SearchAPI22 = {
   NonHostSendStartPoint: async (value: StartPointPros) => {
@@ -19,19 +21,24 @@ export const SearchAPI22 = {
       });
 
       return data;
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        console.log("axios send-start-point SearchAPI22 NonHostSendStartPoint");
-        console.log(e.response?.data);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const errorCode = err.response?.data.errorCode;
+
+        if (CustomError[errorCode]) {
+          toast.error(CustomError[errorCode].error);
+          throw new Error(`${CustomError[errorCode].error}`);
+        } else if (err.response?.status) {
+          throw new Error("unknown Error");
+        }
       }
-      throw new Error("axios send-start-point error");
+      throw new Error("axios/send-start-point error: NonHostSend");
     }
   },
 
   HostSendStartPoint: async (value: StartPointPros) => {
     const accessToken = getLocalStorage("token");
 
-    console.log(`Host Send Start Point: ${value}`);
     try {
       const result = await HTTP.patch({
         url: `/v1/groups/startpoint/host`,
@@ -44,16 +51,18 @@ export const SearchAPI22 = {
       });
 
       return result;
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        console.log(
-          "Error IN: axios/send-start-point/SearchAPI22 HostSendStartPoint"
-        );
-        console.log(e);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const errorCode = err.response?.data.errorCode;
+
+        if (CustomError[errorCode]) {
+          toast.error(CustomError[errorCode].error);
+          throw new Error(`${CustomError[errorCode].error}`);
+        } else if (err.response?.status) {
+          throw new Error("unknown Error");
+        }
       }
-      throw new Error(
-        "Error IN: axios/send-start-point/SearchAPI22 HostSendStartPoint"
-      );
+      throw new Error("axios/send-start-point error: NonHostSend");
     }
   },
 };

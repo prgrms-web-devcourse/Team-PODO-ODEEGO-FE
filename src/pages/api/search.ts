@@ -5,7 +5,7 @@ export const SearchAPI = {
   getSubway: async (value: string | undefined) => {
     try {
       const result = await axios.get(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${value}&category_group_code=SW8`,
+        `${process.env.NEXT_PUBLIC_API_END_POINT_KAKAO}/v2/local/search/keyword.json?query=${value}&category_group_code=SW8`,
         {
           headers: {
             Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_SEARCH_KEY}`,
