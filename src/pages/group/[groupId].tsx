@@ -309,18 +309,18 @@ const GroupPage = () => {
             <Stack spacing={2.5} sx={{ marginTop: "5rem" }}>
               <CustomButton
                 variant='contained'
-                color='primary'
-                size='large'
-                onClick={handleCancel}>
-                모임 취소하기
-              </CustomButton>
-              <CustomButton
-                variant='contained'
                 color='secondary'
                 size='large'
                 type='submit'
                 onClick={handleSearch}>
                 중간지점 찾기
+              </CustomButton>
+              <CustomButton
+                variant='contained'
+                color='primary'
+                size='large'
+                onClick={handleCancel}>
+                모임 취소하기
               </CustomButton>
             </Stack>
           </form>
