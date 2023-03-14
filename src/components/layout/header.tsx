@@ -144,7 +144,7 @@ const Header = ({ token }: TokenProps) => {
                 }}>
                 <Stack direction='row' spacing={2}>
                   <Paper>
-                    <MenuList style={{}}>
+                    <MenuList>
                       <MenuItem onClick={handleClickMypage}>
                         마이페이지
                       </MenuItem>
@@ -169,7 +169,6 @@ const Header = ({ token }: TokenProps) => {
                 style={{
                   color: "white",
                 }}>
-                {/*<LoginIcon onClick={handleOpenToggle} />*/}
                 <LoginIcon onClick={handleClickLogin} />
               </IconButton>
             </Tooltip>
