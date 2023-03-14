@@ -72,7 +72,7 @@ const PlacePage = ({ stationName, places }: PageProps) => {
     hasNextPage,
   } = useInfiniteQuery([USE_QUERY_KEYWORD, tabValue, stationName], fetchData, {
     getNextPageParam: (lastPage, allPages) =>
-      !lastPage.last ? allPages.length + 1 : undefined,
+      !lastPage.last ? allPages.length : undefined,
     initialData: { pages: [places], pageParams: [] },
   });
 
