@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { tabState } from "@/recoil/search-state";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PlaceApi } from "@/axios/place";
@@ -8,7 +8,7 @@ import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface PageProps {
   stationName: string;
@@ -31,7 +31,8 @@ export const getServerSideProps = async ({
 };
 
 const PlacePage = ({ stationName }: PageProps) => {
-  const tabValue = useRecoilValue(tabState);
+  const [tabValue, setTabValue] = useRecoilState(tabState);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
 
   const { setTarget } = useIntersectionObserver({
     root: null,
@@ -46,7 +47,12 @@ const PlacePage = ({ stationName }: PageProps) => {
 
   const fetchData = useCallback(
     ({ pageParam = FIRST_PAGE_NUM }) =>
-      PlaceApi.getPlaces(stationName, tabValue, pageParam, SIZE),
+      PlaceApi.getPlaces(
+        stationName,
+        isFirstVisit ? "" : tabValue,
+        pageParam,
+        SIZE
+      ),
     [stationName, tabValue]
   );
 
@@ -63,6 +69,11 @@ const PlacePage = ({ stationName }: PageProps) => {
       return !lastPage.last ? nextPage : undefined;
     },
   });
+
+  useEffect(() => {
+    setTabValue("");
+    setIsFirstVisit(false);
+  }, []);
 
   return (
     <PlaceContainer>
