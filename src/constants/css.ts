@@ -15,6 +15,7 @@ export const COLORS = {
   altGreen: "#A7CAB5",
   mainOrange: "#FF7754",
   semiBlack: "#464646",
+  kakao: "#ffe812",
 } as const;
 
 export const SHADOWS = {

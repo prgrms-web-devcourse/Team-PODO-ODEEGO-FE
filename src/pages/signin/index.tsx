@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
-import kakao_image from "public/kakao_login_medium_wide.png";
 import Header from "@/components/layout/header";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import useModal from "../../hooks/use-modal";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
 import Main from "@/components/layout/main";
+import { Button } from "@mui/material";
 
 const LoginPage = () => {
   const { openModal } = useModal();
@@ -62,8 +62,18 @@ const LoginPage = () => {
       <Header />
       <Main text='로그인'>
         <Box>
-          <LoginButton onClick={handleKakaoLogin} aria-label='카카오 로그인'>
-            <Image src={kakao_image} alt={"dsa"} />
+          <LoginButton
+            variant='contained'
+            color='kakao'
+            onClick={handleKakaoLogin}
+            aria-label='카카오 로그인'>
+            <Image
+              src='/kakao_login.svg'
+              alt='카카오 로그인'
+              width={20}
+              height={20}
+            />
+            <span>카카오 로그인</span>
           </LoginButton>
         </Box>
       </Main>
@@ -80,19 +90,16 @@ const LoginContainer = styled.div`
 const Box = styled.div`
   display: flex;
   height: 50%;
+  flex-direction: column;
+  justify-content: center;
 `;
 
-const LoginButton = styled.button`
-  align-self: center;
-  display: flex;
-  cursor: pointer;
-  border-radius: 0.6rem;
-  overflow: hidden;
-  box-shadow: 2px 2px 5px -1px rgb(28 27 30 / 23%);
-  transition: all 0.2s;
+const LoginButton = styled(Button)`
+  height: 4.5rem;
+  width: 30rem;
+  font-size: 1.5rem;
 
-  &:hover,
-  &:focus {
-    box-shadow: 2px 2px 6px -1px rgb(28 27 30 / 38%);
+  > * {
+    margin-right: auto;
   }
 `;
