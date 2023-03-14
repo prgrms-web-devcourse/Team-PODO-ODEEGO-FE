@@ -8,3 +8,8 @@ export interface PlaceResponse {
   images: ImageResponse[];
   shareUrl: string;
 }
+
+export interface PlaceListResponse {
+  content: PlaceResponse[];
+  last: boolean;
+}

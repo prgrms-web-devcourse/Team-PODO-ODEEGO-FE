@@ -2,7 +2,7 @@ import { COLORS } from "@/constants/css";
 import { tabState } from "@/recoil/search-state";
 import styled from "@emotion/styled";
 import { useSetRecoilState } from "recoil";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TabProps {
   id: number;
@@ -11,7 +11,7 @@ interface TabProps {
 }
 
 const PlaceTabList = () => {
-  const setTitle = useSetRecoilState(tabState);
+  const setTabValue = useSetRecoilState(tabState);
   const [activeId, setActiveId] = useState(1);
 
   const tab = [
@@ -33,10 +33,15 @@ const PlaceTabList = () => {
   ];
 
   const handleClick = (val: string, id: number) => {
-    setTitle(val);
-
+    setTabValue(val);
     setActiveId(id);
   };
+
+  useEffect(() => {
+    return () => {
+      setTabValue("");
+    };
+  }, []);
 
   return (
     <SearchCategory>
