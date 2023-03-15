@@ -5,16 +5,19 @@ import { createTheme } from "@mui/material";
 declare module "@mui/material/styles" {
   interface Palette {
     neutral: Palette["primary"];
+    kakao: Palette["primary"];
   }
 
   interface PaletteOptions {
     neutral: PaletteOptions["primary"];
+    kakao: PaletteOptions["primary"];
   }
 }
 
 declare module "@mui/material/Button" {
   interface ButtonPropsColorOverrides {
     neutral: true;
+    kakao: true;
   }
 }
 
@@ -29,5 +32,6 @@ export const theme = createTheme({
       contrastText: COLORS.backgroundSecondary,
     },
     neutral: { main: COLORS.borderPrimary, contrastText: COLORS.textPrimary },
+    kakao: { main: COLORS.kakao, contrastText: COLORS.textPrimary },
   },
 });
