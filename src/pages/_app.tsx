@@ -19,7 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = React.useState(() => new QueryClient());
   function kakaoInit() {
     // 페이지가 로드되면 실행
-    window.Kakao.init(process.env.NEXT_PUBLIC_LOGIN);
+    window.Kakao.init(process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY);
   }
 
   return (
