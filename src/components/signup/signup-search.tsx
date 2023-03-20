@@ -6,8 +6,8 @@ import React from "react";
 import { searchOriginProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
 
-import SignupInput from "@/components/signup/signup-input";
 import useSignupSearch from "@/hooks/use-signup-search";
+import SignupInput from "@/components/signup/signup-input";
 
 const SignUpSearchInput = () => {
   const {

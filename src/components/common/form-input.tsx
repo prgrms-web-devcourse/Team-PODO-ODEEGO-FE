@@ -112,7 +112,7 @@ const CustomTextField = styled(TextField)`
     }
 
     &.Mui-disabled fieldset {
-      border-color: ${COLORS.borderSecondary};
+      border-color: ${COLORS.borderPrimary};
     }
   }
 `;

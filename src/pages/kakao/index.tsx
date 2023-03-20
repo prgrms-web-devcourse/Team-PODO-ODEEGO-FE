@@ -56,23 +56,31 @@ const Kakao = (
   const { code: authCode } = router.query;
 
   useEffect(() => {
-    const fetchKaokaoUserData = async () => {
-      try {
+    try {
+      const fetchKaokaoUserData = async () => {
         if (authCode) {
           setLocalStorage("logoutToken", props.tokenResponse.access_token);
-          if (window.performance && performance.navigation.type !== 1) {
-            const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
-            const { data } = await axiosInstanceWitToken.post(loginBackendUrl);
-            setLocalStorage("token", data.accessToken);
-          } else {
-            console.error("The page is reloaded");
+
+          // 새로고침 임시 방편 코드
+          if (window.performance) {
+            if (performance.navigation.type === 1) {
+              console.error("The page is reloaded");
+            } else {
+              const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
+
+              const { data } = await axiosInstanceWitToken.post(
+                loginBackendUrl
+              );
+
+              setLocalStorage("token", data.accessToken);
+            }
           }
         }
-      } catch (err) {
-        throw new Error((err as Error).message);
-      }
-    };
-    fetchKaokaoUserData();
+      };
+      fetchKaokaoUserData();
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
   }, [authCode, router]);
 
   return (
@@ -80,6 +88,7 @@ const Kakao = (
       <Header token={props.tokenResponse.access_token} />
       <BorderContainer />
       <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
+
       <SignUpSearchInput />
     </SignUpContainer>
   );

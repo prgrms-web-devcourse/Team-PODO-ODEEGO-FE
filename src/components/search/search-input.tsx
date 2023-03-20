@@ -8,8 +8,7 @@ import { useSetRecoilState } from "recoil";
 import React, { useCallback, useEffect, useState } from "react";
 import { searchOriginProps, searchProps } from "@/types/search-props";
 import NotFound from "@/components/search/not-found";
-import { Button, InputAdornment, TextField } from "@mui/material";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { Button, Container, InputAdornment, TextField } from "@mui/material";
 import { searchState } from "@/recoil/search-state";
 import useModal from "@/hooks/use-modal";
 import EnterSearchPageModal from "./enter-searchpage-modal";
@@ -17,6 +16,10 @@ import SetStartPointModalContent from "./set-startpoint-modal";
 import SetLoginModalContent from "./login-modal";
 import { StartPointPros } from "@/types/startpoint-props";
 import { getLocalStorage } from "@/utils/storage";
+import { Search } from "@mui/icons-material";
+import { COLORS } from "@/constants";
+import GetMyStartpoint from "@/axios/get-my-startpoint";
+import { toast } from "react-hot-toast";
 
 const SearchInput = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -99,7 +102,6 @@ const SearchInput = () => {
   const { data: resultSubway } = useQuery(
     ["search", searchInput], // key가 충분히 unique 한가?
     () => {
-      console.log("search input is changed");
       return getSubway(searchInput);
     },
     {
@@ -109,21 +111,11 @@ const SearchInput = () => {
     }
   );
 
-  let timer: number | null = null;
-  const handleChangeStartPoint = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeStartPoint = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { value } = e.target;
-
-    // 임시 debounce 적용
-    if (timer !== null) {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        setSearchInput(value);
-      }, 500);
-    } else {
-      timer = window.setTimeout(() => {
-        setSearchInput(value);
-      }, 500);
-    }
+    setSearchInput(value);
 
     if (!resultSubway || resultSubway.length === 0) {
       setErrorMessage("검색 결과가 없습니다");
@@ -131,7 +123,7 @@ const SearchInput = () => {
       setErrorMessage("");
     }
 
-    // setValue(value);
+    setSearchInput(value);
   };
 
   const handleStartPointModal = (startPoint: StartPointPros) => {
@@ -145,52 +137,59 @@ const SearchInput = () => {
       },
       // 출발지 확정시
       handleConfirm: async () => {
+        if (groupId === null) return;
         // 약속'방'을 만들어서 출발지를 입력할 때
-        if (groupId !== null) {
+        try {
           if (host) {
-            console.log("방장임!");
             await SearchAPI22.HostSendStartPoint(startPoint);
 
             // 모임 화면(홈페이지16)으로 redirection 으로 변경예정.
             router.replace(`/group/${groupId}`);
           } else {
-            console.log("방장아님!");
             await SearchAPI22.NonHostSendStartPoint(startPoint);
 
             // redirection 경로 상의 예정
+            toast.success("경로 제출이 완료되었어요!");
             router.replace("/");
           }
+        } catch (err: any) {
+          console.log(err.message);
+          closeModal();
+          toast.error("오류가 발생했어요!");
+          router.push("/");
         }
       },
     });
   };
 
   // 개인 정보 받아오기 API가 완성되면 '내주소'를 TextField에 넣을 수 있게한다.
-  const handleClickButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickButton = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log("click");
+
+    if (!token) {
+      toast.error("로그인을 먼저 해주세요!");
+      router.push("/signin");
+    }
+
+    const myDefaultStartpoint = await GetMyStartpoint();
+    setSearchInput(myDefaultStartpoint.stationName);
   };
 
   return (
-    <SearchContainer>
+    <CustomContainer sx={{ padding: "0 1rem", boxSizing: "border-box" }}>
       <SearchInputWrapper>
-        <TextField
+        <CustomTextField
           autoFocus
-          sx={{
-            width: "100%",
-          }}
-          inputProps={{
-            style: { fontSize: 15 },
-          }}
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
-                <KeyboardBackspaceIcon />
+                <Search fontSize='large' sx={{ color: COLORS.altGreen }} />
               </InputAdornment>
             ),
           }}
           type='text'
-          onChange={handleChangeStartPoint}
+          onChange={(e) => handleChangeStartPoint(e)}
+          value={searchInput}
         />
         {(resultSubway?.length <= 0 || !resultSubway) && (
           <NotFound title={errorMessage} icon={"지하철역"} sxNumber={50} />
@@ -214,13 +213,53 @@ const SearchInput = () => {
           </SearchToggleBox>
         </SearchToggleBoxContainer>
       )}
-      <Button onClick={handleClickButton} color='primary'>
+      <CustomButton
+        onClick={handleClickButton}
+        color='primary'
+        variant='contained'
+        size='large'>
         내 주소 입력하기
-      </Button>
-    </SearchContainer>
+      </CustomButton>
+    </CustomContainer>
   );
 };
 export default SearchInput;
+
+const CustomTextField = styled(TextField)`
+  width: 100%;
+  background-color: ${COLORS.backgroundSecondary};
+  z-index: 100;
+
+  & .MuiOutlinedInput-root {
+    fieldset {
+      border-color: ${COLORS.borderPrimary};
+    }
+
+    &.Mui-focused fieldset {
+      border-color: ${COLORS.mainGreen};
+    }
+
+    &:hover fieldset {
+      border-color: ${COLORS.mainGreen};
+    }
+
+    & input {
+      color: ${COLORS.semiBlack};
+      font-size: 1.5rem;
+      -webkit-text-fill-color: ${COLORS.semiBlack};
+    }
+  }
+`;
+
+const CustomButton = styled(Button)`
+  font-size: 1.5rem;
+  width: 100%;
+  margin-top: 5rem;
+`;
+
+const CustomContainer = styled(Container)`
+  margin: 5rem auto;
+`;
 
 const SearchInputWrapper = styled.div`
   p {
@@ -229,22 +268,16 @@ const SearchInputWrapper = styled.div`
   }
 `;
 
-const SearchContainer = styled.div`
-  width: 100%;
-  margin: auto;
-  border: 0;
-`;
-
 const SearchToggleBoxContainer = styled.div`
-  height: 643px;
-  width: 370px;
+  height: 30rem;
   overflow: scroll;
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
-
-  background-color: #fff;
-  border: #464646;
+  transform: translateY(-1rem);
+  background-color: ${COLORS.backgroundSecondary};
+  border: 1px solid ${COLORS.borderPrimary};
+  border-radius: 0 0 0.5rem 0.5rem;
   padding: 15px;
 `;
 
@@ -253,27 +286,24 @@ const SearchToggleBox = styled.ul`
   ::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera*/
   }
-  width: 370px;
-  background-color: #fff;
-  border: #464646;
-  padding: 15px;
+  margin: 0;
+  padding: 0;
 `;
 
 const SearchToggleWrapper = styled.li`
   list-style: none;
-  right: 9%;
 `;
 
 const SearchToggleData = styled.div`
-  padding: 10px 8px;
-  width: 100%;
-  font-size: 14px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  border-bottom: 1px solid rgba(236, 244, 255, 0.95);
+  padding: 2rem 0;
+  margin: 0 2rem;
+  box-sizing: border-box;
+  font-size: 1.5rem;
+  letter-spacing: 0.1rem;
+  border-bottom: 1px solid rgba(180, 201, 188, 0.2);
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(180, 201, 188, 0.2);
     cursor: pointer;
   }
 `;

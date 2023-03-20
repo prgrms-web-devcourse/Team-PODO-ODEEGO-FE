@@ -3,18 +3,22 @@ import { SHADOWS } from "@/constants/css";
 import styled from "@emotion/styled";
 import { Menu } from "@mui/icons-material";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface PlacesButtonProps {
   stationName: string;
 }
 
 const PlacesButton = ({ stationName }: PlacesButtonProps) => {
+  const [href, setHref] = useState("");
+
+  useEffect(() => {
+    const href = `/place?stationName=${stationName}`;
+    setHref(href);
+  }, [stationName]);
+
   return (
-    <StyledLink
-      href={{
-        pathname: "/place",
-        query: { stationName },
-      }}>
+    <StyledLink href={href}>
       <Menu sx={{ color: COLORS.mainGreen, fontSize: "2rem" }} />
       <span>주변 장소 목록</span>
     </StyledLink>

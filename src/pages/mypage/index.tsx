@@ -2,10 +2,70 @@ import React from "react";
 import styled from "@emotion/styled";
 import { COLORS } from "@/constants/css";
 import Header from "@/components/layout/header";
-import useMypage from "@/hooks/use-mypage";
+import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
+import { ROUTES } from "@/constants";
+import useModal from "@/hooks/use-modal";
+import { axiosInstanceWitToken } from "@/axios/instance";
+import { useRouter } from "next/router";
 
 const MyPage = () => {
-  const { handleClickAccount, handleClickLogout } = useMypage();
+  const { openModal } = useModal();
+
+  const router = useRouter();
+
+  const handleClickAccount = () => {
+    openModal({
+      children: "회원탈퇴 하시겠습니까?.",
+      btnText: {
+        confirm: "회원탈퇴",
+        close: "취소",
+      },
+      handleConfirm: async () => {
+        const logoutToken = getLocalStorage("logoutToken");
+        const kakaoLogoutUrl = `/api/kakao-logout`;
+        await fetch(kakaoLogoutUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            logoutToken,
+          }),
+        });
+        const odeegoLogoutUrl = `/api/odeego-leave`;
+        const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
+
+        console.log(response);
+        removeLocalStorage("token");
+        removeLocalStorage("logoutToken");
+        router.push(`${ROUTES.HOME}`);
+
+        return response;
+      },
+    });
+  };
+
+  const handleClickLogout = async () => {
+    const logoutToken = getLocalStorage("logoutToken");
+    try {
+      const kakaoLogoutUrl = `/api/kakao-logout`;
+      await fetch(kakaoLogoutUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          logoutToken,
+        }),
+      });
+
+      removeLocalStorage("token");
+      removeLocalStorage("logoutToken");
+      router.push(`${ROUTES.HOME}`);
+    } catch (err) {
+      throw new Error((err as Error).message);
+    }
+  };
 
   return (
     <MypageContainer>

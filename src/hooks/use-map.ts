@@ -21,7 +21,7 @@ const useMap = ({
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.async = true;
+    script.defer = true;
     script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_MAP_KEY}&autoload=false`;
     setScript(script);
     document.head.appendChild(script);
