@@ -8,7 +8,7 @@ export const SearchAPI = {
         `${process.env.NEXT_PUBLIC_API_END_POINT_KAKAO}/v2/local/search/keyword.json?query=${value}&category_group_code=SW8`,
         {
           headers: {
-            Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_SEARCH_KEY}`,
+            Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY}`,
           },
         }
       );

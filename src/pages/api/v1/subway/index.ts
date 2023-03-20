@@ -13,7 +13,7 @@ export default async function handler(
       method: "get",
       url: requestUrl,
       headers: {
-        Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_SEARCH_KEY}`,
+        Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY}`,
       },
     });
 
