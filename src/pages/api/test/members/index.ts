@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
-const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
+const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO;
 
 export default async function handler(
   req: NextApiRequest,

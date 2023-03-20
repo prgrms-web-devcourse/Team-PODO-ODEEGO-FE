@@ -10,7 +10,7 @@ export default async function handler(
   // - groups api로 바꿀 것
   const { groupId } = req.query;
   const { authorization } = req.headers;
-  const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}`;
+  const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/groups/${groupId}`;
 
   try {
     const { data } = await axios({

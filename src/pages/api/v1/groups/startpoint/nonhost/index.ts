@@ -10,7 +10,7 @@ export default async function handler(
   const { groupId, stationName, lat, lng } = req.body.value;
   const header = req.headers;
 
-  const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${groupId}/group-members`;
+  const requestUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/groups/${groupId}/group-members`;
 
   try {
     const { data } = await axios({
