@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "@emotion/styled";
-import { COLORS } from "@/constants/css";
 import Image from "next/image";
-import kakao_image from "public/kakao_login_medium_wide.png";
 import Header from "@/components/layout/header";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
 import useModal from "../../hooks/use-modal";
 import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
+import Main from "@/components/layout/main";
+import { Button } from "@mui/material";
 
 const LoginPage = () => {
   const { openModal } = useModal();
@@ -60,35 +60,45 @@ const LoginPage = () => {
   return (
     <LoginContainer>
       <Header />
-      <BorderContainer />
-      <LoginWrapper>
-        <Image src={kakao_image} alt={"dsa"} onClick={handleKakaoLogin} />
-      </LoginWrapper>
+      <Main text='로그인'>
+        <Box>
+          <LoginButton
+            variant='contained'
+            color='kakao'
+            onClick={handleKakaoLogin}
+            aria-label='카카오 로그인'>
+            <Image
+              src='/kakao_login.svg'
+              alt='카카오 로그인'
+              width={20}
+              height={20}
+            />
+            <span>카카오 로그인</span>
+          </LoginButton>
+        </Box>
+      </Main>
     </LoginContainer>
   );
 };
 export default LoginPage;
-
-const BorderContainer = styled.div`
-  height: 25px;
-  background-color: ${COLORS.backgroundPrimary};
-  margin-top: -15px;
-  border-radius: 20px 20px 0 0;
-`;
 
 const LoginContainer = styled.div`
   width: 100%;
   margin: 0 auto;
 `;
 
-const LoginWrapper = styled.div`
+const Box = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 50%;
   flex-direction: column;
-  width: 100%;
-  height: 50vh;
-  h3 {
-    margin-bottom: 60px;
+  justify-content: center;
+`;
+
+const LoginButton = styled(Button)`
+  height: 4.5rem;
+  width: 30rem;
+  font-size: 1.5rem;
+  > * {
+    margin-right: auto;
   }
 `;
