@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import SignUpSearchInput from "@/components/signup/signup-search";
+import styled from "@emotion/styled";
+import { COLORS } from "@/constants/css";
 
 import { setLocalStorage } from "@/utils/storage";
 import Header from "@/components/layout/header";
-import Main from "@/components/layout/main";
 
 import { axiosInstanceWitToken } from "@/axios/instance";
 import fetch from "node-fetch";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import { Container } from "@mui/material";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { NEXT_PUBLIC_URL } = process.env;
@@ -56,42 +56,54 @@ const Kakao = (
   const { code: authCode } = router.query;
 
   useEffect(() => {
-    try {
-      const fetchKaokaoUserData = async () => {
+    const fetchKaokaoUserData = async () => {
+      try {
         if (authCode) {
           setLocalStorage("logoutToken", props.tokenResponse.access_token);
-
-          // 새로고침 임시 방편 코드
-          if (window.performance) {
-            if (performance.navigation.type === 1) {
-              console.error("The page is reloaded");
-            } else {
-              const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
-
-              const { data } = await axiosInstanceWitToken.post(
-                loginBackendUrl
-              );
-
-              setLocalStorage("token", data.accessToken);
-            }
+          if (window.performance && performance.navigation.type !== 1) {
+            const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
+            const { data } = await axiosInstanceWitToken.post(loginBackendUrl);
+            setLocalStorage("token", data.accessToken);
+          } else {
+            console.error("The page is reloaded");
           }
         }
-      };
-      fetchKaokaoUserData();
-    } catch (err) {
-      throw new Error((err as Error).message);
-    }
+      } catch (err) {
+        throw new Error((err as Error).message);
+      }
+    };
+    fetchKaokaoUserData();
   }, [authCode, router]);
 
   return (
-    <>
+    <SignUpContainer>
       <Header token={props.tokenResponse.access_token} />
-      <Main text='회원정보'>
-        <Container>
-          <SignUpSearchInput />
-        </Container>
-      </Main>
-    </>
+      <BorderContainer />
+      <SignUpTitle>가까운 지하철역을 입력해주세요. ^^</SignUpTitle>
+      <SignUpSearchInput />
+    </SignUpContainer>
   );
 };
 export default Kakao;
+
+const SignUpTitle = styled.h1`
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+`;
+
+const BorderContainer = styled.div`
+  height: 25px;
+  width: 100%;
+  background-color: ${COLORS.backgroundPrimary};
+  margin-top: -15px;
+  border-radius: 20px 20px 0 0;
+`;
+
+const SignUpContainer = styled.div`
+  width: 43rem;
+  margin: 0 auto;
+`;
