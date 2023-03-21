@@ -166,10 +166,11 @@ const Header = ({ token }: TokenProps) => {
           <HeaderIconWrap>
             <Tooltip title='로그인' arrow>
               <IconButton
+                onClick={handleClickLogin}
                 style={{
                   color: "white",
                 }}>
-                <LoginIcon onClick={handleClickLogin} />
+                <LoginIcon />
               </IconButton>
             </Tooltip>
           </HeaderIconWrap>
