@@ -1,5 +1,11 @@
 import styled from "@emotion/styled";
-import { Box, CircularProgress, IconButton, Stack } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  Stack,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
@@ -11,8 +17,6 @@ import { getLocalStorage, setLocalStorage } from "@/utils/storage";
 import { validateAddressListUnderTwoLength } from "@/utils/error";
 import Header from "@/components/layout/header";
 import {
-  FormInput,
-  HomeButton,
   LoginConfirmModal,
   SelectModal,
   ValidGroupModal,
@@ -20,9 +24,11 @@ import {
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
-import { COLORS, COUNT, ERROR_TEXT, ROUTES } from "@/constants";
+import { COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
 import { formatTime, inputsEqual } from "@/utils/helpers";
+import Main from "@/components/layout/main";
+import FormInput from "@/components/common/form-input";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -231,110 +237,80 @@ export default function Home() {
   return (
     <>
       <Header />
-      <MainContainer>
-        <BorderContainer />
-        <TextP>{MAIN}</TextP>
-        <Form>
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}>
-            {inputs.map((input, index) => (
-              <FormInput
-                key={index}
-                index={index}
-                stationName={input.stationName}
-                onClick={() => !isLoading && handleInputClickRoute(index)}
-                onRemove={(e) => !isLoading && removeInput(e, index)}
-              />
-            ))}
-            {inputs.length < 4 && (
-              <IconButton
-                aria-label='add'
-                sx={{ color: "#b4c9bc" }}
-                onClick={(e) => !isLoading && addInput(e)}>
-                <AddIcon />
-              </IconButton>
-            )}
-          </Box>
-          <LoadingContainer>
-            {isLoading && (
-              <CircularProgress
-                size='4rem'
-                sx={{
-                  color: "#DBE4D7",
-                }}
-              />
-            )}
-          </LoadingContainer>
-          <Stack
-            spacing={1.5}
-            sx={{
-              width: "80%",
-              textAlign: "center",
-              "& span": {
-                fontSize: "1.5rem",
-              },
-            }}>
-            <HomeButton
-              onClick={debounceMidPoint}
-              defaultText={BUTTON_MID_POINT_TEXT}
-              color='secondary'
-            />
-            <span>OR</span>
-            <HomeButton
-              onClick={handleButtonClickGroups}
-              hasCondition={!!groupId}
-              defaultText={BUTTON_GROUPS_DEFAULT_TEXT}
-              altText={BUTTON_GROUPS_ALT_TEXT}
-            />
-          </Stack>
-        </Form>
-      </MainContainer>
+      <Main text={MAIN}>
+        <Container
+          sx={{
+            maxHeight: "915px",
+            overflow: "auto",
+            paddingBottom: "2rem",
+          }}>
+          <form>
+            <Stack
+              spacing={2.5}
+              sx={{
+                width: "100%",
+                alignItems: "center",
+              }}>
+              {inputs.map((input, index) => (
+                <FormInput
+                  key={index}
+                  index={index}
+                  placeholder='주소 입력'
+                  address={input.stationName}
+                  onClick={() => !isLoading && handleInputClickRoute(index)}
+                  onRemove={(e) => !isLoading && removeInput(e, index)}
+                />
+              ))}
+              {inputs.length < 4 && (
+                <IconButton
+                  aria-label='add'
+                  sx={{ color: "#b4c9bc", aspectRatio: "1/1" }}
+                  onClick={(e) => !isLoading && addInput(e)}>
+                  <AddIcon />
+                </IconButton>
+              )}
+            </Stack>
+            <LoadingContainer>
+              {isLoading && (
+                <CircularProgress
+                  size='4rem'
+                  sx={{
+                    color: "#DBE4D7",
+                  }}
+                />
+              )}
+            </LoadingContainer>
+            <Stack
+              spacing={1.5}
+              sx={{
+                width: "100%",
+                textAlign: "center",
+                "& span": {
+                  fontSize: "1.5rem",
+                },
+              }}>
+              <CustomButton
+                onClick={debounceMidPoint}
+                color='secondary'
+                size='large'
+                variant='contained'>
+                {BUTTON_MID_POINT_TEXT}
+              </CustomButton>
+              <span>OR</span>
+              <CustomButton
+                onClick={handleButtonClickGroups}
+                color='primary'
+                size='large'
+                variant='contained'>
+                {groupId ? BUTTON_GROUPS_ALT_TEXT : BUTTON_GROUPS_DEFAULT_TEXT}
+              </CustomButton>
+            </Stack>
+          </form>
+        </Container>
+      </Main>
     </>
   );
 }
-
-const MainContainer = styled.main`
-  width: 100%;
-  max-height: 625px;
-  min-height: 509px;
-  height: 80vh;
-  background-color: ${COLORS.backgroundPrimary};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
-  user-select: none;
-`;
-
-const TextP = styled.p`
-  text-align: center;
-  font-size: 1.2rem;
-  margin: 4rem 0 3.3rem 0;
-  opacity: 0.7;
-  color: ${COLORS.semiBlack};
-`;
-
-const BorderContainer = styled.div`
-  height: 3rem;
-  width: 100%;
-  background-color: ${COLORS.backgroundPrimary};
-  margin-top: -15px;
-  border-radius: 20px 20px 0 0;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-`;
 
 const LoadingContainer = styled.div`
   height: 5rem;
@@ -343,4 +319,8 @@ const LoadingContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 0.5rem 0;
+`;
+
+const CustomButton = styled(Button)`
+  font-size: 1.5rem;
 `;

@@ -309,14 +309,7 @@ const GroupPage = () => {
                   ))}
               </Stack>
             </InputsContainer>
-            <Stack spacing={1.5} sx={{ marginTop: "2rem" }}>
-              <CustomButton
-                variant='contained'
-                color='primary'
-                size='large'
-                onClick={handleCancel}>
-                모임 취소하기
-              </CustomButton>
+            <Stack spacing={2.5} sx={{ marginTop: "5rem" }}>
               <CustomButton
                 variant='contained'
                 color='secondary'
@@ -327,6 +320,13 @@ const GroupPage = () => {
                   handleSearchDebounced();
                 }}>
                 중간지점 찾기
+              </CustomButton>
+              <CustomButton
+                variant='contained'
+                color='primary'
+                size='large'
+                onClick={handleCancel}>
+                모임 취소하기
               </CustomButton>
             </Stack>
           </form>
@@ -351,7 +351,7 @@ const InputLabel = styled.span`
 `;
 
 const CustomButton = styled(Button)`
-  font-size: 1.3rem;
+  font-size: 1.5rem;
 `;
 
 const CustomIconButton = styled(IconButton)`
