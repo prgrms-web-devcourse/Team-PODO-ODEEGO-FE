@@ -26,7 +26,7 @@ import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
-import formatTime from "@/utils/format-time";
+import { formatTime, inputsEqual } from "@/utils/helpers";
 import Main from "@/components/layout/main";
 import FormInput from "@/components/common/form-input";
 
@@ -47,7 +47,7 @@ const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [groupId, setGroupId] = useState("");
-  const setMidPointResponse = useSetRecoilState(MidPointState);
+  const [midPointResponse, setMidPointResponse] = useRecoilState(MidPointState);
   const token = getLocalStorage("token");
   const hasAccessToken = token ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
@@ -199,7 +199,20 @@ export default function Home() {
         validateAddressListUnderTwoLength(notEmptyAddressList);
       if (errorMessage) throw new Error(errorMessage);
 
-      const data = await MidPointApi.postMidPoint(notEmptyAddressList);
+      let data;
+
+      if (midPointResponse) {
+        const isEqual = inputsEqual(
+          midPointResponse.start,
+          notEmptyAddressList
+        );
+        if (isEqual) {
+          data = midPointResponse;
+          router.push(`${MAP}`);
+          return;
+        }
+      }
+      data = await MidPointApi.postMidPoint(notEmptyAddressList);
 
       if (data.start.length <= 1) throw new Error(ERROR_DUPLICATE_START_POINT);
 
