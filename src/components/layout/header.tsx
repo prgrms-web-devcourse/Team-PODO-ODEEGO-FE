@@ -1,28 +1,19 @@
 import { COLORS } from "@/constants/css";
 import styled from "@emotion/styled";
-import Image from "next/image";
+
 const HEADER_TEXT = "어디서 만날까?";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { ROUTES } from "@/constants/routes";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import { getLocalStorage, removeLocalStorage } from "@/utils/storage";
+import { axiosInstanceWitToken } from "@/axios/instance";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import useModal from "../../hooks/use-modal";
+import fetch from "node-fetch";
 import Cookies from "cookies";
 import { GetServerSidePropsContext } from "next";
-import LoginIcon from "@mui/icons-material/Login";
-import {
-  Divider,
-  Grow,
-  IconButton,
-  MenuItem,
-  MenuList,
-  Paper,
-  Popper,
-  Stack,
-  Tooltip,
-} from "@mui/material";
-import { axiosInstanceWitToken } from "@/axios/instance";
-import { ROUTES } from "@/constants";
 
 interface TokenProps {
   token?: string;
@@ -30,6 +21,7 @@ interface TokenProps {
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const cookies = new Cookies(context.req, context.res);
   const token = cookies.get("token");
+
   return {
     props: {
       token,
@@ -42,18 +34,46 @@ const Header = ({ token }: TokenProps) => {
   const { pathname } = router;
   const [tokenData, setToken] = useState<string>("");
 
-  const [open, setOpen] = useState(false);
-  const anchorRef = React.useRef<any>(null);
+  useEffect(() => {
+    const getToken = getLocalStorage("logoutToken");
+    if (!getToken) return;
 
-  const handleOpenToggle = () => {
-    setOpen((prev) => !prev);
-    console.log(open);
+    setToken(getToken);
+  }, [router, token]);
+  const { openModal } = useModal();
+
+  const handleBackClick = async () => {
+    switch (pathname) {
+      case "/signin":
+        router.push(`${ROUTES.HOME}`);
+        break;
+      case "/kakao":
+        openModal({
+          children: (
+            <p style={{ textAlign: "center", width: "20rem" }}>
+              추가정보에서 나가면 다시 내 주소를 저장 할 수 없습니다.
+            </p>
+          ),
+          btnText: {
+            confirm: "홈으로",
+            close: "취소",
+          },
+          handleConfirm: async () => {
+            router.push(`${ROUTES.HOME}`);
+
+            // return response;
+          },
+        });
+        break;
+
+      case "/mypage":
+        router.push(`${ROUTES.HOME}`);
+        break;
+    }
   };
 
-  const handleClickLogOut = async () => {
+  const handleClickLogout = async () => {
     const logoutToken = getLocalStorage("logoutToken");
-    setOpen(false);
-
     try {
       const kakaoLogoutUrl = `/api/kakao-logout`;
       await fetch(kakaoLogoutUrl, {
@@ -65,27 +85,18 @@ const Header = ({ token }: TokenProps) => {
           logoutToken,
         }),
       });
+
       const odeegoLogoutUrl = `/api/odeego-leave`;
       const response = await axiosInstanceWitToken.delete(odeegoLogoutUrl);
       setToken("");
       removeLocalStorage("token");
+
       removeLocalStorage("logoutToken");
       router.push(`${ROUTES.HOME}`);
       return response;
     } catch (err) {
       throw new Error((err as Error).message);
     }
-  };
-
-  useEffect(() => {
-    const getToken = getLocalStorage("logoutToken");
-    if (!getToken) return;
-    setToken(getToken);
-  }, [router, token]);
-  const { openModal } = useModal();
-
-  const handleClickLogin = () => {
-    router.push(`${ROUTES.LOGIN}`);
   };
 
   const handleClickMypage = () => {
@@ -97,12 +108,12 @@ const Header = ({ token }: TokenProps) => {
           close: "취소",
         },
         handleConfirm: async () => {
-          router.push(`${ROUTES.MYPAGE}`);
+          router.push("/mypage");
           // return response;
         },
       });
     } else {
-      router.push(`${ROUTES.MYPAGE}`);
+      router.push("/mypage");
     }
   };
 
@@ -110,84 +121,34 @@ const Header = ({ token }: TokenProps) => {
     <HeaderContainer>
       {(token || tokenData) && (
         <>
+          <HeaderBackImageWrap>
+            <KeyboardBackspaceIcon onClick={handleBackClick} />
+          </HeaderBackImageWrap>
+
           <HeaderIconWrap>
             <NavbarIcons>
-              <IconButton
-                style={{
-                  color: "white",
-                }}
-                ref={anchorRef}
-                onClick={handleOpenToggle}>
-                <AccountCircleIcon />
-              </IconButton>
-              {/*<AccountCircleIcon onClick={handleClickMypage} />*/}
+              <AccountCircleIcon onClick={handleClickMypage} />
+              <ExitToAppIcon onClick={handleClickLogout} />
             </NavbarIcons>
           </HeaderIconWrap>
-
-          <Popper
-            style={{
-              position: "absolute",
-              left: "75%",
-              top: "30%",
-            }}
-            anchorEl={anchorRef.current}
-            open={open}
-            placement='bottom-start'
-            transition
-            disablePortal>
-            {({ TransitionProps, placement }) => (
-              <Grow
-                {...TransitionProps}
-                style={{
-                  transformOrigin:
-                    placement === "right" ? "right bottom" : "right bottom",
-                }}>
-                <Stack direction='row' spacing={2}>
-                  <Paper>
-                    <MenuList>
-                      <MenuItem onClick={handleClickMypage}>
-                        마이페이지
-                      </MenuItem>
-                      <Divider />
-                      <MenuItem onClick={handleClickLogOut}>로그아웃</MenuItem>
-                    </MenuList>
-                  </Paper>
-                </Stack>
-              </Grow>
-            )}
-          </Popper>
         </>
       )}
-
       <TextP>{HEADER_TEXT}</TextP>
-
-      {!token && !tokenData && (
-        <>
-          <HeaderIconWrap>
-            <Tooltip title='로그인' arrow>
-              <IconButton
-                style={{
-                  color: "white",
-                }}>
-                <LoginIcon onClick={handleClickLogin} />
-              </IconButton>
-            </Tooltip>
-          </HeaderIconWrap>
-        </>
-      )}
-
-      <Image
-        src='/logo1.svg'
-        alt='Odeego Logo'
-        width={147}
-        height={56}
-        priority
-      />
+      <embed src='/logo1.svg' width={147} height={56} />
     </HeaderContainer>
   );
 };
 
 export default Header;
+
+const HeaderBackImageWrap = styled.div`
+  position: absolute;
+  left: 10%;
+  top: 11%;
+  svg {
+    font-size: 3rem;
+  }
+`;
 
 const NavbarIcons = styled.div`
   display: flex;
