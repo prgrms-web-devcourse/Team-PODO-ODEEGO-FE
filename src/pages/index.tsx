@@ -304,7 +304,9 @@ export default function Home() {
                 color='primary'
                 size='large'
                 variant='contained'>
-                {groupId ? BUTTON_GROUPS_ALT_TEXT : BUTTON_GROUPS_DEFAULT_TEXT}
+                {token && groupId
+                  ? BUTTON_GROUPS_ALT_TEXT
+                  : BUTTON_GROUPS_DEFAULT_TEXT}
               </CustomButton>
             </Stack>
           </form>
