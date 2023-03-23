@@ -168,8 +168,9 @@ const Header = ({ token }: TokenProps) => {
               <IconButton
                 style={{
                   color: "white",
-                }}>
-                <LoginIcon onClick={handleClickLogin} />
+                }}
+                onClick={handleClickLogin}>
+                <LoginIcon />
               </IconButton>
             </Tooltip>
           </HeaderIconWrap>
