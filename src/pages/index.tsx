@@ -144,8 +144,12 @@ export default function Home() {
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
 
-        if (errorMessage !== CustomError["G007"].error)
+        if (
+          errorMessage !== CustomError["G007"].error &&
+          errorMessage !== CustomError["M001"].error
+        )
           toast.error(errorMessage);
+
         setGroupId("");
       }
       setLocalStorage(COUNT, "");
