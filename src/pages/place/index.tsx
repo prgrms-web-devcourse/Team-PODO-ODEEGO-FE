@@ -8,43 +8,23 @@ import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
-import { useCallback } from "react";
-import { PlaceListResponse } from "@/types/api/place";
-import axios from "axios";
-
-interface PageProps {
-  stationName: string;
-  places: PlaceListResponse[];
-}
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const SIZE = 5;
 const FIRST_PAGE_NUM = 0;
 const USE_QUERY_KEYWORD = "place";
 
-export const getServerSideProps = async ({
-  query: { stationName },
-}: {
-  query: { stationName: string };
-}) => {
-  try {
-    const { data } = await axios(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/places?station-name=${stationName}&page=${FIRST_PAGE_NUM}&size=${SIZE}`
-    );
-    return {
-      props: {
-        stationName,
-        places: data,
-      },
-    };
-  } catch (e) {
-    return {
-      notFound: true,
-    };
-  }
-};
-
-const PlacePage = ({ stationName, places }: PageProps) => {
+const PlacePage = () => {
   const tabValue = useRecoilValue(tabState);
+  const router = useRouter();
+  const [stationName, setStationName] = useState("");
+
+  useEffect(() => {
+    if (router.isReady) {
+      setStationName(router.query.stationName as string);
+    }
+  }, [setStationName, router]);
 
   const { setTarget } = useIntersectionObserver({
     root: null,
@@ -73,7 +53,7 @@ const PlacePage = ({ stationName, places }: PageProps) => {
   } = useInfiniteQuery([USE_QUERY_KEYWORD, tabValue, stationName], fetchData, {
     getNextPageParam: (lastPage, allPages) =>
       !lastPage.last ? allPages.length : undefined,
-    initialData: { pages: [places], pageParams: [] },
+    enabled: stationName !== "",
   });
 
   return (
@@ -101,13 +81,10 @@ const PlacePage = ({ stationName, places }: PageProps) => {
             </Box>
           ) : (
             <>
-              {data
-                ? data.pages.map((page, index) => (
-                    <PlaceList key={index} placeList={page.content} />
-                  ))
-                : places.map((p, i) => (
-                    <PlaceList key={i} placeList={p.content} />
-                  ))}
+              {data &&
+                data.pages.map((page, index) => (
+                  <PlaceList key={index} placeList={page.content} />
+                ))}
               {hasNextPage ? (
                 <li
                   style={{
