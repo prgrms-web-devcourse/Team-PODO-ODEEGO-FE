@@ -28,8 +28,9 @@ const MainContainer = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: -2px 0 4px -5px #333, 2px 0 4px -5px #333;
   user-select: none;
+  padding: 0 1.2rem;
+  box-sizing: border-box;
 `;
 
 const TextP = styled.p`

@@ -4,4 +4,5 @@ export const ROUTES = {
   MAP: "/map",
   LOGIN: "/signin",
   GROUP: "/group",
+  MYPAGE: "/mypage",
 };
