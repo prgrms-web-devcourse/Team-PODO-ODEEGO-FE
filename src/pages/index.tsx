@@ -29,6 +29,7 @@ import { AllGroupsResponse } from "@/types/api/group";
 import { formatTime, inputsEqual } from "@/utils/helpers";
 import Main from "@/components/layout/main";
 import FormInput from "@/components/common/form-input";
+import { CustomError } from "@/constants/custom-error";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -137,13 +138,17 @@ export default function Home() {
         const data = await GroupsApi.getAll(token);
         const groupId = data?.groups?.[0]?.groupId || "";
 
+        await GroupsApi.getGroup(groupId, token);
+
         setGroupId(groupId);
-        setLocalStorage(COUNT, "");
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
-        toast.error(errorMessage);
-        setLocalStorage(COUNT, "");
+
+        if (errorMessage !== CustomError["G007"].error)
+          toast.error(errorMessage);
+        setGroupId("");
       }
+      setLocalStorage(COUNT, "");
     };
 
     initGroupId();
