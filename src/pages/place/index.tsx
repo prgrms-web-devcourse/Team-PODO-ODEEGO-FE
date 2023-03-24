@@ -8,30 +8,23 @@ import { Box, CircularProgress } from "@mui/material";
 import { useIntersectionObserver } from "@/hooks";
 import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
-interface PageProps {
-  stationName: string;
-}
-
-const SIZE = 4;
+const SIZE = 5;
 const FIRST_PAGE_NUM = 0;
 const USE_QUERY_KEYWORD = "place";
 
-export const getServerSideProps = async ({
-  query: { stationName },
-}: {
-  query: { stationName: string };
-}) => {
-  return {
-    props: {
-      stationName,
-    },
-  };
-};
-
-const PlacePage = ({ stationName }: PageProps) => {
+const PlacePage = () => {
   const tabValue = useRecoilValue(tabState);
+  const router = useRouter();
+  const [stationName, setStationName] = useState("");
+
+  useEffect(() => {
+    if (router.isReady) {
+      setStationName(router.query.stationName as string);
+    }
+  }, [setStationName, router]);
 
   const { setTarget } = useIntersectionObserver({
     root: null,
@@ -58,10 +51,9 @@ const PlacePage = ({ stationName }: PageProps) => {
     isFetchingNextPage,
     hasNextPage,
   } = useInfiniteQuery([USE_QUERY_KEYWORD, tabValue, stationName], fetchData, {
-    getNextPageParam: (lastPage, allPages) => {
-      const nextPage = allPages.length + 1;
-      return !lastPage.last ? nextPage : undefined;
-    },
+    getNextPageParam: (lastPage, allPages) =>
+      !lastPage.last ? allPages.length : undefined,
+    enabled: stationName !== "",
   });
 
   return (
@@ -90,12 +82,12 @@ const PlacePage = ({ stationName }: PageProps) => {
           ) : (
             <>
               {data &&
-                data.pages.map((p, i) => (
-                  <PlaceList key={i} placeList={p.content} />
+                data.pages.map((page, index) => (
+                  <PlaceList key={index} placeList={page.content} />
                 ))}
               {hasNextPage ? (
-                <Box
-                  sx={{
+                <li
+                  style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -105,10 +97,10 @@ const PlacePage = ({ stationName }: PageProps) => {
                   {isFetching && isFetchingNextPage && (
                     <CircularProgress size='3rem' sx={{ color: "#5AB27D" }} />
                   )}
-                </Box>
+                </li>
               ) : (
-                <Box
-                  sx={{
+                <li
+                  style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -120,7 +112,7 @@ const PlacePage = ({ stationName }: PageProps) => {
                     width={200}
                     height={30}
                   />
-                </Box>
+                </li>
               )}
             </>
           )}
@@ -129,6 +121,7 @@ const PlacePage = ({ stationName }: PageProps) => {
     </PlaceContainer>
   );
 };
+
 export default PlacePage;
 
 const PlaceContainer = styled.div`
