@@ -21,10 +21,9 @@ const useSignupSearch = () => {
 
   const [isToggleBoxLoading, setToggleBoxIsLoading] = useState(true);
 
-  const [token, setToken] = useState("");
+  const [, setToken] = useState("");
 
   const router = useRouter();
-  console.log(token);
 
   const handleChangeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
