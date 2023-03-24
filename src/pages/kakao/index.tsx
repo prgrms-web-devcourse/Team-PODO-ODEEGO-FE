@@ -10,6 +10,9 @@ import { axiosInstanceWitToken } from "@/axios/instance";
 import fetch from "node-fetch";
 import queryString from "query-string";
 import { useRouter } from "next/router";
+import { LOCAL_STORAGE } from "@/constants";
+
+const { TOKEN, LOGOUT_TOKEN } = LOCAL_STORAGE;
 
 const Kakao = () => {
   const [accessToken, setAccessToken] = useState("");
@@ -39,12 +42,12 @@ const Kakao = () => {
         }).then((res) => res.json());
 
         setAccessToken(tokenResponse.access_token);
-        setLocalStorage("logoutToken", tokenResponse.access_token);
+        setLocalStorage(LOGOUT_TOKEN, tokenResponse.access_token);
 
         if (window.performance && performance.navigation.type !== 1) {
           const loginBackendUrl = `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/auth/user/me`;
           const { data } = await axiosInstanceWitToken.post(loginBackendUrl);
-          setLocalStorage("token", data.accessToken);
+          setLocalStorage(TOKEN, data.accessToken);
         } else {
           console.error("The page is reloaded");
         }

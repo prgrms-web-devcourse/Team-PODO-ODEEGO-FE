@@ -8,10 +8,13 @@ import { useRouter } from "next/router";
 import { ROUTES } from "@/constants";
 import Main from "@/components/layout/main";
 import { Button } from "@mui/material";
+import { LOCAL_STORAGE } from "@/constants";
+
+const { TOKEN, LOGOUT_TOKEN } = LOCAL_STORAGE;
 
 const LoginPage = () => {
   const { openModal } = useModal();
-  const token = getLocalStorage("logoutToken");
+  const token = getLocalStorage(LOGOUT_TOKEN);
 
   const router = useRouter();
 
@@ -24,7 +27,7 @@ const LoginPage = () => {
           close: "취소",
         },
         handleConfirm: async () => {
-          const logoutToken = getLocalStorage("logoutToken");
+          const logoutToken = getLocalStorage(LOGOUT_TOKEN);
           const kakaoLogoutUrl = `/api/kakao-logout`;
           await fetch(kakaoLogoutUrl, {
             method: "POST",
@@ -36,8 +39,8 @@ const LoginPage = () => {
             }),
           });
 
-          removeLocalStorage("token");
-          removeLocalStorage("logoutToken");
+          removeLocalStorage(TOKEN);
+          removeLocalStorage(LOGOUT_TOKEN);
           router.push(`${ROUTES.HOME}`);
 
           // return response;

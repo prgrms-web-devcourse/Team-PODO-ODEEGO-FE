@@ -3,6 +3,9 @@ import { removeLocalStorage } from "@/utils/storage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
+import { LOCAL_STORAGE } from "@/constants";
+
+const { TOKEN, LOGOUT_TOKEN } = LOCAL_STORAGE;
 
 const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
 
@@ -23,8 +26,8 @@ export const GroupsApi = {
         const data = e.response?.data;
 
         if (data.errorCode === "M001") {
-          removeLocalStorage("logoutToken");
-          removeLocalStorage("token");
+          removeLocalStorage(LOGOUT_TOKEN);
+          removeLocalStorage(TOKEN);
         }
 
         const errorMessage = data.error || ERROR_DEFAULT_MSG;
