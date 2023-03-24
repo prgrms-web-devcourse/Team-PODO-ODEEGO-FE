@@ -67,19 +67,6 @@ const PlacePage = () => {
       <MainContainer>
         <UnOrderedList>
           {isLoading ? (
-            // <Box
-            //   sx={{
-            //     display: "flex",
-            //     justifyContent: "center",
-            //     alignItems: "center",
-            //     padding: "2rem 0 2.5rem 0",
-            //     position: "absolute",
-            //     top: "50%",
-            //     left: "50%",
-            //     transform: "translate(-50%, -50%)",
-            //   }}>
-            //   <CircularProgress size='5rem' sx={{ color: "#5AB27D" }} />
-            // </Box>
             <Box>
               <Paragraph />
               <Paragraph />

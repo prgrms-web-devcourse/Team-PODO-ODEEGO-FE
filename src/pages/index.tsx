@@ -248,7 +248,7 @@ export default function Home() {
           }}>
           <form>
             <Stack
-              // spacing={2.5}
+              // spacing={2.5} //layout shift 발생!
               sx={{
                 width: "100%",
                 alignItems: "center",
