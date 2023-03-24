@@ -10,6 +10,7 @@ import { PlaceInput, PlaceList, PlaceTabList } from "@/components/place";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Paragraph from "@/components/common/skeleton/Paragraph";
 
 const SIZE = 5;
 const FIRST_PAGE_NUM = 0;
@@ -66,18 +67,23 @@ const PlacePage = () => {
       <MainContainer>
         <UnOrderedList>
           {isLoading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "2rem 0 2.5rem 0",
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}>
-              <CircularProgress size='5rem' sx={{ color: "#5AB27D" }} />
+            // <Box
+            //   sx={{
+            //     display: "flex",
+            //     justifyContent: "center",
+            //     alignItems: "center",
+            //     padding: "2rem 0 2.5rem 0",
+            //     position: "absolute",
+            //     top: "50%",
+            //     left: "50%",
+            //     transform: "translate(-50%, -50%)",
+            //   }}>
+            //   <CircularProgress size='5rem' sx={{ color: "#5AB27D" }} />
+            // </Box>
+            <Box>
+              <Paragraph />
+              <Paragraph />
+              <Paragraph />
             </Box>
           ) : (
             <>
