@@ -24,7 +24,7 @@ import {
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
-import { COUNT, ERROR_TEXT, ROUTES } from "@/constants";
+import { COUNT, ERROR_CLIENT_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
 import { formatTime, inputsEqual } from "@/utils/helpers";
 import Main from "@/components/layout/main";
@@ -41,7 +41,8 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const { ERROR_UNSELECT_PEOPLE_COUNT, ERROR_DUPLICATE_START_POINT } = ERROR_TEXT;
+const { ERROR_UNSELECT_PEOPLE_COUNT, ERROR_DUPLICATE_START_POINT } =
+  ERROR_CLIENT_TEXT;
 
 const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
 
