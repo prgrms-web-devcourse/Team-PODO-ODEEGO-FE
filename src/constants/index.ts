@@ -1,6 +1,6 @@
 export { COLORS } from "./css";
 export { ERROR_CLIENT_TEXT } from "./error";
 export { ROUTES } from "./routes";
-export { LOCAL_STORAGE } from "./local-storage";
+export { COUNT, LOCAL_STORAGE } from "./local-storage";
 export { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "./component-text";
 export { STATUS_CODE } from "./status";
