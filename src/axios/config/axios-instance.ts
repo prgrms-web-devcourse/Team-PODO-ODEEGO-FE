@@ -1,6 +1,8 @@
+import { getLocalStorage } from "@/utils/storage";
 import axios, { Method } from "axios";
+import { LOCAL_STORAGE } from "@/constants";
 
-// const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
+const { TOKEN } = LOCAL_STORAGE;
 const API_END_POINT = "/api";
 
 const METHOD: Record<string, Method> = {
@@ -13,12 +15,15 @@ const METHOD: Record<string, Method> = {
 
 const { GET, POST, DELETE, PUT, PATCH } = METHOD;
 
-//공통 instance
-//TODO : Authorization이 필요하다면 등록
 const getDefaultInstance = (method: Method) => {
+  const token = getLocalStorage(TOKEN);
+
   const defaultInstance = axios.create({
     baseURL: API_END_POINT,
     method,
+    headers: {
+      Authorization: token ? `Bearer ${token}` : "",
+    },
   });
 
   return defaultInstance;
