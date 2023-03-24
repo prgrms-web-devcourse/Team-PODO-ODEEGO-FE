@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Header from "@/components/layout/header";
@@ -15,7 +15,7 @@ const LoginPage = () => {
 
   const router = useRouter();
 
-  const handleKakaoLogin = () => {
+  useEffect(() => {
     if (token) {
       openModal({
         children: "이미 로그인 되어있습니다.",
@@ -43,41 +43,42 @@ const LoginPage = () => {
           // return response;
         },
       });
-    } else {
-      window.Kakao.Auth.authorize({
-        redirectUri:
-          process.env.NODE_ENV === "development"
-            ? "http://localhost:3000/kakao"
-            : process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI,
-      });
     }
-  };
+  }, [token, openModal, router]);
 
-  // test
   return (
     <LoginContainer>
       <Header />
       <Main text='로그인'>
         <Box>
-          <LoginButton
-            variant='contained'
-            color='kakao'
-            onClick={handleKakaoLogin}
-            aria-label='카카오 로그인'>
-            <Image
-              src='/kakao_login.svg'
-              alt='카카오 로그인'
-              width={20}
-              height={20}
-            />
-            <span>카카오 로그인</span>
-          </LoginButton>
+          <a
+            href={`https://kauth.kakao.com/oauth/authorize?client_id=${
+              process.env.NEXT_PUBLIC_REST_API_KEY
+            }&redirect_uri=${
+              process.env.NODE_ENV === "development"
+                ? `${process.env.NEXT_PUBLIC_URL}/kakao` //local
+                : process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI //deploy
+            }&response_type=code`}>
+            <LoginButton
+              variant='contained'
+              color='kakao'
+              aria-label='카카오 로그인'
+              type='button'>
+              <Image
+                src='/kakao_login.svg'
+                alt='카카오 로그인'
+                width={20}
+                height={20}
+              />
+              <span>카카오 로그인</span>
+            </LoginButton>
+          </a>
         </Box>
       </Main>
     </LoginContainer>
   );
 };
-//
+
 export default LoginPage;
 
 const LoginContainer = styled.div`
@@ -90,6 +91,9 @@ const Box = styled.div`
   height: 50%;
   flex-direction: column;
   justify-content: center;
+  > a {
+    text-decoration: none;
+  }
 `;
 
 const LoginButton = styled(Button)`
