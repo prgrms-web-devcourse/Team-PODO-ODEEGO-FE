@@ -214,6 +214,7 @@ const GroupPage = () => {
               throw new Error(ERROR_TEXT.ERROR_UNSELECT_PEOPLE_COUNT);
 
             //만료된 방이 있다면, 방 삭제 후, 방 만들기
+            // this is test code line
             await GroupsApi.deleteGroup(gId, token);
 
             const data = await GroupsApi.postCreateGroup(token, count);
