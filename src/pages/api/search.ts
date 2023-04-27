@@ -8,7 +8,7 @@ export const SearchAPI = {
         `${process.env.NEXT_PUBLIC_API_END_POINT_KAKAO}/v2/local/search/keyword.json?query=${value}&category_group_code=SW8`,
         {
           headers: {
-            Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_SEARCH_KEY}`,
+            Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY}`,
           },
         }
       );
@@ -23,7 +23,7 @@ export const SearchAPI = {
     console.log(value);
     try {
       const result = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/b6deb966-8179-43db-9f08-ec5271cbaccc/group-members?memberId=99`,
+        `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/groups/b6deb966-8179-43db-9f08-ec5271cbaccc/group-members?memberId=99`,
         {
           body: {
             value,
@@ -42,7 +42,7 @@ export const SearchAPI = {
     console.log(`Non Host Send Start Point: ${value}`);
     try {
       const result = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${value.groupId}/group-members?memberId=${value.memberId}`,
+        `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/groups/${value.groupId}/group-members?memberId=${value.memberId}`,
         {
           stationName: value.stationName,
           lat: value.lat,
@@ -67,7 +67,7 @@ export const SearchAPI = {
     console.log(`Host Send Start Point: ${value}`);
     try {
       const result = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_END_POINT}/api/v1/groups/${value.groupId}/host?memberId=${value.memberId}`,
+        `${process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO}/api/v1/groups/${value.groupId}/host?memberId=${value.memberId}`,
         {
           stationName: value.stationName,
           lat: value.lat,

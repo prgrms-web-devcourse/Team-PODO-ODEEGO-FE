@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 import { CustomError } from "@/constants/custom-error";
 
-const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT;
+const API_END_POINT = process.env.NEXT_PUBLIC_API_END_POINT_ODEEGO;
 
 export default async function handler(
   req: NextApiRequest,
