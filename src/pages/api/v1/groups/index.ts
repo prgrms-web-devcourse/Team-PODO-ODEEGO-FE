@@ -29,8 +29,9 @@ export default async function handler(
 
       if (error) {
         res.status(error.status).json({
-          error: error.message,
+          error: error.error ?? error.message,
           status: error.status,
+          errorCode,
         });
       } else {
         res.status(e.response?.status || 400).json({

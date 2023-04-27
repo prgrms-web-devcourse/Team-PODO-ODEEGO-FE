@@ -1,4 +1,5 @@
 import { GroupDetailResponse } from "@/types/api/group";
+import { removeLocalStorage } from "@/utils/storage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
@@ -19,8 +20,14 @@ export const GroupsApi = {
     } catch (e) {
       console.error(e);
       if (axios.isAxiosError(e)) {
-        const { response } = e;
-        const errorMessage = response?.data?.error || ERROR_DEFAULT_MSG;
+        const data = e.response?.data;
+
+        if (data.errorCode === "M001") {
+          removeLocalStorage("logoutToken");
+          removeLocalStorage("token");
+        }
+
+        const errorMessage = data.error || ERROR_DEFAULT_MSG;
         throw new Error(errorMessage);
       }
     }

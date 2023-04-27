@@ -26,9 +26,10 @@ import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
 import { COUNT, ERROR_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
-import formatTime from "@/utils/format-time";
+import { formatTime, inputsEqual } from "@/utils/helpers";
 import Main from "@/components/layout/main";
 import FormInput from "@/components/common/form-input";
+import { CustomError } from "@/constants/custom-error";
 
 const { MAIN } = MAIN_TEXT;
 
@@ -47,7 +48,7 @@ const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [groupId, setGroupId] = useState("");
-  const setMidPointResponse = useSetRecoilState(MidPointState);
+  const [midPointResponse, setMidPointResponse] = useRecoilState(MidPointState);
   const token = getLocalStorage("token");
   const hasAccessToken = token ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
@@ -75,15 +76,11 @@ export default function Home() {
       close: CLOSE_TEXT,
     },
     handleConfirm: async () => {
-      //모임 생성 Test API
-      // - 현재 약속방을 삭제하는 기능이 없음
-      // - memberId가 계속 바뀌어야 합니다. 동일한 memberId로 계속 만드는 경우, 이미 존재한다는 에러 발생
       const gId = groupId;
       try {
         const count = getLocalStorage(COUNT);
         if (count === "") throw new Error(ERROR_UNSELECT_PEOPLE_COUNT);
 
-        //만료된 방이 있다면, 방 삭제 후, 방 만들기
         if (!isValid && gId) {
           await GroupsApi.deleteGroup(gId, token);
         }
@@ -137,18 +134,25 @@ export default function Home() {
     const initGroupId = async () => {
       if (!hasAccessToken) return;
 
-      //TODO 실제 모임조회 api로 바꾸기
       try {
         const data = await GroupsApi.getAll(token);
         const groupId = data?.groups?.[0]?.groupId || "";
 
+        await GroupsApi.getGroup(groupId, token);
+
         setGroupId(groupId);
-        setLocalStorage(COUNT, "");
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
-        toast.error(errorMessage);
-        setLocalStorage(COUNT, "");
+
+        if (
+          errorMessage !== CustomError["G007"].error &&
+          errorMessage !== CustomError["M001"].error
+        )
+          toast.error(errorMessage);
+
+        setGroupId("");
       }
+      setLocalStorage(COUNT, "");
     };
 
     initGroupId();
@@ -160,8 +164,6 @@ export default function Home() {
   };
 
   const handleButtonClickGroups = async () => {
-    // * 유효시간 모달 체크 코드
-    // openModal(getValidGroupModalConfig(1, 0));
     if (isLoading) return;
     if (!hasAccessToken) {
       openModal(loginModalConfig);
@@ -199,7 +201,20 @@ export default function Home() {
         validateAddressListUnderTwoLength(notEmptyAddressList);
       if (errorMessage) throw new Error(errorMessage);
 
-      const data = await MidPointApi.postMidPoint(notEmptyAddressList);
+      let data;
+
+      if (midPointResponse) {
+        const isEqual = inputsEqual(
+          midPointResponse.start,
+          notEmptyAddressList
+        );
+        if (isEqual) {
+          data = midPointResponse;
+          router.push(`${MAP}`);
+          return;
+        }
+      }
+      data = await MidPointApi.postMidPoint(notEmptyAddressList);
 
       if (data.start.length <= 1) throw new Error(ERROR_DUPLICATE_START_POINT);
 
@@ -289,7 +304,9 @@ export default function Home() {
                 color='primary'
                 size='large'
                 variant='contained'>
-                {groupId ? BUTTON_GROUPS_ALT_TEXT : BUTTON_GROUPS_DEFAULT_TEXT}
+                {token && groupId
+                  ? BUTTON_GROUPS_ALT_TEXT
+                  : BUTTON_GROUPS_DEFAULT_TEXT}
               </CustomButton>
             </Stack>
           </form>

@@ -49,7 +49,8 @@ const Place = ({ businessName, address, images, shareUrl }: PlaceResponse) => {
         <IconsContainer>
           <IconButton
             sx={{ padding: "0.5rem" }}
-            onClick={handleClickShareClipboard}>
+            onClick={handleClickShareClipboard}
+            aria-label='share button'>
             <IosShareIcon
               sx={{
                 display: "block",
@@ -93,6 +94,7 @@ const TitleIconContainer = styled.div`
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
+  color: #000000;
 
   & h3 {
     font-size: 1.8rem;

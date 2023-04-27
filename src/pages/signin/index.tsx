@@ -45,13 +45,10 @@ const LoginPage = () => {
       });
     } else {
       window.Kakao.Auth.authorize({
-        //개인 테스트용 리다이랙션 주소
-        // redirectUri: "http://localhost:3000/kakao",
-        // 배포 리다이랙션 주소 Production
-        redirectUri: "https://odeego.vercel.app/kakao",
-        // 배포 리다이랙션 주소 Preview
-        // redirectUri:
-        // "https://team-podo-odeego-fe-git-feature-signin-seung-hwan285.vercel.app/kakao",
+        redirectUri:
+          process.env.NODE_ENV === "development"
+            ? "http://localhost:3000/kakao"
+            : process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI,
       });
     }
   };
