@@ -24,7 +24,7 @@ import {
 import { useModal, useMultipleInputs, useTimeoutFn } from "@/hooks";
 import { isFirstVisitState, MidPointState, searchState } from "@/recoil";
 import { BUTTON_TEXT, MAIN_TEXT, MODAL_TEXT } from "@/constants/component-text";
-import { COUNT, ERROR_TEXT, ROUTES } from "@/constants";
+import { LOCAL_STORAGE, ERROR_CLIENT_TEXT, ROUTES } from "@/constants";
 import { AllGroupsResponse } from "@/types/api/group";
 import { formatTime, inputsEqual } from "@/utils/helpers";
 import Main from "@/components/layout/main";
@@ -41,15 +41,23 @@ const {
 
 const { LOGIN_TEXT, CLOSE_TEXT, MAKE_A_GROUP_TEXT } = MODAL_TEXT;
 
-const { ERROR_UNSELECT_PEOPLE_COUNT, ERROR_DUPLICATE_START_POINT } = ERROR_TEXT;
+const { ERROR_UNSELECT_PEOPLE_COUNT, ERROR_DUPLICATE_START_POINT } =
+  ERROR_CLIENT_TEXT;
 
 const { SEARCH, LOGIN, MAP, GROUP, HOME } = ROUTES;
+
+const { COUNT, TOKEN } = LOCAL_STORAGE;
+
+const NOT_SHOW_TOAST_MESSAGE_ERROR_CODE = {
+  M001: "M001",
+  G007: "G007",
+};
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [groupId, setGroupId] = useState("");
   const [midPointResponse, setMidPointResponse] = useRecoilState(MidPointState);
-  const token = getLocalStorage("token");
+  const token = getLocalStorage(TOKEN);
   const hasAccessToken = token ? true : false;
   const [addressList, setAddressList] = useRecoilState(searchState);
   const { inputs, addInput, removeInput } = useMultipleInputs();
@@ -85,7 +93,7 @@ export default function Home() {
           await GroupsApi.deleteGroup(gId, token);
         }
 
-        const data = await GroupsApi.postCreateGroup(token, count);
+        const data = await GroupsApi.postCreateGroup(count);
         setLocalStorage(COUNT, "");
 
         const { groupId } = data;
@@ -106,7 +114,7 @@ export default function Home() {
     handleConfirm: async () => {
       try {
         const { groupId, minutes, seconds } =
-          await getMinutesSecondsAndGroupIdFromGroupAPI(token);
+          await getMinutesSecondsAndGroupIdFromGroupAPI();
 
         minutes === 0 && seconds === 0
           ? router.push(`${HOME}`)
@@ -118,8 +126,8 @@ export default function Home() {
     },
   });
 
-  const getMinutesSecondsAndGroupIdFromGroupAPI = async (token: string) => {
-    const { groups }: AllGroupsResponse = await GroupsApi.getAll(token);
+  const getMinutesSecondsAndGroupIdFromGroupAPI = async () => {
+    const { groups }: AllGroupsResponse = await GroupsApi.getAll();
     const { groupId, remainingTime } = groups[0];
     const { minutes, seconds } = formatTime(remainingTime);
 
@@ -135,7 +143,7 @@ export default function Home() {
       if (!hasAccessToken) return;
 
       try {
-        const data = await GroupsApi.getAll(token);
+        const data = await GroupsApi.getAll();
         const groupId = data?.groups?.[0]?.groupId || "";
 
         await GroupsApi.getGroup(groupId, token);
@@ -143,10 +151,11 @@ export default function Home() {
         setGroupId(groupId);
       } catch (e) {
         const errorMessage = e instanceof Error ? e.message : String(e);
+        const { M001, G007 } = NOT_SHOW_TOAST_MESSAGE_ERROR_CODE;
 
         if (
-          errorMessage !== CustomError["G007"].error &&
-          errorMessage !== CustomError["M001"].error
+          errorMessage !== CustomError[G007].error &&
+          errorMessage !== CustomError[M001].error
         )
           toast.error(errorMessage);
 
@@ -177,7 +186,7 @@ export default function Home() {
 
     try {
       const { minutes, seconds } =
-        await getMinutesSecondsAndGroupIdFromGroupAPI(token);
+        await getMinutesSecondsAndGroupIdFromGroupAPI();
 
       if (minutes === 0 || seconds === 0) {
         openModal(getSelectModalConfig(false, groupId));

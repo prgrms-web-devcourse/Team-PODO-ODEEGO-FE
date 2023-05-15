@@ -3,7 +3,7 @@ import { MidPointApi } from "@/axios/mid-point";
 import FormInput from "@/components/common/form-input";
 import Header from "@/components/layout/header";
 import Main from "@/components/layout/main";
-import { COLORS, COUNT, ERROR_TEXT } from "@/constants";
+import { COLORS, COUNT, ERROR_CLIENT_TEXT } from "@/constants";
 import { useModal } from "@/hooks";
 import { isFirstVisitState, MidPointState } from "@/recoil";
 import { searchProps } from "@/types/search-props";
@@ -211,12 +211,12 @@ const GroupPage = () => {
           try {
             const count = getLocalStorage(COUNT);
             if (count === "")
-              throw new Error(ERROR_TEXT.ERROR_UNSELECT_PEOPLE_COUNT);
+              throw new Error(ERROR_CLIENT_TEXT.ERROR_UNSELECT_PEOPLE_COUNT);
 
             //만료된 방이 있다면, 방 삭제 후, 방 만들기
             await GroupsApi.deleteGroup(gId, token);
 
-            const data = await GroupsApi.postCreateGroup(token, count);
+            const data = await GroupsApi.postCreateGroup(count);
             setLocalStorage(COUNT, "");
 
             const { groupId } = data;

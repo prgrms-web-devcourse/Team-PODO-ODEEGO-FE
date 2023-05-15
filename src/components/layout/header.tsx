@@ -133,22 +133,8 @@ const Header = ({ token }: TokenProps) => {
           </HeaderIconWrap>
         </>
       )}
+
       <TextP>{HEADER_TEXT}</TextP>
-      {!token && !tokenData && (
-        <>
-          <HeaderIconWrap>
-            <Tooltip title='로그인' arrow>
-              <IconButton
-                onClick={handleClickLogin}
-                style={{
-                  color: "white",
-                }}>
-                <LoginIcon />
-              </IconButton>
-            </Tooltip>
-          </HeaderIconWrap>
-        </>
-      )}
 
       <embed src='/logo1.svg' width={147} height={56} />
     </HeaderContainer>

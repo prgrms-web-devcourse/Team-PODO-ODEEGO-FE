@@ -20,7 +20,7 @@ export default async function handler(
         capacity,
       },
       headers: {
-        Authorization: `Bearer ${authorization}`,
+        Authorization: authorization,
       },
     });
 

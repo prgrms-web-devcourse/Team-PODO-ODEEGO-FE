@@ -1,7 +1,8 @@
-import { ERROR_TEXT } from "@/constants/error";
+import { ERROR_CLIENT_TEXT } from "@/constants/error";
 import { searchProps } from "@/types/search-props";
 
-const { ERROR_DUPLICATE_START_POINT, ERROR_MISSING_START_POINT } = ERROR_TEXT;
+const { ERROR_DUPLICATE_START_POINT, ERROR_MISSING_START_POINT } =
+  ERROR_CLIENT_TEXT;
 
 export const validateAddressListUnderTwoLength = (
   addressList: searchProps[]

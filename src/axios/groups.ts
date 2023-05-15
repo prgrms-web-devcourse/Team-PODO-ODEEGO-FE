@@ -3,17 +3,18 @@ import { removeLocalStorage } from "@/utils/storage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import HTTP from "./config/axios-instance";
+import { LOCAL_STORAGE } from "@/constants";
+
+const { TOKEN, LOGOUT_TOKEN } = LOCAL_STORAGE;
 
 const ERROR_DEFAULT_MSG = "오류가 발생했습니다.";
+const ERROR_CODE_REMOVE_LOCAL_STORAGE = "MOO1";
 
 export const GroupsApi = {
-  getAll: async (token: string) => {
+  getAll: async () => {
     try {
       const { data } = await HTTP.get({
         url: "/v1/groups",
-        headers: {
-          Authorization: token,
-        },
       });
 
       return data;
@@ -22,9 +23,9 @@ export const GroupsApi = {
       if (axios.isAxiosError(e)) {
         const data = e.response?.data;
 
-        if (data.errorCode === "M001") {
-          removeLocalStorage("logoutToken");
-          removeLocalStorage("token");
+        if (data.errorCode === ERROR_CODE_REMOVE_LOCAL_STORAGE) {
+          removeLocalStorage(LOGOUT_TOKEN);
+          removeLocalStorage(TOKEN);
         }
 
         const errorMessage = data.error || ERROR_DEFAULT_MSG;
@@ -32,15 +33,12 @@ export const GroupsApi = {
       }
     }
   },
-  postCreateGroup: async (token: string, count: string) => {
+  postCreateGroup: async (count: string) => {
     try {
       const { data } = await HTTP.post({
         url: "/v1/groups/post",
         data: {
           capacity: count,
-        },
-        headers: {
-          Authorization: token,
         },
       });
 

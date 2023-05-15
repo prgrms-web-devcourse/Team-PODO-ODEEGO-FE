@@ -16,7 +16,7 @@ export default async function handler(
       url: requestUrl,
       method: "get",
       headers: {
-        Authorization: `Bearer ${authorization}`,
+        Authorization: authorization,
       },
     });
 
